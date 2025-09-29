@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alloha - Fruit Flush</title>
+    <title>Alloha - Cacti Cacti</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Fruit Flush Theme Colors */
-            --bg: linear-gradient(135deg, #FFF7F7 0%, #FFEFEF 100%);
-            --card: rgba(255, 255, 255, 0.95);
-            --text: #5B5B5B;
-            --text-secondary: #9B9B9B;
-            --accent: #FF6B6B; /* Coral Pink */
-            --accent-light: rgba(255, 107, 107, 0.1);
-            --accent-gradient: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
-            --cross-highlight: linear-gradient(135deg, #FFF5E1 0%, #FFEECF 100%); /* Pale Yellow */
-            --stuck-block: linear-gradient(135deg, #EAEAEA 0%, #F5F5F5 100%); /* Light Gray */
+            /* Cacti Cacti Theme Colors */
+            --bg: linear-gradient(135deg, #FDFCFB 0%, #E2D1C3 100%); /* Sandy Beige */
+            --card: rgba(255, 255, 255, 0.85);
+            --text: #5D4037; /* Dark Brown */
+            --text-secondary: #8D6E63; /* Lighter Brown */
+            --accent: #E57373; /* Terracotta Red */
+            --accent-light: rgba(229, 115, 115, 0.1);
+            --accent-gradient: linear-gradient(135deg, #E57373 0%, #FF8A65 100%);
+            --cross-highlight: linear-gradient(135deg, #A5D6A7 0%, #81C784 100%); /* Cactus Green */
+            --stuck-block: linear-gradient(135deg, #757575 0%, #616161 100%); /* Rocky Gray */
             
             /* Enhanced glass effects */
             --glass-primary: rgba(255, 255, 255, 0.3);
@@ -197,7 +197,7 @@
             box-shadow: var(--shadow-medium), 
                         0 0 0 1px rgba(255, 255, 255, 0.25),
                         inset 0 1px 0 rgba(255, 255, 255, 0.4),
-                        0 0 40px rgba(255, 107, 107, 0.1);
+                        0 0 40px rgba(229, 115, 115, 0.1);
             border: none !important;
         }
         
@@ -209,7 +209,7 @@
             justify-content: center;
             font-size: clamp(1.2rem, 5.5vw, 2.75rem);
             transition: all 0.3s var(--ease-smooth);
-            background: #FBEBEB;
+            background: #FAF8F5;
             border: 1px solid rgba(0, 0, 0, 0.02);
             position: relative;
             overflow: hidden;
@@ -232,7 +232,7 @@
         }
         
         .grid-cell:hover {
-            background: #FAD4D4;
+            background: #F0EAE4;
             transform: translateY(-2px);
             box-shadow: var(--shadow-soft);
         }
@@ -249,7 +249,7 @@
         .progress-bar-container {
             position: relative;
             overflow: hidden;
-            background: rgba(255, 107, 107, 0.15);
+            background: rgba(229, 115, 115, 0.15);
             border-radius: 9999px;
         }
 
@@ -309,9 +309,9 @@
         }
         
         @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 115, 115, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(229, 115, 115, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 115, 115, 0); }
         }
         
         #roll-dice-btn:not(:disabled) {
@@ -324,7 +324,7 @@
         
         .stuck-cell {
             background: var(--stuck-block) !important;
-            color: #8D8D8D;
+            color: #E0E0E0;
             font-size: 2rem;
             font-weight: 600;
         }
@@ -383,7 +383,7 @@
         
         @keyframes score-update {
             0% { transform: scale(1); }
-            50% { transform: scale(1.1); color: #FF8E8E; }
+            50% { transform: scale(1.1); color: #FF8A65; }
             100% { transform: scale(1); }
         }
         
@@ -432,7 +432,7 @@
             height: 100%;
         }
         .alloha-logo svg path, .alloha-logo svg g {
-            fill: #FFB3B3 !important; 
+            fill: var(--accent) !important; 
         }
         #close-rules-btn, #close-game-over-btn {
             color: var(--text-secondary);
@@ -442,7 +442,7 @@
             background-color: var(--accent-light);
         }
         .score-display-cell {
-            background: #FBEBEB !important;
+            background: #FAF8F5 !important;
             color: var(--text-secondary);
         }
     </style>
@@ -569,15 +569,15 @@
                     </div>
                     <div class="glass-card rounded-xl px-3 py-2">
                         <h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">High Score</h3>
-                        <p id="high-score" class="text-2xl font-bold" style="color: #FDBF2D;">0</p>
+                        <p id="high-score" class="text-2xl font-bold" style="color: #FFC107;">0</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2 lg:gap-3 text-center">
                     <div class="glass-card rounded-xl px-3 py-2"><h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Rows</h3><p id="rows-total-score" class="text-lg font-bold">0</p></div>
                     <div class="glass-card rounded-xl px-3 py-2"><h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Columns</h3><p id="cols-total-score" class="text-lg font-bold">0</p></div>
-                    <div class="glass-card rounded-xl px-3 py-2"><h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Twinning</h3><p id="cross-total-score" class="text-lg font-bold" style="color: #FDBF2D;">0</p></div>
-                    <div class="glass-card rounded-xl px-3 py-2"><h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Grid Bonus</h3><p id="bonus-grid-score" class="text-lg font-bold" style="color: #FDBF2D;">0</p></div>
+                    <div class="glass-card rounded-xl px-3 py-2"><h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Twinning</h3><p id="cross-total-score" class="text-lg font-bold" style="color: #FFC107;">0</p></div>
+                    <div class="glass-card rounded-xl px-3 py-2"><h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Grid Bonus</h3><p id="bonus-grid-score" class="text-lg font-bold" style="color: #FFC107;">0</p></div>
                 </div>
                 
                 <div class="glass-card rounded-xl px-3 py-2">
@@ -590,7 +590,7 @@
     <div id="rules-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
         <div class="modal-content w-full max-w-lg themed-modal p-6 transform scale-95 -translate-y-4">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-3xl font-bold" style="font-family: 'Pacifico', cursive; color: var(--accent);">How to Play Alloha - Fruit Flush</h2>
+                <h2 class="text-3xl font-bold" style="font-family: 'Pacifico', cursive; color: var(--accent);">How to Play Alloha - Cacti Cacti</h2>
                 <button id="close-rules-btn" class="w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
             </div>
             <div class="space-y-4 text-sm max-h-[70vh] overflow-y-auto pr-2" style="color: var(--text-secondary)">
@@ -630,7 +630,7 @@
                     <div class="text-left col-span-2 border-t pt-2 mt-2">Bomb Squad Charge: <span id="final-penalty-score" class="float-right font-bold">0</span></div>
                 </div>
             </div>
-            <p>High score: <span id="high-score-modal" class="font-bold" style="color: #FDBF2D;">0</span></p>
+            <p>High score: <span id="high-score-modal" class="font-bold" style="color: #FFC107;">0</span></p>
             <button id="play-again-btn" class="w-full mt-6 themed-button text-white font-bold py-3 px-4 rounded-xl text-xl" style="background: var(--accent-gradient);">Play Again</button>
         </div>
     </div>
@@ -651,17 +651,17 @@
         
         class Game {
             constructor() {
-                this.FRUIT_SYMBOLS = { 'Strawberry': '🍓', 'Kiwi': '🥝', 'Lemon': '🍋', 'Blueberry': '🫐', 'Watermelon': '🍉', 'Avocado': '🥑' };
+                this.DESERT_SYMBOLS = { 'Cactus': '🌵', 'Rock': '🪨', 'Sun': '🌞', 'Desert': '🏜️', 'PalmTree': '🌴', 'Axe': '🪓' };
                 this.SPECIAL_SYMBOLS = { 'WILD': '💎', 'CURSED': '☠️' };
-                this.SYMBOLS = Object.values(this.FRUIT_SYMBOLS);
+                this.SYMBOLS = Object.values(this.DESERT_SYMBOLS);
                 this.SYMBOL_COLORS = { 
-                    '🍓': 'text-red-500',
-                    '🥝': 'text-green-500',
-                    '🍋': 'text-yellow-400',
-                    '🫐': 'text-blue-500',
-                    '🍉': 'text-pink-500',
-                    '🥑': 'text-lime-600',
-                    '💎': 'text-sky-400'
+                    '🌵': 'text-green-600',
+                    '🪨': 'text-gray-500',
+                    '🌞': 'text-yellow-400',
+                    '🏜️': 'text-orange-500',
+                    '🌴': 'text-lime-700',
+                    '🪓': 'text-stone-500',
+                    '💎': 'text-sky-500'
                 };
                 this.SCORING_RULES = { 7: 20, 6: 14, 5: 10, 4: 8, 3: 3 };
                 this.GRID_SIZE = 7; this.MAX_TURNS = 24; this.CROSS_MULTIPLIER = 2; this.LINE_DEATH_PENALTY = -5; this.CROSS_DEATH_PENALTY = -10; this.STUCK_BLOCK_PENALTY = -1; this.MIN_SEQUENCE_LENGTH = 3;
@@ -700,7 +700,7 @@
                 this.gameStateManager = new GameState();
                 this.gridData = Array(this.GRID_SIZE).fill(null).map(() => Array(this.GRID_SIZE).fill(null));
                 this.currentRoll = []; this.firstPlacementCell = null; this.turnCount = 0; this.stuckBlocks = new Set();
-                this.highScore = parseInt(localStorage.getItem('fruitFlushHighScore')) || 0;
+                this.highScore = parseInt(localStorage.getItem('cactiCactiHighScore')) || 0;
                 this.hasSuperpowerBeenUsed = false; this.activeSuperpower = null; this.lastGameState = null; this.cellToExchange = null; this.currentTotalScore = 0;
                 this.cursedBlockTurn = Math.floor(Math.random() * 8) + 5;
                 this.wildcardTurn = Math.floor(Math.random() * 8) + 15;
@@ -907,7 +907,7 @@
                 const selector = document.createElement('div'); selector.className = 'grid grid-cols-3 gap-2 lg:gap-4';
                 this.SYMBOLS.forEach((symbol) => {
                     const btn = document.createElement('button');
-                    btn.className = `symbol-selector-btn aspect-square rounded-xl text-4xl lg:text-5xl hover:bg-red-100/50 ${this.SYMBOL_COLORS[symbol] || ''} flex items-center justify-center`;
+                    btn.className = `symbol-selector-btn aspect-square rounded-xl text-4xl lg:text-5xl hover:bg-orange-100/50 ${this.SYMBOL_COLORS[symbol] || ''} flex items-center justify-center`;
                     btn.textContent = symbol;
                     btn.onclick = () => this.handleSymbolSelect(symbol);
                     btn.onmouseenter = () => this.audioPlay('hover');
@@ -989,7 +989,7 @@
                 if (this.gameStateManager.is('GAME_OVER')) return;
                 this.gameStateManager.setState('GAME_OVER'); this.updateAllScores();
                 const finalScore = this.calculateTotalScore();
-                if (finalScore > this.highScore) { this.highScore = finalScore; localStorage.setItem('fruitFlushHighScore', this.highScore); }
+                if (finalScore > this.highScore) { this.highScore = finalScore; localStorage.setItem('cactiCactiHighScore', this.highScore); }
                 this.DOMElements['game-over-reason'].textContent = reason;
                 this.DOMElements['final-score-modal'].textContent = finalScore;
                 this.DOMElements['high-score-modal'].textContent = this.highScore;
@@ -1083,7 +1083,7 @@
                  this.cellToExchange = {r, c}; this.DOMElements['exchange-options'].innerHTML = '';
                  this.SYMBOLS.filter(s => s !== this.gridData[r][c]).forEach(symbol => {
                     const btn = document.createElement('button');
-                    btn.className = `symbol-selector-btn w-20 h-20 text-4xl rounded-lg hover:bg-red-100/50 ${this.SYMBOL_COLORS[symbol] || ''} flex items-center justify-center`;
+                    btn.className = `symbol-selector-btn w-20 h-20 text-4xl rounded-lg hover:bg-green-100/50 ${this.SYMBOL_COLORS[symbol] || ''} flex items-center justify-center`;
                     btn.textContent = symbol;
                     btn.onclick = () => this.handleSymbolExchange(symbol); this.DOMElements['exchange-options'].appendChild(btn);
                  });
