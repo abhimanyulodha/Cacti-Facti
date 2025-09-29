@@ -608,9 +608,9 @@
                  </ul>
                  <h3 class="font-bold text-lg" style="color: var(--accent);">Scoring</h3>
                  <ul class="list-disc list-inside space-y-1"><li><b>3 in a line:</b> 3 points</li><li><b>4 in a line:</b> 8 points</li><li><b>5 in a line:</b> 10 points</li><li><b>6 in a line:</b> 14 points</li><li><b>7 in a line:</b> 20 points</li>
-                 <li><b>Twinning Bonus:</b> Scores on the 4th row or 4th column are doubled!</li>
+                 <li><b>Twinning Bonus:</b> Scores on the special highlighted pattern are doubled!</li>
                  <li><b>Grid Bonus:</b> 2x2, 3x3, etc. grids of the same Alloha give bonus points (size * size).</li>
-                 <li><b>Penalty:</b> A row or column that can no longer form a 3-symbol sequence gets a -5 penalty. A "dead" line on the twinning gets a -10 penalty.</li></ul>
+                 <li><b>Penalty:</b> A row or column that can no longer form a 3-symbol sequence gets a -5 penalty. A "dead" line on the twinning pattern gets a -10 penalty.</li></ul>
             </div>
         </div>
     </div>
@@ -863,7 +863,26 @@
             }
 
             createCellElement(r, c) { const cell = document.createElement('div'); cell.dataset.row = r; cell.dataset.col = c; cell.className = this.getCellClasses(r, c); return cell; }
-            getCellClasses(r, c) { let classes = 'grid-cell'; if (r === 3 || c === 3) classes += ' cross-cell'; if (this.stuckBlocks.has(`${r},${c}`)) classes += ' stuck-cell'; return classes; }
+            
+            // MODIFICATION: Logic for the new complex Twinning pattern highlighting
+            getCellClasses(r, c) {
+                let classes = 'grid-cell';
+                const isTwinningCell = 
+                    (r === 3 && c >= 3 && c <= 5) || // 4th Row - Column 4 to 6
+                    (r === 5 && c >= 1 && c <= 3) || // 6th Row - Column 2 to 4
+                    (c === 1 && r >= 1 && r <= 5) || // 2nd Column - Row 2 to 6
+                    (c === 3) ||                     // 4th Column - Entire column
+                    (c === 5 && r >= 0 && r <= 3);   // 6th Column - Row 1 to 4
+
+                if (isTwinningCell) {
+                    classes += ' cross-cell';
+                }
+                if (this.stuckBlocks.has(`${r},${c}`)) {
+                    classes += ' stuck-cell';
+                }
+                return classes;
+            }
+
             updateCell(cell, r, c) { const symbol = this.gridData[r][c]; cell.className = this.getCellClasses(r, c); if (symbol) { cell.textContent = symbol; if(this.SYMBOL_COLORS[symbol]) cell.classList.add(...this.SYMBOL_COLORS[symbol].split(' ')); cell.classList.add('pop-in'); } else if (this.stuckBlocks.has(`${r},${c}`)) { cell.textContent = '💣'; } else { cell.textContent = ''; } }
             addCellEventListeners(cell) { cell.addEventListener('click', this.handleCellClick.bind(this)); cell.addEventListener('mouseenter', () => { if (this.gameStateManager.is('AWAITING_PLACEMENT') || this.activeSuperpower) this.audioPlay('hover'); }); }
 
@@ -957,11 +976,7 @@
                     this.saveStateForUndo();
                     this.gameStateManager.setState('AWAITING_PLACEMENT');
                     this.updateControlsState();
-                    
-                    // --- THIS IS THE NEW LINE TO ADD ---
                     this.updateSuperpowerButtonsUI();
-                    // ------------------------------------
-
                 }, 600);
             }
 
@@ -1025,16 +1040,98 @@
             calculateRowScores() { let t = 0, ind = []; for (let i = 0; i < this.GRID_SIZE; i++) { const { score: s } = this.calculateLineScore(this.gridData[i], 'row', i); ind.push(s); t += s; } return { total: t, individual: ind }; }
             calculateColumnScores() { let t = 0, ind = []; for (let i = 0; i < this.GRID_SIZE; i++) { const col = this.gridData.map(row => row[i]); const { score: s } = this.calculateLineScore(col, 'col', i); ind.push(s); t += s; } return { total: t, individual: ind }; }
             
+            // MODIFICATION: Logic for the new complex Twinning pattern scoring
             calculateCrossScore() {
                 let bonusScore = 0;
-                const crossRow = this.gridData[3];
-                const crossCol = this.gridData.map(row => row[3]);
-                const rowResult = this.calculateLineScore(crossRow, 'row', 3);
-                const colResult = this.calculateLineScore(crossCol, 'col', 3);
-                if (rowResult.score > 0) { bonusScore += rowResult.score; } 
-                else if (rowResult.score === this.LINE_DEATH_PENALTY) { bonusScore += this.CROSS_DEATH_PENALTY - this.LINE_DEATH_PENALTY; }
-                if (colResult.score > 0) { bonusScore += colResult.score; } 
-                else if (colResult.score === this.LINE_DEATH_PENALTY) { bonusScore += this.CROSS_DEATH_PENALTY - this.LINE_DEATH_PENALTY; }
+
+                const getScoreForSegment = (segmentSymbols, segmentCoords) => {
+                    let score = 0;
+                    const usedIndices = Array(segmentSymbols.length).fill(false);
+                    const localScoringRules = { 7: 20, 6: 14, 5: 10, 4: 8, 3: 3 };
+
+                    for (let len = segmentSymbols.length; len >= this.MIN_SEQUENCE_LENGTH; len--) {
+                        if (!localScoringRules[len]) continue;
+                        for (let i = 0; i <= segmentSymbols.length - len; i++) {
+                            if (usedIndices.slice(i, i + len).some(used => used)) continue;
+                            
+                            const slice = segmentSymbols.slice(i, i + len);
+                            if (this.isValidSequence(slice)) {
+                                score += localScoringRules[len];
+                                for (let k = 0; k < len; k++) {
+                                    if (slice[k] !== this.SPECIAL_SYMBOLS.WILD) {
+                                        usedIndices[i + k] = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (score > 0) return score; // Apply doubling bonus here
+
+                    let isDead = true;
+                    if (segmentCoords.length >= this.MIN_SEQUENCE_LENGTH) {
+                        for (let i = 0; i <= segmentCoords.length - this.MIN_SEQUENCE_LENGTH; i++) {
+                            const windowCoords = segmentCoords.slice(i, i + this.MIN_SEQUENCE_LENGTH);
+                            const windowSymbols = windowCoords.map(coord => this.gridData[coord.r][coord.c]);
+                            
+                            let isWindowWinnable = true;
+                            if (windowSymbols.includes(this.SPECIAL_SYMBOLS.CURSED)) {
+                                isWindowWinnable = false;
+                            }
+                            if (isWindowWinnable) {
+                                for (const coord of windowCoords) {
+                                    if (this.stuckBlocks.has(`${coord.r},${coord.c}`)) {
+                                        isWindowWinnable = false;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (isWindowWinnable) {
+                                const regularSymbols = windowSymbols.filter(s => s && s !== this.SPECIAL_SYMBOLS.WILD);
+                                if (new Set(regularSymbols).size > 1) {
+                                    isWindowWinnable = false;
+                                }
+                            }
+
+                            if (isWindowWinnable) {
+                                isDead = false;
+                                break;
+                            }
+                        }
+                    } else {
+                        isDead = !segmentSymbols.includes(null);
+                    }
+
+                    if (isDead) {
+                        return this.CROSS_DEATH_PENALTY;
+                    }
+
+                    return 0;
+                };
+                
+                const segments = [
+                    { type: 'row', index: 3, start: 3, end: 5 }, // R4, C4-6
+                    { type: 'row', index: 5, start: 1, end: 3 }, // R6, C2-4
+                    { type: 'col', index: 1, start: 1, end: 5 }, // C2, R2-6
+                    { type: 'col', index: 3, start: 0, end: 6 }, // C4, R1-7
+                    { type: 'col', index: 5, start: 0, end: 3 }  // C6, R1-4
+                ];
+
+                segments.forEach(seg => {
+                    const segmentSymbols = [];
+                    const segmentCoords = [];
+                    for (let i = seg.start; i <= seg.end; i++) {
+                        if (seg.type === 'row') {
+                            segmentSymbols.push(this.gridData[seg.index][i]);
+                            segmentCoords.push({ r: seg.index, c: i });
+                        } else {
+                            segmentSymbols.push(this.gridData[i][seg.index]);
+                            segmentCoords.push({ r: i, c: seg.index });
+                        }
+                    }
+                    bonusScore += getScoreForSegment(segmentSymbols, segmentCoords);
+                });
+
                 return bonusScore;
             }
 
