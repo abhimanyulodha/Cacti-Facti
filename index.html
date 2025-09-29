@@ -651,16 +651,16 @@
         
         class Game {
             constructor() {
-                this.DESERT_SYMBOLS = { 'Cactus': '🌵', 'Rock': '🪨', 'Sun': '🌞', 'Desert': '🏜️', 'PalmTree': '🌴', 'Axe': '🪓' };
+                this.DESERT_SYMBOLS = { 'Hut': '🛖', 'Cactus': '🌵', 'Rock': '🪨', 'Sun': '🌞', 'PalmTree': '🌴', 'Snake': '🐍' };
                 this.SPECIAL_SYMBOLS = { 'WILD': '💎', 'CURSED': '☠️' };
                 this.SYMBOLS = Object.values(this.DESERT_SYMBOLS);
                 this.SYMBOL_COLORS = { 
+                    '🛖': 'text-amber-700',
                     '🌵': 'text-green-600',
                     '🪨': 'text-gray-500',
                     '🌞': 'text-yellow-400',
-                    '🏜️': 'text-orange-500',
                     '🌴': 'text-lime-700',
-                    '🪓': 'text-stone-500',
+                    '🐍': 'text-green-700',
                     '💎': 'text-sky-500'
                 };
                 this.SCORING_RULES = { 7: 20, 6: 14, 5: 10, 4: 8, 3: 3 };
