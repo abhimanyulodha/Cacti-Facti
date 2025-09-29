@@ -954,7 +954,14 @@
                 d1.classList.add('dice-tumble'); d2.classList.add('dice-tumble');
                 setTimeout(() => {
                     d1.classList.remove('dice-tumble'); d2.classList.remove('dice-tumble');
-                    this.saveStateForUndo(); this.gameStateManager.setState('AWAITING_PLACEMENT'); this.updateControlsState();
+                    this.saveStateForUndo();
+                    this.gameStateManager.setState('AWAITING_PLACEMENT');
+                    this.updateControlsState();
+                    
+                    // --- THIS IS THE NEW LINE TO ADD ---
+                    this.updateSuperpowerButtonsUI();
+                    // ------------------------------------
+
                 }, 600);
             }
 
@@ -1064,7 +1071,7 @@
             updateSuperpowerButtonsUI() {
                 const isUsed = this.hasSuperpowerBeenUsed; const isMidMove = this.firstPlacementCell !== null; const isPowerActive = this.activeSuperpower !== null;
                 const pastLivesBtn = document.getElementById('past-lives-btn'); const bombBaeBtn = document.getElementById('bomb-bae-btn'); const noReturnBtn = document.getElementById('no-return-btn');
-                if (pastLivesBtn) pastLivesBtn.disabled = isUsed || !this.lastGameState || isMidMove || isPowerActive;
+                if (pastLivesBtn) pastLivesBtn.disabled = isUsed || !this.lastGameState || isMidMove || isPowerActive || this.gameStateManager.is('AWAITING_PLACEMENT');
                 if (bombBaeBtn) bombBaeBtn.disabled = isUsed || this.stuckBlocks.size === 0 || isMidMove || isPowerActive;
                 if (noReturnBtn) noReturnBtn.disabled = isUsed || isMidMove || isPowerActive;
                 [pastLivesBtn, bombBaeBtn, noReturnBtn].forEach(btn => btn?.classList.remove('superpower-btn--active'));
