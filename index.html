@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alloha - Fruit Flush</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Fruit Flush Theme Colors */
+            --bg: linear-gradient(135deg, #FFF7F7 0%, #FFEFEF 100%);
+            --card: rgba(255, 255, 255, 0.95);
+            --text: #5B5B5B;
+            --text-secondary: #9B9B9B;
+            --accent: #FF6B6B; /* Coral Pink */
+            --accent-light: rgba(255, 107, 107, 0.1);
+            --accent-gradient: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+            --cross-highlight: linear-gradient(135deg, #FFF5E1 0%, #FFEECF 100%); /* Pale Yellow */
+            --stuck-block: linear-gradient(135deg, #EAEAEA 0%, #F5F5F5 100%); /* Light Gray */
+            
+            /* Enhanced glass effects */
+            --glass-primary: rgba(255, 255, 255, 0.3);
+            --glass-secondary: rgba(255, 255, 255, 0.18);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            
+            /* Progressive shadow system */
+            --shadow-minimal: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-soft: 0 6px 20px rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 12px 40px rgba(0, 0, 0, 0.08);
+            --shadow-strong: 0 20px 60px rgba(0, 0, 0, 0.10);
+            --shadow-dramatic: 0 30px 80px rgba(0, 0, 0, 0.12);
+            
+            /* Animation curves */
+            --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-quick: cubic-bezier(0.25, 0.8, 0.25, 1);
+            
+            /* New shimmer effects */
+            --shimmer-gradient: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.03) 50%, transparent 100%);
+            --progress-shimmer: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
+        }
+        
+        /* Accessibility: Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .themed-button::before,
+            .progress-bar-fill::after {
+                display: none;
+            }
+        }
+        
+        /* Accessibility: High contrast mode */
+        @media (prefers-contrast: high) {
+            :root {
+                --shadow-soft: 0 6px 20px rgba(0, 0, 0, 0.25);
+                --shadow-medium: 0 12px 40px rgba(0, 0, 0, 0.30);
+                --glass-primary: rgba(255, 255, 255, 0.5);
+                --glass-secondary: rgba(255, 255, 255, 0.3);
+            }
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Loading states */
+        .skeleton-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .rounded-card {
+            border-radius: 16px;
+            background: var(--card);
+            box-shadow: var(--shadow-soft);
+        }
+        
+        /* Enhanced button micro-interactions */
+        .themed-button {
+            font-weight: 600;
+            border-radius: 16px;
+            transition: all 0.3s var(--ease-smooth);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            box-shadow: var(--shadow-soft);
+            border: none;
+            position: relative;
+            overflow: hidden;
+            transform-origin: center;
+        }
+        
+        .themed-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--shimmer-gradient);
+            transition: left 0.6s var(--ease-smooth);
+            z-index: 1;
+        }
+        
+        .themed-button:hover::before {
+            left: 100%;
+        }
+        
+        .themed-button:active {
+            transform: scale(0.98);
+            transition-duration: 0.1s;
+        }
+        
+        .themed-button:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        /* Shimmer effect for special buttons */
+        .themed-button.shimmer-active::before {
+            animation: shimmer-sweep 2s infinite;
+        }
+
+        @keyframes shimmer-sweep {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+        
+        /* Enhanced glassmorphism */
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.3) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: var(--shadow-soft), 
+                        0 0 0 1px var(--glass-border),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            border: none !important;
+            transition: all 0.3s var(--ease-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Score card hover effects */
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s var(--ease-smooth);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-medium), 
+                        0 0 0 1px rgba(255, 255, 255, 0.25),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+        
+        /* Ensure content stays above the shine effect */
+        .glass-card > * {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .glass-card-prominent {
+            background: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.4) 100%);
+            backdrop-filter: blur(25px) saturate(200%);
+            -webkit-backdrop-filter: blur(25px) saturate(200%);
+            box-shadow: var(--shadow-medium), 
+                        0 0 0 1px rgba(255, 255, 255, 0.25),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                        0 0 40px rgba(255, 107, 107, 0.1);
+            border: none !important;
+        }
+        
+        .grid-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1.2rem, 5.5vw, 2.75rem);
+            transition: all 0.3s var(--ease-smooth);
+            background: #FBEBEB;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .grid-cell::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .grid-cell:hover::before {
+            opacity: 1;
+        }
+        
+        .grid-cell:hover {
+            background: #FAD4D4;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft);
+        }
+        
+        .themed-modal {
+            border-radius: 20px;
+            background: var(--card);
+            box-shadow: var(--shadow-strong);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+        }
+        
+        /* Enhanced progress bar */
+        .progress-bar-container {
+            position: relative;
+            overflow: hidden;
+            background: rgba(255, 107, 107, 0.15);
+            border-radius: 9999px;
+        }
+
+        .progress-bar-fill {
+            background: var(--accent-gradient);
+            position: relative;
+            overflow: hidden;
+            transition: width 0.3s var(--ease-smooth);
+        }
+
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--progress-shimmer);
+            animation: progress-shimmer 2s infinite;
+        }
+
+        @keyframes progress-shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes pop-in {
+            0% { opacity: 0; transform: scale(0.5) rotate(-180deg); }
+            50% { opacity: 1; transform: scale(1.1) rotate(-90deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+        
+        .pop-in {
+            animation: pop-in 0.4s var(--ease-bounce);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px) rotate(-3deg); }
+            75% { transform: translateX(5px) rotate(3deg); }
+        }
+
+        .shake-animation {
+            animation: shake 0.4s ease-in-out;
+        }
+        
+        @keyframes dice-tumble {
+            0%   { transform: rotate(0deg) scale(1); filter: blur(0px); }
+            25%  { transform: rotate(-90deg) scale(1.05); }
+            50%  { transform: rotate(-180deg) scale(1.1); filter: blur(3px); }
+            75%  { transform: rotate(-270deg) scale(1.05); }
+            100% { transform: rotate(-360deg) scale(1); filter: blur(0px); }
+        }
+        
+        .dice-tumble {
+            animation: dice-tumble 0.6s var(--ease-bounce);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+        }
+        
+        #roll-dice-btn:not(:disabled) {
+            animation: pulse 2s infinite;
+        }
+        
+        .cross-cell {
+            background: var(--cross-highlight) !important;
+        }
+        
+        .stuck-cell {
+            background: var(--stuck-block) !important;
+            color: #8D8D8D;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .cursor-target {
+            cursor: crosshair !important;
+        }
+        
+        .modal {
+            transition: all 0.3s var(--ease-smooth);
+        }
+        
+        .modal-content {
+            transition: all 0.3s var(--ease-smooth);
+        }
+        
+        .modal.is-open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal.is-open .modal-content {
+            transform: scale(1) translateY(0);
+        }
+        
+        .controls-area {
+            min-height: 165px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .symbol-selector-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s var(--ease-smooth);
+        }
+        
+        .symbol-selector-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+        
+        .symbol-selector-btn:hover::after {
+            width: 100%;
+            height: 100%;
+        }
+        
+        @keyframes score-update {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); color: #FF8E8E; }
+            100% { transform: scale(1); }
+        }
+        
+        .score-update {
+            animation: score-update 0.5s var(--ease-quick);
+        }
+
+        .superpower-btn {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            color: var(--text-secondary); 
+            font-weight: 500;
+            border-radius: 12px;
+            padding: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .superpower-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            text-decoration: underline;
+        }
+
+        .superpower-btn--active {
+            font-weight: 700;
+            transform: translateY(-2px) !important;
+        }
+
+        .superpower-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            text-decoration: none;
+        }
+
+        .alloha-logo {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .alloha-logo svg {
+            width: 100%;
+            height: 100%;
+        }
+        .alloha-logo svg path, .alloha-logo svg g {
+            fill: #FFB3B3 !important; 
+        }
+        #close-rules-btn, #close-game-over-btn {
+            color: var(--text-secondary);
+        }
+        #close-rules-btn:hover, #close-game-over-btn:hover {
+            color: var(--text);
+            background-color: var(--accent-light);
+        }
+        .score-display-cell {
+            background: #FBEBEB !important;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body class="p-2 lg:p-4">
+    <audio id="audio-unlocker" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=" preload="auto"></audio>
+    
+    <main id="game-container" class="w-full max-w-5xl mx-auto flex flex-col lg:flex-row gap-4 lg:gap-6 items-center lg:items-stretch pt-8 lg:pt-16">
+        <div class="w-full lg:w-2/3 relative">
+            <div id="effects-container" class="absolute inset-0 pointer-events-none z-10 overflow-hidden"></div>
+            <div id="game-board-container" class="p-2 lg:p-6 rounded-card shadow-lg h-full">
+                <div class="grid grid-cols-8 gap-1 lg:gap-3 h-full">
+                    <div id="game-board" class="col-span-7 grid grid-cols-7 gap-1 lg:gap-2"></div>
+                    <div id="row-scores-display" class="col-span-1 grid grid-rows-7 gap-1 lg:gap-2"></div>
+                    <div id="col-scores-display" class="col-span-7 grid grid-cols-7 mt-1 lg:mt-0 gap-1 lg:gap-2"></div>
+                    
+                    <div class="hidden lg:flex items-center justify-center">
+                        <div class="alloha-logo">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 396.75 396.749985" preserveAspectRatio="xMidYMid meet" version="1.0">
+                                <defs>
+                                    <clipPath id="864cd2432c"><path d="M 40 0 L 355 0 L 355 396.5 L 40 396.5 Z M 40 0 " clip-rule="nonzero"/></clipPath>
+                                    <clipPath id="9e91a8b430"><rect x="0" width="169" y="0" height="269"/></clipPath>
+                                    <clipPath id="9a4060e8fa"><path d="M 146 116 L 314.976562 116 L 314.976562 396.5 L 146 396.5 Z M 146 116 " clip-rule="nonzero"/></clipPath>
+                                    <clipPath id="f5a1301079"><rect x="0" width="169" y="0" height="281"/></clipPath>
+                                    <clipPath id="45fb35c46f"><rect x="0" width="166" y="0" height="269"/></clipPath>
+                                    <clipPath id="cd05768fb1"><path d="M 0.292969 116 L 171 116 L 171 396.5 L 0.292969 396.5 Z M 0.292969 116 " clip-rule="nonzero"/></clipPath>
+                                    <clipPath id="f5e8ebd13e"><rect x="0" width="171" y="0" height="281"/></clipPath>
+                                    <clipPath id="22bb000506"><path d="M 242.375 20.429688 L 285.164062 20.429688 L 285.164062 140.25 L 242.375 140.25 Z M 242.375 20.429688 " clip-rule="nonzero"/></clipPath>
+                                    <clipPath id="cb13c63ddb"><path d="M 0.375 0.429688 L 43.164062 0.429688 L 43.164062 120.25 L 0.375 120.25 Z M 0.375 0.429688 " clip-rule="nonzero"/></clipPath>
+                                    <clipPath id="7703948ec8"><rect x="0" width="44" y="0" height="121"/></clipPath>
+                                    <clipPath id="0f7bc66451"><path d="M 213.839844 20.4375 L 276.609375 20.4375 L 276.609375 63.222656 L 213.839844 63.222656 Z M 213.839844 20.4375 " clip-rule="nonzero"/></clipPath>
+                                    <clipPath id="90aa4af11e"><path d="M 0.839844 0.4375 L 63.609375 0.4375 L 63.609375 43.222656 L 0.839844 43.222656 Z M 0.839844 0.4375 " clip-rule="nonzero"/></clipPath>
+                                    <clipPath id="75d75e67e1"><rect x="0" width="64" y="0" height="44"/></clipPath>
+                                    <clipPath id="e5df82bf12"><rect x="0" width="315" y="0" height="397"/></clipPath>
+                                </defs>
+                                <g clip-path="url(#864cd2432c)">
+                                    <g transform="matrix(1, 0, 0, 1, 40, 0)">
+                                        <g clip-path="url(#e5df82bf12)">
+                                            <g transform="matrix(1, 0, 0, 1, 1, 0)">
+                                                <g clip-path="url(#9e91a8b430)">
+                                                    <g fill="#20B2AA" fill-opacity="1">
+                                                        <g transform="translate(0.873977, 194.870819)">
+                                                            <g><path d="M 137.910156 0 L 137.910156 -174.546875 L 6.804688 -174.546875 L 6.804688 0 L 50.503906 0 L 50.503906 -48.675781 L 94.207031 -48.675781 L 94.207031 0 Z M 94.207031 -88.449219 L 50.503906 -88.449219 L 50.503906 -134.507812 L 94.207031 -134.507812 Z M 94.207031 -88.449219 "/></g>
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </g>
+                                            <g clip-path="url(#9a4060e8fa)">
+                                                <g transform="matrix(1, 0, 0, 1, 146, 116)">
+                                                    <g clip-path="url(#f5a1301079)">
+                                                        <g fill="#20B2AA" fill-opacity="1">
+                                                            <g transform="translate(1.206642, 267.950498)">
+                                                                <g><path d="M 137.910156 0 L 137.910156 -174.546875 L 6.804688 -174.546875 L 6.804688 0 Z M 94.207031 -39.777344 L 50.503906 -39.777344 L 50.503906 -134.507812 L 94.207031 -134.507812 Z M 94.207031 -39.777344 "/></g>
+                                                            </g>
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </g>
+                                            <g transform="matrix(1, 0, 0, 1, 148, 0)">
+                                                <g clip-path="url(#45fb35c46f)">
+                                                    <g fill="#20B2AA" fill-opacity="1">
+                                                        <g transform="translate(0.26582, 194.870819)">
+                                                            <g><path d="M 137.386719 0 L 137.386719 -39.777344 L 50.503906 -39.777344 L 50.503906 -174.546875 L 6.804688 -174.546875 L 6.804688 0 Z M 137.386719 0 "/></g>
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </g>
+                                            <g clip-path="url(#cd05768fb1)">
+                                                <g transform="matrix(1, 0, 0, 1, -0.000000000000007105, 116)">
+                                                    <g clip-path="url(#f5e8ebd13e)">
+                                                        <g fill="#20B2AA" fill-opacity="1">
+                                                            <g transform="translate(1.876102, 267.950498)">
+                                                                <g><path d="M 137.910156 0 L 137.910156 -174.546875 L 94.207031 -174.546875 L 94.207031 -107.03125 L 50.503906 -107.03125 L 50.503906 -174.546875 L 6.804688 -174.546875 L 6.804688 0 L 50.503906 0 L 50.503906 -68.5625 L 94.207031 -68.5625 L 94.207031 0 Z M 137.910156 0 "/></g>
+                                                            </g>
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </g>
+                                            <g clip-path="url(#22bb000506)">
+                                                <g transform="matrix(1, 0, 0, 1, 242, 20)">
+                                                    <g clip-path="url(#7703948ec8)">
+                                                        <g clip-path="url(#cb13c63ddb)">
+                                                            <path fill="#20B2AA" d="M 43.164062 120.25 L 0.375 120.25 L 0.375 0.414062 L 43.164062 0.414062 Z M 43.164062 120.25 " fill-opacity="1" fill-rule="nonzero"/>
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </g>
+                                            <g clip-path="url(#0f7bc66451)">
+                                                <g transform="matrix(1, 0, 0, 1, 213, 20)">
+                                                    <g clip-path="url(#75d75e67e1)">
+                                                        <g clip-path="url(#90aa4af11e)">
+                                                            <path fill="#20B2AA" d="M 0.839844 43.222656 L 0.839844 0.4375 L 63.683594 0.4375 L 63.683594 43.222656 Z M 0.839844 43.222656 " fill-opacity="1" fill-rule="nonzero"/>
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="w-full lg:w-1/3">
+            <div id="scoring-panel" class="flex-1 flex flex-col gap-3 lg:gap-4 p-4 lg:p-6 glass-card rounded-2xl justify-between">
+                <div class="flex justify-center items-center gap-3">
+                    <button id="rules-btn" class="flex-1 py-2 px-4 themed-button text-sm font-semibold" style="color: var(--accent); background: var(--accent-light);">No Rules</button>
+                    <button id="new-game-btn" class="flex-1 py-2 px-4 themed-button text-white font-semibold rounded-xl text-sm" style="background: var(--accent-gradient);">New Game</button>
+                </div>
+
+                <div class="relative w-full h-2.5 progress-bar-container">
+                    <div id="progress-bar-fill" class="h-full rounded-full progress-bar-fill transition-all duration-300" style="width: 0%;"></div>
+                </div>
+                
+                <div id="controls-area" class="controls-area"></div>
+                
+                <div class="grid grid-cols-2 gap-2 lg:gap-3 text-center">
+                    <div class="glass-card rounded-xl px-3 py-2">
+                        <h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Total Score</h3>
+                        <p id="total-score" class="text-2xl font-bold transition-all duration-300" style="color: var(--accent);">0</p>
+                    </div>
+                    <div class="glass-card rounded-xl px-3 py-2">
+                        <h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">High Score</h3>
+                        <p id="high-score" class="text-2xl font-bold" style="color: #FDBF2D;">0</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 lg:gap-3 text-center">
+                    <div class="glass-card rounded-xl px-3 py-2"><h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Rows</h3><p id="rows-total-score" class="text-lg font-bold">0</p></div>
+                    <div class="glass-card rounded-xl px-3 py-2"><h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Columns</h3><p id="cols-total-score" class="text-lg font-bold">0</p></div>
+                    <div class="glass-card rounded-xl px-3 py-2"><h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Twinning</h3><p id="cross-total-score" class="text-lg font-bold" style="color: #FDBF2D;">0</p></div>
+                    <div class="glass-card rounded-xl px-3 py-2"><h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Grid Bonus</h3><p id="bonus-grid-score" class="text-lg font-bold" style="color: #FDBF2D;">0</p></div>
+                </div>
+                
+                <div class="glass-card rounded-xl px-3 py-2">
+                    <div class="text-center"><h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Bomb Squad Charge</h3><p id="empty-block-penalty" class="text-lg font-bold" style="color: var(--text);">0</p></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div id="rules-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
+        <div class="modal-content w-full max-w-lg themed-modal p-6 transform scale-95 -translate-y-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-3xl font-bold" style="font-family: 'Pacifico', cursive; color: var(--accent);">How to Play Alloha - Fruit Flush</h2>
+                <button id="close-rules-btn" class="w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
+            </div>
+            <div class="space-y-4 text-sm max-h-[70vh] overflow-y-auto pr-2" style="color: var(--text-secondary)">
+                 <h3 class="font-bold text-lg" style="color: var(--accent);">The Objective</h3>
+                 <p>Get the highest score by placing Allohas on the grid to create sequences of 3 or more identical Allohas in a line (rows or columns).</p>
+                 <h3 class="font-bold text-lg" style="color: var(--accent);">Gameplay</h3>
+                 <ol class="list-decimal list-inside space-y-1"><li>Choose your starting Alloha.</li><li>Click "Roll Dice" to get two new Allohas.</li><li>Place both Allohas in any two empty, adjacent (not diagonal) squares.</li></ol>
+                 <h3 class="font-bold text-lg" style="color: var(--accent);">Special Powers</h3>
+                 <p>Use one of three powerful, single-use abilities per game.</p>
+                 <ul class="list-disc list-inside space-y-1"><li><b>Past Lives:</b> Undoes your last completed move.</li><li><b>Bomb Bae:</b> Click to activate, then click a stuck block (💣) to fill it with a random Alloha.</li><li><b>No Return:</b> Click to activate, then click any Alloha on the grid to swap it.</li></ul>
+                 <h3 class="font-bold text-lg" style="color: var(--accent);">Special Blocks</h3>
+                 <ul class="list-disc list-inside space-y-1">
+                    <li><b>Wild Card (💎):</b> A rare treasure! This special piece acts as any Alloha and can complete any line. Appears once per game.</li>
+                    <li><b>Cursed Block (☠️):</b> An immovable obstacle! This block cannot be removed by Bomb Bae or swapped with No Return. Appears once per game.</li>
+                 </ul>
+                 <h3 class="font-bold text-lg" style="color: var(--accent);">Scoring</h3>
+                 <ul class="list-disc list-inside space-y-1"><li><b>3 in a line:</b> 3 points</li><li><b>4 in a line:</b> 8 points</li><li><b>5 in a line:</b> 10 points</li><li><b>6 in a line:</b> 14 points</li><li><b>7 in a line:</b> 20 points</li>
+                 <li><b>Twinning Bonus:</b> Scores on the 4th row or 4th column are doubled!</li>
+                 <li><b>Grid Bonus:</b> 2x2, 3x3, etc. grids of the same Alloha give bonus points (size * size).</li>
+                 <li><b>Penalty:</b> A row or column that can no longer form a 3-symbol sequence gets a -5 penalty. A "dead" line on the twinning gets a -10 penalty.</li></ul>
+            </div>
+        </div>
+    </div>
+    
+    <div id="game-over-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
+        <div class="modal-content w-full max-w-md text-center themed-modal p-8 transform scale-95 -translate-y-4 relative">
+            <button id="close-game-over-btn" class="absolute top-4 right-4 w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
+            <h2 class="text-4xl font-bold mb-2" style="color: var(--accent); font-family: 'Pacifico', cursive;">Game Over!</h2>
+            <p id="game-over-reason" class="text-lg mt-2 mb-4" style="color: var(--accent);"></p>
+            <p id="final-score-modal" class="text-7xl font-bold my-4" style="color: var(--accent);">0</p>
+            <div id="score-breakdown" class="mb-6 p-4 glass-card rounded-xl text-xs">
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="text-left">Rows: <span id="final-rows-score" class="float-right font-bold">0</span></div>
+                    <div class="text-left">Columns: <span id="final-cols-score" class="float-right font-bold">0</span></div>
+                    <div class="text-left">Twinning: <span id="final-cross-score" class="float-right font-bold">0</span></div>
+                    <div class="text-left">Bonus Grids: <span id="final-bonus-score" class="float-right font-bold">0</span></div>
+                    <div class="text-left col-span-2 border-t pt-2 mt-2">Bomb Squad Charge: <span id="final-penalty-score" class="float-right font-bold">0</span></div>
+                </div>
+            </div>
+            <p>High score: <span id="high-score-modal" class="font-bold" style="color: #FDBF2D;">0</span></p>
+            <button id="play-again-btn" class="w-full mt-6 themed-button text-white font-bold py-3 px-4 rounded-xl text-xl" style="background: var(--accent-gradient);">Play Again</button>
+        </div>
+    </div>
+    
+    <div id="exchange-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
+        <div class="modal-content w-full max-w-sm text-center themed-modal p-6 transform scale-95 -translate-y-4">
+            <h2 class="text-xl font-bold mb-4" style="color: var(--accent);">Choose a new Alloha</h2>
+            <div id="exchange-options" class="grid grid-cols-3 gap-4"></div>
+        </div>
+    </div>
+
+    <script>
+        class GameState {
+            constructor() { this.states = { PRE_GAME: 'PRE_GAME', AWAITING_ROLL: 'AWAITING_ROLL', ANIMATING_ROLL: 'ANIMATING_ROLL', AWAITING_PLACEMENT: 'AWAITING_PLACEMENT', SUPERPOWER_ACTIVE: 'SUPERPOWER_ACTIVE', PROCESSING_TURN: 'PROCESSING_TURN', GAME_OVER: 'GAME_OVER' }; this.currentState = this.states.PRE_GAME; this.validTransitions = { [this.states.PRE_GAME]: [this.states.AWAITING_ROLL], [this.states.AWAITING_ROLL]: [this.states.ANIMATING_ROLL, this.states.PRE_GAME, this.states.SUPERPOWER_ACTIVE, this.states.AWAITING_PLACEMENT], [this.states.ANIMATING_ROLL]: [this.states.AWAITING_PLACEMENT], [this.states.AWAITING_PLACEMENT]: [this.states.PROCESSING_TURN, this.states.AWAITING_ROLL, this.states.SUPERPOWER_ACTIVE], [this.states.SUPERPOWER_ACTIVE]: [this.states.AWAITING_ROLL, this.states.AWAITING_PLACEMENT, this.states.PROCESSING_TURN], [this.states.PROCESSING_TURN]: [this.states.AWAITING_ROLL, this.states.GAME_OVER], [this.states.GAME_OVER]: [this.states.PRE_GAME] }; }
+            setState(newState) { if (!this.validTransitions[this.currentState]?.includes(newState)) { console.warn(`Invalid state transition from ${this.currentState} to ${newState}`); return false; } this.currentState = newState; return true; }
+            is(state) { return this.currentState === state; }
+        }
+        
+        class Game {
+            constructor() {
+                this.FRUIT_SYMBOLS = { 'Strawberry': '🍓', 'Kiwi': '🥝', 'Lemon': '🍋', 'Blueberry': '🫐', 'Watermelon': '🍉', 'Avocado': '🥑' };
+                this.SPECIAL_SYMBOLS = { 'WILD': '💎', 'CURSED': '☠️' };
+                this.SYMBOLS = Object.values(this.FRUIT_SYMBOLS);
+                this.SYMBOL_COLORS = { 
+                    '🍓': 'text-red-500',
+                    '🥝': 'text-green-500',
+                    '🍋': 'text-yellow-400',
+                    '🫐': 'text-blue-500',
+                    '🍉': 'text-pink-500',
+                    '🥑': 'text-lime-600',
+                    '💎': 'text-sky-400'
+                };
+                this.SCORING_RULES = { 7: 20, 6: 14, 5: 10, 4: 8, 3: 3 };
+                this.GRID_SIZE = 7; this.MAX_TURNS = 24; this.CROSS_MULTIPLIER = 2; this.LINE_DEATH_PENALTY = -5; this.CROSS_DEATH_PENALTY = -10; this.STUCK_BLOCK_PENALTY = -1; this.MIN_SEQUENCE_LENGTH = 3;
+                
+                this.gameStateManager = null; this.gridData = null; this.currentRoll = null; this.firstPlacementCell = null; this.turnCount = null; this.highScore = null; this.stuckBlocks = null;
+                this.lastGameState = null; this.hasSuperpowerBeenUsed = null; this.activeSuperpower = null; this.cellToExchange = null; this.currentTotalScore = null;
+                this.cursedBlockTurn = null; this.wildcardTurn = null;
+                this.gridCells = [];
+
+                this.audio = { unlocked: false, context: null, sounds: new Map() };
+
+                this.DOMElements = this.getDOMElements();
+
+                this.init();
+                this.setupEventListeners();
+            }
+            
+            getDOMElements() {
+                const elements = {};
+                const elementIds = [
+                    'game-board', 'controls-area', 'row-scores-display', 'col-scores-display', 'total-score', 
+                    'high-score', 'rows-total-score', 'cols-total-score', 'cross-total-score', 'bonus-grid-score', 
+                    'empty-block-penalty', 'rules-btn', 'rules-modal', 'close-rules-btn', 
+                    'game-over-modal', 'game-over-reason', 'close-game-over-btn', 'final-score-modal', 
+                    'high-score-modal', 'play-again-btn', 'score-breakdown', 'final-rows-score', 
+                    'final-cols-score', 'final-cross-score', 'final-bonus-score', 'final-penalty-score', 
+                    'exchange-modal', 'exchange-options', 'progress-bar-fill',
+                    'new-game-btn', 'game-board-container', 'scoring-panel',
+                    'effects-container'
+                ];
+                elementIds.forEach(id => { elements[id] = document.getElementById(id); });
+                return elements;
+            }
+
+            init() {
+                this.gameStateManager = new GameState();
+                this.gridData = Array(this.GRID_SIZE).fill(null).map(() => Array(this.GRID_SIZE).fill(null));
+                this.currentRoll = []; this.firstPlacementCell = null; this.turnCount = 0; this.stuckBlocks = new Set();
+                this.highScore = parseInt(localStorage.getItem('fruitFlushHighScore')) || 0;
+                this.hasSuperpowerBeenUsed = false; this.activeSuperpower = null; this.lastGameState = null; this.cellToExchange = null; this.currentTotalScore = 0;
+                this.cursedBlockTurn = Math.floor(Math.random() * 8) + 5;
+                this.wildcardTurn = Math.floor(Math.random() * 8) + 15;
+                if (this.wildcardTurn === this.cursedBlockTurn) this.wildcardTurn++;
+
+                this.audioInit();
+                this.DOMElements['high-score'].textContent = this.highScore;
+                ['game-over-modal', 'exchange-modal', 'rules-modal'].forEach(id => this.DOMElements[id].classList.remove('is-open'));
+                this.DOMElements['empty-block-penalty'].textContent = '0';
+                this.renderGrid(); this.renderScorePlaceholders(); this.renderControls(); this.updateAllScores();
+                this.updateProgressBar();
+                this.syncPanelHeights();
+            }
+
+            // Audio System
+            audioInit() { this.audioCreateContext(); this.audioCreateSounds(); }
+            audioCreateContext() { try { this.audio.context = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+            audioCreateSounds() { if (!this.audio.context) return; const s = { 'pop': [1200,.1,.05], 'roll': [220,.2,.2], 'hover': [660,.05,.1], 'invalid': [150,.3,.2], 'power-activate': [880,.15,.2], 'power-use': [1047,.2,.3], 'combo-3': [[523,659],.15], 'combo-4': [[523,659,784],.2], 'combo-5': [[523,659,784,880],.25], 'chime': [1047, .15, .2], 'thud': [100, .3, .1] }; for (const k in s) { if (Array.isArray(s[k][0])) this.audio.sounds.set(k, ()=>this.audioPlaySequence(...s[k])); else this.audio.sounds.set(k, ()=>this.audioPlayTone(...s[k])); } }
+            audioPlayTone(freq, vol, dur) { if (!this.audio.unlocked || !this.audio.context) return; try { const o = this.audio.context.createOscillator(), g = this.audio.context.createGain(); o.connect(g); g.connect(this.audio.context.destination); o.frequency.setValueAtTime(freq, this.audio.context.currentTime); g.gain.setValueAtTime(0, this.audio.context.currentTime); g.gain.linearRampToValueAtTime(vol*.1, this.audio.context.currentTime+.01); g.gain.exponentialRampToValueAtTime(.001, this.audio.context.currentTime+dur); o.start(); o.stop(this.audio.context.currentTime+dur); } catch (e) {} }
+            audioPlaySequence(freqs, dur) { freqs.forEach((f, i) => setTimeout(()=>this.audioPlayTone(f,.1,dur/freqs.length), i*(dur*1000/freqs.length))); }
+            audioUnlock() { if (this.audio.unlocked) return; document.getElementById('audio-unlocker').play().finally(() => { this.audio.unlocked = true; }); }
+            audioPlay(soundName) { this.audio.sounds.get(soundName)?.(); }
+            
+            triggerScoreBubbles(count) {
+                const effectsContainer = this.DOMElements['effects-container'];
+                if (!effectsContainer) return;
+                for(let i = 0; i < count; i++) {
+                    const bubble = document.createElement('span');
+                    bubble.className = 'bubble';
+                    const size = Math.random() * 25 + 10 + 'px';
+                    bubble.style.width = size;
+                    bubble.style.height = size;
+                    bubble.style.left = Math.random() * 100 + '%';
+                    const duration = Math.random() * 4 + 2;
+                    bubble.style.animationDuration = duration + 's';
+                    effectsContainer.appendChild(bubble);
+                    setTimeout(() => bubble.remove(), duration * 1000);
+                }
+            }
+            
+            calculateLineScore(line, type, lineIndex) {
+                let totalScore = 0;
+                const usedIndices = Array(this.GRID_SIZE).fill(false);
+                const wildSymbol = this.SPECIAL_SYMBOLS.WILD;
+
+                for (let len = this.GRID_SIZE; len >= this.MIN_SEQUENCE_LENGTH; len--) {
+                    for (let i = 0; i <= this.GRID_SIZE - len; i++) {
+                        const slice = line.slice(i, i + len);
+                        
+                        let alreadyUsed = false;
+                        for (let k = 0; k < len; k++) {
+                            if (slice[k] !== wildSymbol && usedIndices[i + k]) {
+                                alreadyUsed = true;
+                                break;
+                            }
+                        }
+                        if (alreadyUsed) {
+                            continue;
+                        }
+
+                        if (this.isValidSequence(slice)) {
+                            totalScore += this.SCORING_RULES[len];
+                            
+                            for (let k = 0; k < len; k++) {
+                                if (slice[k] !== wildSymbol) {
+                                    usedIndices[i + k] = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                if (totalScore === 0) {
+                    if (this.isLineDead(line, type, lineIndex)) {
+                        return { score: this.LINE_DEATH_PENALTY };
+                    }
+                }
+                
+                return { score: totalScore };
+            }
+            
+            isValidSequence(slice) {
+                if (!slice[0]) return false;
+                if (slice.every(s => s === this.SPECIAL_SYMBOLS.WILD)) return true;
+                const regularSymbols = slice.filter(s => s !== this.SPECIAL_SYMBOLS.WILD);
+                if (regularSymbols.length === 0) return true;
+                if (new Set(regularSymbols).size === 1) return true;
+                return false;
+            }
+            
+            isLineDead(line, type, lineIndex) {
+                for (let i = 0; i <= line.length - this.MIN_SEQUENCE_LENGTH; i++) {
+                    const window = line.slice(i, i + this.MIN_SEQUENCE_LENGTH);
+                    let winnable = true;
+                    if (window.includes(this.SPECIAL_SYMBOLS.CURSED)) { winnable = false; continue; }
+                    for (let j = 0; j < this.MIN_SEQUENCE_LENGTH; j++) {
+                        let r, c;
+                        if (type === 'row') { r = lineIndex; c = i + j; } else { r = i + j; c = lineIndex; }
+                        if (this.stuckBlocks.has(`${r},${c}`)) { winnable = false; break; }
+                    }
+                    if (!winnable) continue;
+                    const nonNullSymbols = window.filter(cell => cell !== null);
+                    if (nonNullSymbols.length > 0) {
+                        const regularSymbols = nonNullSymbols.filter(s => s !== this.SPECIAL_SYMBOLS.WILD);
+                        if (regularSymbols.length > 0 && new Set(regularSymbols).size <= 1) { winnable = true; } 
+                        else if (regularSymbols.length === 0) { winnable = true; } 
+                        else { winnable = false; }
+                    }
+                    if (winnable) return false;
+                }
+                return true;
+            }
+
+            calculateBonusGrids(gridData) {
+                let points = 0;
+                for (let size = this.GRID_SIZE; size >= 2; size--) {
+                    for (let r = 0; r <= this.GRID_SIZE - size; r++) {
+                        for (let c = 0; c <= this.GRID_SIZE - size; c++) {
+                            const firstSymbol = gridData[r][c];
+                            if (!firstSymbol || firstSymbol === this.SPECIAL_SYMBOLS.CURSED) continue;
+
+                            let targetSymbol = firstSymbol;
+                            if (targetSymbol === this.SPECIAL_SYMBOLS.WILD) {
+                                let foundSymbol = false;
+                                for (let i = r; i < r + size; i++) {
+                                    for (let j = c; j < c + size; j++) {
+                                        const current = gridData[i][j];
+                                        if (current && current !== this.SPECIAL_SYMBOLS.WILD && current !== this.SPECIAL_SYMBOLS.CURSED) {
+                                            targetSymbol = current;
+                                            foundSymbol = true;
+                                            break;
+                                        }
+                                    }
+                                    if (foundSymbol) break;
+                                }
+                            }
+
+                            let isGrid = true;
+                            for (let i = r; i < r + size; i++) {
+                                for (let j = c; j < c + size; j++) {
+                                    const currentSymbol = gridData[i][j];
+                                    if (!currentSymbol || currentSymbol === this.SPECIAL_SYMBOLS.CURSED) { isGrid = false; break; }
+                                    
+                                    if (targetSymbol === this.SPECIAL_SYMBOLS.WILD) {
+                                        if (currentSymbol !== this.SPECIAL_SYMBOLS.WILD) { isGrid = false; break; }
+                                    } else {
+                                        if (currentSymbol !== targetSymbol && currentSymbol !== this.SPECIAL_SYMBOLS.WILD) { isGrid = false; break; }
+                                    }
+                                }
+                                if (!isGrid) break;
+                            }
+
+                            if (isGrid) {
+                                points += size * size;
+                            }
+                        }
+                    }
+                }
+                return points;
+            }
+
+            createCellElement(r, c) { const cell = document.createElement('div'); cell.dataset.row = r; cell.dataset.col = c; cell.className = this.getCellClasses(r, c); return cell; }
+            getCellClasses(r, c) { let classes = 'grid-cell'; if (r === 3 || c === 3) classes += ' cross-cell'; if (this.stuckBlocks.has(`${r},${c}`)) classes += ' stuck-cell'; return classes; }
+            updateCell(cell, r, c) { const symbol = this.gridData[r][c]; cell.className = this.getCellClasses(r, c); if (symbol) { cell.textContent = symbol; if(this.SYMBOL_COLORS[symbol]) cell.classList.add(...this.SYMBOL_COLORS[symbol].split(' ')); cell.classList.add('pop-in'); } else if (this.stuckBlocks.has(`${r},${c}`)) { cell.textContent = '💣'; } else { cell.textContent = ''; } }
+            addCellEventListeners(cell) { cell.addEventListener('click', this.handleCellClick.bind(this)); cell.addEventListener('mouseenter', () => { if (this.gameStateManager.is('AWAITING_PLACEMENT') || this.activeSuperpower) this.audioPlay('hover'); }); }
+
+            syncPanelHeights() { setTimeout(() => { if (window.innerWidth < 1024) { this.DOMElements['scoring-panel'].style.height = 'auto'; return; } const boardHeight = this.DOMElements['game-board-container']?.getBoundingClientRect().height; if (boardHeight && this.DOMElements['scoring-panel']) { this.DOMElements['scoring-panel'].style.height = `${boardHeight}px`; } }, 50); }
+            updateProgressBar() { if (!this.DOMElements['progress-bar-fill']) return; const percentage = (this.turnCount / this.MAX_TURNS) * 100; this.DOMElements['progress-bar-fill'].style.width = `${percentage}%`; }
+
+            renderGrid() {
+                const fragment = document.createDocumentFragment(); this.DOMElements['game-board'].innerHTML = ''; this.gridCells = [];
+                for (let r = 0; r < this.GRID_SIZE; r++) {
+                    const row = [];
+                    for (let c = 0; c < this.GRID_SIZE; c++) {
+                        const cell = this.createCellElement(r, c); this.updateCell(cell, r, c); this.addCellEventListeners(cell);
+                        fragment.appendChild(cell); row.push(cell);
+                    }
+                    this.gridCells.push(row);
+                }
+                this.DOMElements['game-board'].appendChild(fragment);
+            }
+
+            updateFullGrid() { for (let r = 0; r < this.GRID_SIZE; r++) for (let c = 0; c < this.GRID_SIZE; c++) this.updateGridCell(r, c); }
+            updateGridCell(r, c) { if (this.gridCells[r]?.[c]) this.updateCell(this.gridCells[r][c], r, c); }
+
+            renderScorePlaceholders() {
+                this.DOMElements['row-scores-display'].innerHTML = ''; this.DOMElements['col-scores-display'].innerHTML = '';
+                for (let i = 0; i < this.GRID_SIZE; i++) {
+                    const rowScore = document.createElement('div'); rowScore.id = `row-score-${i}`; rowScore.className = 'grid-cell score-display-cell text-lg lg:text-2xl'; rowScore.textContent = '0'; this.DOMElements['row-scores-display'].appendChild(rowScore);
+                    const colScore = document.createElement('div'); colScore.id = `col-score-${i}`; colScore.className = 'grid-cell score-display-cell text-lg lg:text-2xl'; colScore.textContent = '0'; this.DOMElements['col-scores-display'].appendChild(colScore);
+                }
+            }
+
+            renderControls() {
+                this.DOMElements['controls-area'].innerHTML = '';
+                if (this.gameStateManager.is('PRE_GAME')) { this.renderPreGameControls(); } 
+                else { this.renderGameControls(); this.setupSuperpowerEventListeners(); this.updateSuperpowerButtonsUI(); }
+                this.syncPanelHeights();
+            }
+
+            renderPreGameControls() {
+                const container = document.createElement('div'); container.className = 'w-full flex flex-col items-center';
+                container.innerHTML = `<h2 class="text-base lg:text-lg font-semibold text-center mb-4 uppercase tracking-wider" style="color: var(--accent);">CHOOSE YOUR ALLOHA</h2>`;
+                const selector = document.createElement('div'); selector.className = 'grid grid-cols-3 gap-2 lg:gap-4';
+                this.SYMBOLS.forEach((symbol) => {
+                    const btn = document.createElement('button');
+                    btn.className = `symbol-selector-btn aspect-square rounded-xl text-4xl lg:text-5xl hover:bg-red-100/50 ${this.SYMBOL_COLORS[symbol] || ''} flex items-center justify-center`;
+                    btn.textContent = symbol;
+                    btn.onclick = () => this.handleSymbolSelect(symbol);
+                    btn.onmouseenter = () => this.audioPlay('hover');
+                    selector.appendChild(btn);
+                });
+                container.appendChild(selector);
+                this.DOMElements['controls-area'].appendChild(container);
+            }
+
+            renderGameControls() {
+                const wrapper = document.createElement('div'); wrapper.className = 'w-full flex flex-col justify-center gap-3 lg:gap-4';
+                wrapper.innerHTML = `<div class="flex justify-center items-center gap-2 lg:gap-4"><button id="roll-dice-btn" class="w-14 h-14 lg:w-16 lg:h-16 text-4xl lg:text-5xl flex items-center justify-center transition-transform hover:scale-110 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" style="color: var(--accent);">🎲</button><div id="dice-1" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card shadow-lg flex items-center justify-center text-3xl lg:text-4xl">?</div><div id="dice-2" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card shadow-lg flex items-center justify-center text-3xl lg:text-4xl">?</div></div><div id="alloha-power-panel" class="glass-card rounded-xl px-3 py-4 text-center"><h2 class="text-sm font-semibold uppercase tracking-wider mb-3 flex items-center justify-center gap-2" style="color: var(--text-secondary);"><span style="font-size: 16px;">🪄</span>Special Powers</h2><div class="grid grid-cols-3 gap-2 text-xs"><button id="past-lives-btn" class="superpower-btn"><div>Past</div><div>Lives</div></button><button id="bomb-bae-btn" class="superpower-btn"><div>Bomb</div><div>Bae</div></button><button id="no-return-btn" class="superpower-btn"><div>No</div><div>Return</div></button></div></div>`;
+                wrapper.querySelector('#roll-dice-btn').onclick = this.handleRollDice.bind(this);
+                this.DOMElements['controls-area'].appendChild(wrapper);
+                this.updateControlsState();
+            }
+
+            updateControlsState() {
+                if (this.gameStateManager.is('PRE_GAME')) return;
+                const rollBtn = document.getElementById('roll-dice-btn');
+                if (rollBtn) rollBtn.disabled = !this.gameStateManager.is('AWAITING_ROLL');
+                const dice1 = document.getElementById('dice-1'), dice2 = document.getElementById('dice-2');
+                if (!dice1 || !dice2) return;
+                if (this.gameStateManager.is('AWAITING_PLACEMENT') && this.currentRoll.length === 2) {
+                    dice1.textContent = this.currentRoll[0]; dice1.className = `w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card-prominent shadow-lg flex items-center justify-center text-3xl lg:text-4xl ${this.SYMBOL_COLORS[this.currentRoll[0]] || ''}`;
+                    dice2.textContent = this.currentRoll[1]; dice2.className = `w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card-prominent shadow-lg flex items-center justify-center text-3xl lg:text-4xl ${this.SYMBOL_COLORS[this.currentRoll[1]] || ''}`;
+                } else {
+                    dice1.textContent = '?'; dice1.className = 'w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card shadow-lg flex items-center justify-center text-3xl lg:text-4xl';
+                    dice2.textContent = '?'; dice2.className = 'w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card shadow-lg flex items-center justify-center text-3xl lg:text-4xl';
+                }
+            }
+
+            handleSymbolSelect(symbol) { if (!this.gameStateManager.is('PRE_GAME')) return; this.audioUnlock(); this.audioPlay('pop'); this.gridData[0][0] = symbol; this.gameStateManager.setState('AWAITING_ROLL'); this.updateGridCell(0, 0); this.renderControls(); }
+
+            handleRollDice() {
+                if (!this.gameStateManager.is('AWAITING_ROLL') || this.gameStateManager.is('GAME_OVER')) return;
+                const nextTurn = this.turnCount + 1; let tempRoll;
+                if (nextTurn === this.cursedBlockTurn) { this.audioPlay('thud'); tempRoll = [this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)], this.SPECIAL_SYMBOLS.CURSED]; } 
+                else if (nextTurn === this.wildcardTurn) { this.audioPlay('chime'); tempRoll = [this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)], this.SPECIAL_SYMBOLS.WILD]; } 
+                else { this.audioPlay('roll'); tempRoll = [this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)], this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)]]; }
+                this.currentRoll = tempRoll.sort(() => Math.random() - 0.5);
+                this.gameStateManager.setState('ANIMATING_ROLL'); this.updateControlsState();
+                const d1 = document.getElementById('dice-1'), d2 = document.getElementById('dice-2');
+                d1.classList.add('dice-tumble'); d2.classList.add('dice-tumble');
+                setTimeout(() => {
+                    d1.classList.remove('dice-tumble'); d2.classList.remove('dice-tumble');
+                    this.saveStateForUndo(); this.gameStateManager.setState('AWAITING_PLACEMENT'); this.updateControlsState();
+                }, 600);
+            }
+
+            handleCellClick(e) {
+                const cell = e.target.closest('[data-row]'); if (!cell) return;
+                const r = parseInt(cell.dataset.row), c = parseInt(cell.dataset.col);
+                if (this.activeSuperpower) { this.handleSuperpowerCellClick(r, c, cell); return; }
+                if (!this.gameStateManager.is('AWAITING_PLACEMENT')) return;
+                if (this.firstPlacementCell) { this.handleSecondPlacement(r, c, cell); } else { this.handleFirstPlacement(r, c); }
+            }
+
+            handleFirstPlacement(r, c) { if (!this.gridData[r][c]) { this.gridData[r][c] = this.currentRoll[0]; this.firstPlacementCell = { r, c }; this.updateGridCell(r, c); this.updateSuperpowerButtonsUI(); } }
+            handleSecondPlacement(r, c, cell) {
+                const { r: pR, c: pC } = this.firstPlacementCell;
+                if (pR === r && pC === c) { this.gridData[r][c] = null; this.firstPlacementCell = null; this.updateGridCell(r, c); this.updateSuperpowerButtonsUI(); return; }
+                if ((Math.abs(pR - r) + Math.abs(pC - c) === 1) && !this.gridData[r][c]) { this.completeMove(r, c); } 
+                else { cell.classList.add('shake-animation'); setTimeout(() => cell.classList.remove('shake-animation'), 400); this.audioPlay('invalid'); }
+            }
+
+            saveStateForUndo() { this.lastGameState = { gridData: JSON.parse(JSON.stringify(this.gridData)), turnCount: this.turnCount, stuckBlocks: new Set(this.stuckBlocks), currentRoll: [...this.currentRoll] }; }
+            completeMove(r, c) { this.gameStateManager.setState('PROCESSING_TURN'); this.gridData[r][c] = this.currentRoll[1]; this.firstPlacementCell = null; this.turnCount++; this.updateGridCell(r, c); this.audioPlay('pop'); setTimeout(this.processTurnEnd.bind(this), 300); }
+            
+            processTurnEnd() {
+                if (this.gameStateManager.is('GAME_OVER')) return;
+                this.detectStuckBlocks(); this.updateAllScores(); this.updateProgressBar();
+                if (this.turnCount >= this.MAX_TURNS) { this.endGame("Grid is full!"); return; }
+                if (!this.hasValidMoves()) { this.endGame("No valid moves!"); return; }
+                this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls();
+            }
+
+            endGame(reason = "") {
+                if (this.gameStateManager.is('GAME_OVER')) return;
+                this.gameStateManager.setState('GAME_OVER'); this.updateAllScores();
+                const finalScore = this.calculateTotalScore();
+                if (finalScore > this.highScore) { this.highScore = finalScore; localStorage.setItem('fruitFlushHighScore', this.highScore); }
+                this.DOMElements['game-over-reason'].textContent = reason;
+                this.DOMElements['final-score-modal'].textContent = finalScore;
+                this.DOMElements['high-score-modal'].textContent = this.highScore;
+                this.DOMElements['final-rows-score'].textContent = this.DOMElements['rows-total-score'].textContent;
+                this.DOMElements['final-cols-score'].textContent = this.DOMElements['cols-total-score'].textContent;
+                this.DOMElements['final-cross-score'].textContent = this.DOMElements['cross-total-score'].textContent;
+                this.DOMElements['final-bonus-score'].textContent = this.DOMElements['bonus-grid-score'].textContent;
+                this.DOMElements['final-penalty-score'].textContent = this.DOMElements['empty-block-penalty'].textContent;
+                setTimeout(() => this.DOMElements['game-over-modal'].classList.add('is-open'), 500);
+            }
+
+            hasValidMoves() { for (let r = 0; r < this.GRID_SIZE; r++) for (let c = 0; c < this.GRID_SIZE; c++) if (!this.gridData[r][c]) { const n = [[-1, 0], [1, 0], [0, -1], [0, 1]]; for (const [dr, dc] of n) { const nr = r + dr, nc = c + dc; if (nr >= 0 && nr < this.GRID_SIZE && nc >= 0 && nc < this.GRID_SIZE && !this.gridData[nr][nc]) return true; } } return false; }
+            detectStuckBlocks() { this.stuckBlocks.clear(); for (let r = 0; r < this.GRID_SIZE; r++) for (let c = 0; c < this.GRID_SIZE; c++) if (!this.gridData[r][c]) { const n = [[-1, 0], [1, 0], [0, -1], [0, 1]]; if (n.every(([dr, dc]) => { const nr = r + dr, nc = c + dc; return nr < 0 || nr >= this.GRID_SIZE || nc < 0 || nc >= this.GRID_SIZE || this.gridData[nr][nc] })) this.stuckBlocks.add(`${r},${c}`); } this.updateFullGrid(); this.DOMElements['empty-block-penalty'].textContent = -this.stuckBlocks.size; }
+            
+            updateAllScores() {
+                const oldScore = this.currentTotalScore;
+                const rS = this.calculateRowScores(), cS = this.calculateColumnScores(), crS = this.calculateCrossScore(), bS = this.calculateBonusGrids(this.gridData);
+                const newScore = rS.total + cS.total + crS + bS - this.stuckBlocks.size;
+                const scoreDiff = newScore - oldScore;
+                if (scoreDiff > 0) { this.triggerScoreBubbles(Math.min(10, Math.ceil(scoreDiff / 2))); }
+                this.currentTotalScore = newScore;
+                this.updateScoreDisplays(rS.total, cS.total, crS, bS, this.stuckBlocks.size);
+                this.updateIndividualScores(rS.individual, cS.individual);
+            }
+            calculateTotalScore() { return this.currentTotalScore; }
+            calculateRowScores() { let t = 0, ind = []; for (let i = 0; i < this.GRID_SIZE; i++) { const { score: s } = this.calculateLineScore(this.gridData[i], 'row', i); ind.push(s); t += s; } return { total: t, individual: ind }; }
+            calculateColumnScores() { let t = 0, ind = []; for (let i = 0; i < this.GRID_SIZE; i++) { const col = this.gridData.map(row => row[i]); const { score: s } = this.calculateLineScore(col, 'col', i); ind.push(s); t += s; } return { total: t, individual: ind }; }
+            
+            calculateCrossScore() {
+                let bonusScore = 0;
+                const crossRow = this.gridData[3];
+                const crossCol = this.gridData.map(row => row[3]);
+                const rowResult = this.calculateLineScore(crossRow, 'row', 3);
+                const colResult = this.calculateLineScore(crossCol, 'col', 3);
+                if (rowResult.score > 0) { bonusScore += rowResult.score; } 
+                else if (rowResult.score === this.LINE_DEATH_PENALTY) { bonusScore += this.CROSS_DEATH_PENALTY - this.LINE_DEATH_PENALTY; }
+                if (colResult.score > 0) { bonusScore += colResult.score; } 
+                else if (colResult.score === this.LINE_DEATH_PENALTY) { bonusScore += this.CROSS_DEATH_PENALTY - this.LINE_DEATH_PENALTY; }
+                return bonusScore;
+            }
+
+            updateScoreDisplays(r, c, cross, b, s) { const t = r + c + cross + b - s; this.animateScoreUpdate(this.DOMElements['total-score'], t); this.animateScoreUpdate(this.DOMElements['rows-total-score'], r); this.animateScoreUpdate(this.DOMElements['cols-total-score'], c); this.animateScoreUpdate(this.DOMElements['cross-total-score'], cross); this.animateScoreUpdate(this.DOMElements['bonus-grid-score'], b); }
+            
+            animateScoreUpdate(el, val) {
+                const startVal = parseInt(el.textContent) || 0;
+                if (startVal === val) return;
+
+                el.classList.add('score-update');
+                const duration = 500;
+                const stepTime = 20;
+                const totalSteps = duration / stepTime;
+                const increment = (val - startVal) / totalSteps;
+                let currentVal = startVal;
+                let step = 0;
+
+                const timer = setInterval(() => {
+                    step++;
+                    if (step >= totalSteps) {
+                        clearInterval(timer);
+                        el.textContent = val;
+                        setTimeout(() => el.classList.remove('score-update'), 100);
+                        return;
+                    }
+                    currentVal += increment;
+                    el.textContent = Math.round(currentVal);
+                }, stepTime);
+            }
+
+            updateIndividualScores(rS, cS) { rS.forEach((s, i) => this.updateScoreElement(`row-score-${i}`, s)); cS.forEach((s, i) => this.updateScoreElement(`col-score-${i}`, s)); }
+            updateScoreElement(id, score) { const el = document.getElementById(id); if (el && parseInt(el.textContent) !== score) { el.textContent = score; el.classList.toggle('text-red-500', score < 0); if (score !== 0) { el.classList.add('score-flash'); setTimeout(() => el.classList.remove('score-flash'), 600); } } }
+
+            updateSuperpowerButtonsUI() {
+                const isUsed = this.hasSuperpowerBeenUsed; const isMidMove = this.firstPlacementCell !== null; const isPowerActive = this.activeSuperpower !== null;
+                const pastLivesBtn = document.getElementById('past-lives-btn'); const bombBaeBtn = document.getElementById('bomb-bae-btn'); const noReturnBtn = document.getElementById('no-return-btn');
+                if (pastLivesBtn) pastLivesBtn.disabled = isUsed || !this.lastGameState || isMidMove || isPowerActive;
+                if (bombBaeBtn) bombBaeBtn.disabled = isUsed || this.stuckBlocks.size === 0 || isMidMove || isPowerActive;
+                if (noReturnBtn) noReturnBtn.disabled = isUsed || isMidMove || isPowerActive;
+                [pastLivesBtn, bombBaeBtn, noReturnBtn].forEach(btn => btn?.classList.remove('superpower-btn--active'));
+                if (this.activeSuperpower) { const id = { 'bombBae': 'bomb-bae-btn', 'noReturn': 'no-return-btn' }[this.activeSuperpower]; const activeBtn = document.getElementById(id); if (activeBtn) activeBtn.classList.add('superpower-btn--active'); }
+                document.body.classList.toggle('cursor-target', this.activeSuperpower === 'bombBae');
+            }
+
+            handleSuperpowerCellClick(r, c, cell) {
+                if (this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) { this.audioPlay('invalid'); cell.classList.add('shake-animation'); setTimeout(() => cell.classList.remove('shake-animation'), 400); return; }
+                if (this.activeSuperpower === 'bombBae' && this.stuckBlocks.has(`${r},${c}`)) { this.stuckBlocks.delete(`${r},${c}`); this.gridData[r][c] = this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)]; this.consumeSuperpower(); this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls(); } 
+                else if (this.activeSuperpower === 'noReturn' && this.gridData[r][c]) { this.showSymbolSelectorForExchange(r, c); } 
+                else { this.audioPlay('invalid'); }
+            }
+            
+            showSymbolSelectorForExchange(r, c) {
+                 this.cellToExchange = {r, c}; this.DOMElements['exchange-options'].innerHTML = '';
+                 this.SYMBOLS.filter(s => s !== this.gridData[r][c]).forEach(symbol => {
+                    const btn = document.createElement('button');
+                    btn.className = `symbol-selector-btn w-20 h-20 text-4xl rounded-lg hover:bg-red-100/50 ${this.SYMBOL_COLORS[symbol] || ''} flex items-center justify-center`;
+                    btn.textContent = symbol;
+                    btn.onclick = () => this.handleSymbolExchange(symbol); this.DOMElements['exchange-options'].appendChild(btn);
+                 });
+                 this.DOMElements['exchange-modal'].classList.add('is-open');
+            }
+            
+            handleSymbolExchange(newSymbol) {
+                if (!this.cellToExchange) return;
+                const {r, c} = this.cellToExchange; this.gridData[r][c] = newSymbol;
+                this.DOMElements['exchange-modal'].classList.remove('is-open'); this.cellToExchange = null;
+                this.consumeSuperpower(); this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls();
+            }
+
+            consumeSuperpower() { this.audioPlay('power-use'); this.hasSuperpowerBeenUsed = true; this.activeSuperpower = null; this.updateFullGrid(); this.updateAllScores(); this.updateSuperpowerButtonsUI(); }
+
+            setupSuperpowerEventListeners() {
+                const pastLivesBtn = document.getElementById('past-lives-btn');
+                if (pastLivesBtn) {
+                    pastLivesBtn.addEventListener('click', () => {
+                        if (pastLivesBtn.disabled) return;
+                        this.audioPlay('power-activate');
+                        this.gridData = this.lastGameState.gridData; this.turnCount = this.lastGameState.turnCount; this.stuckBlocks = this.lastGameState.stuckBlocks; this.currentRoll = this.lastGameState.currentRoll; this.lastGameState = null; 
+                        this.hasSuperpowerBeenUsed = true; this.activeSuperpower = null; this.audioPlay('power-use');
+                        this.updateFullGrid(); this.updateAllScores();
+                        this.updateProgressBar(); this.gameStateManager.setState('AWAITING_PLACEMENT'); this.updateControlsState();
+                    });
+                }
+                const bombBaeBtn = document.getElementById('bomb-bae-btn');
+                if (bombBaeBtn) {
+                    bombBaeBtn.addEventListener('click', () => { if (bombBaeBtn.disabled) return; this.activeSuperpower = 'bombBae'; this.gameStateManager.setState('SUPERPOWER_ACTIVE'); this.audioPlay('power-activate'); this.updateSuperpowerButtonsUI(); });
+                }
+                const noReturnBtn = document.getElementById('no-return-btn');
+                if (noReturnBtn) {
+                    noReturnBtn.addEventListener('click', () => { if (noReturnBtn.disabled) return; this.activeSuperpower = 'noReturn'; this.gameStateManager.setState('SUPERPOWER_ACTIVE'); this.audioPlay('power-activate'); this.updateSuperpowerButtonsUI(); });
+                }
+            }
+
+            setupEventListeners() {
+                this.DOMElements['new-game-btn'].addEventListener('click', this.init.bind(this));
+                this.DOMElements['rules-btn'].addEventListener('click', () => this.DOMElements['rules-modal'].classList.add('is-open'));
+                this.DOMElements['close-rules-btn'].addEventListener('click', () => this.DOMElements['rules-modal'].classList.remove('is-open'));
+                this.DOMElements['close-game-over-btn'].addEventListener('click', () => this.DOMElements['game-over-modal'].classList.remove('is-open'));
+                this.DOMElements['play-again-btn'].addEventListener('click', () => { this.DOMElements['game-over-modal'].classList.remove('is-open'); setTimeout(this.init.bind(this), 200); });
+                window.addEventListener('resize', this.syncPanelHeights.bind(this));
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        if (this.activeSuperpower) { this.activeSuperpower = null; this.updateSuperpowerButtonsUI(); this.gameStateManager.setState(this.firstPlacementCell ? 'AWAITING_PLACEMENT' : 'AWAITING_ROLL'); } 
+                        else { ['rules-modal', 'game-over-modal', 'exchange-modal'].forEach(id => this.DOMElements[id].classList.remove('is-open')); }
+                    }
+                    if ((e.key === ' ' || e.key === 'Enter') && this.gameStateManager.is('AWAITING_ROLL')) { e.preventDefault(); this.handleRollDice(); }
+                });
+            };
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new Game();
+        });
+    </script>
+</body>
+</html>
