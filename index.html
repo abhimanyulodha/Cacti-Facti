@@ -11,53 +11,40 @@
     <style>
         :root {
             /* Cacti Facti Theme Colors */
-            --bg: linear-gradient(135deg, #FDFCFB 0%, #E2D1C3 100%); /* Sandy Beige */
+            --bg: linear-gradient(135deg, #FDFCFB 0%, #E2D1C3 100%);
             --card: rgba(255, 255, 255, 0.85);
-            --text: #5D4037; /* Dark Brown */
-            --text-secondary: #8D6E63; /* Lighter Brown */
-            --accent: #E57373; /* Terracotta Red */
+            --text: #5D4037;
+            --text-secondary: #8D6E63;
+            --accent: #E57373;
             --accent-light: rgba(229, 115, 115, 0.1);
             --accent-gradient: linear-gradient(135deg, #E57373 0%, #FF8A65 100%);
-            --cross-highlight: linear-gradient(135deg, #A5D6A7 0%, #81C784 100%); /* Cactus Green */
-            --stuck-block: linear-gradient(135deg, #757575 0%, #616161 100%); /* Rocky Gray */
-            
-            /* Enhanced glass effects */
+            --cross-highlight: linear-gradient(135deg, #A5D6A7 0%, #81C784 100%);
+            --stuck-block: linear-gradient(135deg, #757575 0%, #616161 100%);
             --glass-primary: rgba(255, 255, 255, 0.3);
             --glass-secondary: rgba(255, 255, 255, 0.18);
             --glass-border: rgba(255, 255, 255, 0.2);
-            
-            /* Progressive shadow system */
             --shadow-minimal: 0 2px 8px rgba(0, 0, 0, 0.04);
             --shadow-soft: 0 6px 20px rgba(0, 0, 0, 0.06);
             --shadow-medium: 0 12px 40px rgba(0, 0, 0, 0.08);
             --shadow-strong: 0 20px 60px rgba(0, 0, 0, 0.10);
             --shadow-dramatic: 0 30px 80px rgba(0, 0, 0, 0.12);
-            
-            /* Animation curves */
             --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
             --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
             --ease-quick: cubic-bezier(0.25, 0.8, 0.25, 1);
-            
-            /* New shimmer effects */
             --shimmer-gradient: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.03) 50%, transparent 100%);
             --progress-shimmer: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
         }
-        
-        /* Accessibility: Reduced motion support */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
                 animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
             }
-            
             .themed-button::before,
             .progress-bar-fill::after {
                 display: none;
             }
         }
-        
-        /* Accessibility: High contrast mode */
         @media (prefers-contrast: high) {
             :root {
                 --shadow-soft: 0 6px 20px rgba(0, 0, 0, 0.25);
@@ -66,7 +53,6 @@
                 --glass-secondary: rgba(255, 255, 255, 0.3);
             }
         }
-        
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg);
@@ -74,26 +60,20 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-
-        /* Loading states */
         .skeleton-shimmer {
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
         }
-
         @keyframes shimmer {
             0% { background-position: -200% 0; }
             100% { background-position: 200% 0; }
         }
-        
         .rounded-card {
             border-radius: 16px;
             background: var(--card);
             box-shadow: var(--shadow-soft);
         }
-        
-        /* Enhanced button micro-interactions */
         .themed-button {
             font-weight: 600;
             border-radius: 16px;
@@ -106,7 +86,6 @@
             overflow: hidden;
             transform-origin: center;
         }
-        
         .themed-button::before {
             content: '';
             position: absolute;
@@ -118,38 +97,30 @@
             transition: left 0.6s var(--ease-smooth);
             z-index: 1;
         }
-        
         .themed-button:hover::before {
             left: 100%;
         }
-        
         .themed-button:active {
             transform: scale(0.98);
             transition-duration: 0.1s;
         }
-        
         .themed-button:hover {
             transform: translateY(-2px) scale(1.02);
             box-shadow: var(--shadow-medium);
         }
-        
-        /* Shimmer effect for special buttons */
         .themed-button.shimmer-active::before {
             animation: shimmer-sweep 2s infinite;
         }
-
         @keyframes shimmer-sweep {
             0% { left: -100%; }
             50% { left: 100%; }
             100% { left: 100%; }
         }
-        
-        /* Enhanced glassmorphism */
         .glass-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.3) 100%);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
-            box-shadow: var(--shadow-soft), 
+            box-shadow: var(--shadow-soft),
                         0 0 0 1px var(--glass-border),
                         inset 0 1px 0 rgba(255, 255, 255, 0.3);
             border: none !important;
@@ -157,8 +128,6 @@
             position: relative;
             overflow: hidden;
         }
-        
-        /* Score card hover effects */
         .glass-card::before {
             content: '';
             position: absolute;
@@ -172,35 +141,29 @@
             pointer-events: none;
             z-index: 0;
         }
-        
         .glass-card:hover::before {
             opacity: 1;
         }
-        
         .glass-card:hover {
             transform: translateY(-1px);
-            box-shadow: var(--shadow-medium), 
+            box-shadow: var(--shadow-medium),
                         0 0 0 1px rgba(255, 255, 255, 0.25),
                         inset 0 1px 0 rgba(255, 255, 255, 0.4);
         }
-        
-        /* Ensure content stays above the shine effect */
         .glass-card > * {
             position: relative;
             z-index: 1;
         }
-        
         .glass-card-prominent {
             background: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.4) 100%);
             backdrop-filter: blur(25px) saturate(200%);
             -webkit-backdrop-filter: blur(25px) saturate(200%);
-            box-shadow: var(--shadow-medium), 
+            box-shadow: var(--shadow-medium),
                         0 0 0 1px rgba(255, 255, 255, 0.25),
                         inset 0 1px 0 rgba(255, 255, 255, 0.4),
                         0 0 40px rgba(229, 115, 115, 0.1);
             border: none !important;
         }
-        
         .grid-cell {
             aspect-ratio: 1;
             border-radius: 8px;
@@ -213,8 +176,9 @@
             border: 1px solid rgba(0, 0, 0, 0.02);
             position: relative;
             overflow: hidden;
+            min-width: 48px;
+            min-height: 48px;
         }
-        
         .grid-cell::before {
             content: '';
             position: absolute;
@@ -226,17 +190,14 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        
         .grid-cell:hover::before {
             opacity: 1;
         }
-        
         .grid-cell:hover {
             background: #F0EAE4;
             transform: translateY(-2px);
             box-shadow: var(--shadow-soft);
         }
-        
         .themed-modal {
             border-radius: 20px;
             background: var(--card);
@@ -244,22 +205,18 @@
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
         }
-        
-        /* Enhanced progress bar */
         .progress-bar-container {
             position: relative;
             overflow: hidden;
             background: rgba(229, 115, 115, 0.15);
             border-radius: 9999px;
         }
-
         .progress-bar-fill {
             background: var(--accent-gradient);
             position: relative;
             overflow: hidden;
             transition: width 0.3s var(--ease-smooth);
         }
-
         .progress-bar-fill::after {
             content: '';
             position: absolute;
@@ -270,32 +227,26 @@
             background: var(--progress-shimmer);
             animation: progress-shimmer 2s infinite;
         }
-
         @keyframes progress-shimmer {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
         }
-        
         @keyframes pop-in {
             0% { opacity: 0; transform: scale(0.5) rotate(-180deg); }
             50% { opacity: 1; transform: scale(1.1) rotate(-90deg); }
             100% { opacity: 1; transform: scale(1) rotate(0deg); }
         }
-        
         .pop-in {
             animation: pop-in 0.4s var(--ease-bounce);
         }
-
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-5px) rotate(-3deg); }
             75% { transform: translateX(5px) rotate(3deg); }
         }
-
         .shake-animation {
             animation: shake 0.4s ease-in-out;
         }
-        
         @keyframes dice-tumble {
             0%   { transform: rotate(0deg) scale(1); filter: blur(0px); }
             25%  { transform: rotate(-90deg) scale(1.05); }
@@ -303,21 +254,17 @@
             75%  { transform: rotate(-270deg) scale(1.05); }
             100% { transform: rotate(-360deg) scale(1); filter: blur(0px); }
         }
-        
         .dice-tumble {
             animation: dice-tumble 0.6s var(--ease-bounce);
         }
-        
         @keyframes pulse {
             0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 115, 115, 0.4); }
             50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(229, 115, 115, 0); }
             100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(229, 115, 115, 0); }
         }
-        
         #roll-dice-btn:not(:disabled) {
             animation: pulse 2s infinite;
         }
-
         @keyframes pulse-select {
             0% { box-shadow: 0 0 0 0px rgba(229, 115, 115, 0.7); }
             100% { box-shadow: 0 0 0 10px rgba(229, 115, 115, 0); }
@@ -325,51 +272,43 @@
         .pulse-animation {
             animation: pulse-select 1s infinite;
         }
-        
         .cross-cell {
             background: var(--cross-highlight) !important;
         }
-        
         .stuck-cell {
             background: var(--stuck-block) !important;
             color: #FFFFFF;
             font-size: 2rem;
             font-weight: 600;
         }
-
         .cursor-target {
             cursor: crosshair !important;
         }
-        
         .modal {
             transition: all 0.3s var(--ease-smooth);
         }
-        
         .modal-content {
             transition: all 0.3s var(--ease-smooth);
         }
-        
         .modal.is-open {
             opacity: 1;
             visibility: visible;
         }
-        
         .modal.is-open .modal-content {
             transform: scale(1) translateY(0);
         }
-        
         .controls-area {
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        
         .symbol-selector-btn {
             position: relative;
             overflow: hidden;
             transition: all 0.2s var(--ease-smooth);
+            min-width: 60px;
+            min-height: 60px;
         }
-        
         .symbol-selector-btn::after {
             content: '';
             position: absolute;
@@ -382,50 +321,45 @@
             transform: translate(-50%, -50%);
             transition: width 0.3s ease, height 0.3s ease;
         }
-        
         .symbol-selector-btn:hover::after {
             width: 100%;
             height: 100%;
         }
-        
         @keyframes score-update {
             0% { transform: scale(1); }
             50% { transform: scale(1.1); color: #FF8A65; }
             100% { transform: scale(1); }
         }
-        
         .score-update {
             animation: score-update 0.5s var(--ease-quick);
         }
-
         .superpower-btn {
             background: transparent;
             border: none;
             box-shadow: none;
-            color: var(--text-secondary); 
+            color: var(--text-secondary);
             font-weight: 500;
             border-radius: 12px;
-            padding: 4px;
+            padding: 8px;
             transition: all 0.3s ease;
             cursor: pointer;
+            min-width: 70px;
         }
-
         .superpower-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             text-decoration: underline;
+            background: rgba(229, 115, 115, 0.1);
         }
-
         .superpower-btn--active {
             font-weight: 700;
             transform: translateY(-2px) !important;
+            background: rgba(229, 115, 115, 0.2);
         }
-
         .superpower-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             text-decoration: none;
         }
-
         .alloha-logo {
             width: 60px;
             height: 60px;
@@ -433,13 +367,12 @@
             align-items: center;
             justify-content: center;
         }
-
         .alloha-logo svg {
             width: 100%;
             height: 100%;
         }
         .alloha-logo svg path, .alloha-logo svg g {
-            fill: var(--accent) !important; 
+            fill: var(--accent) !important;
         }
         #close-rules-btn, #close-game-over-btn {
             color: var(--text-secondary);
@@ -452,11 +385,38 @@
             background: #FAF8F5 !important;
             color: var(--text-secondary);
         }
+        /* Improved highlighted class */
+        .highlighted {
+            background-color: rgba(76, 175, 80, 0.15);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.2);
+            animation: pulse-highlight 2s infinite;
+        }
+        @keyframes pulse-highlight {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); }
+            70% { box-shadow: 0 0 0 4px rgba(76, 175, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+        }
+        /* Responsive touch targets */
+        @media (max-width: 768px) {
+            .grid-cell {
+                min-width: 40px;
+                min-height: 40px;
+                font-size: clamp(1rem, 5vw, 2rem);
+            }
+            .superpower-btn {
+                padding: 6px;
+                min-width: 60px;
+            }
+            .symbol-selector-btn {
+                min-width: 50px;
+                min-height: 50px;
+            }
+        }
     </style>
 </head>
 <body class="p-2 lg:p-4">
     <audio id="audio-unlocker" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=" preload="auto"></audio>
-    
     <main id="game-container" class="w-full max-w-5xl mx-auto flex flex-col lg:flex-row gap-4 lg:gap-6 items-center lg:items-stretch pt-8 lg:pt-16">
         <div class="w-full lg:w-2/3 relative">
             <div id="effects-container" class="absolute inset-0 pointer-events-none z-10 overflow-hidden"></div>
@@ -465,7 +425,6 @@
                     <div id="game-board" class="col-span-7 grid grid-cols-7 gap-1 lg:gap-2"></div>
                     <div id="row-scores-display" class="col-span-1 grid grid-rows-7 gap-1 lg:gap-2"></div>
                     <div id="col-scores-display" class="col-span-7 grid grid-cols-7 mt-1 lg:mt-0 gap-1 lg:gap-2"></div>
-                    
                     <div class="hidden lg:flex items-center justify-center">
                         <div class="alloha-logo">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 396.75 396.749985" preserveAspectRatio="xMidYMid meet" version="1.0">
@@ -555,20 +514,16 @@
                 </div>
             </div>
         </div>
-        
         <div class="w-full lg:w-1/3">
             <div id="scoring-panel" class="flex-1 flex flex-col gap-4 p-4 lg:p-6 glass-card rounded-2xl justify-between">
                 <div class="flex justify-center items-center gap-3">
                     <button id="rules-btn" class="flex-1 py-2 px-4 themed-button text-sm font-semibold" style="color: var(--accent); background: var(--accent-light);">How to Play</button>
                     <button id="new-game-btn" class="flex-1 py-2 px-4 themed-button text-white font-semibold rounded-xl text-sm" style="background: var(--accent-gradient);">New Game</button>
                 </div>
-
                 <div class="relative w-full h-2.5 progress-bar-container">
                     <div id="progress-bar-fill" class="h-full rounded-full progress-bar-fill transition-all duration-300" style="width: 0%;"></div>
                 </div>
-                
                 <div id="controls-area" class="controls-area"></div>
-                
                 <div class="grid grid-cols-2 gap-3 text-center">
                     <div class="glass-card rounded-xl px-3 py-2">
                         <h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Total Score</h3>
@@ -579,7 +534,6 @@
                         <p id="high-score" class="text-2xl font-bold" style="color: #FFC107;">0</p>
                     </div>
                 </div>
-
                 <div id="score-breakdown-card" class="glass-card rounded-xl p-3 text-center">
                     <div class="grid grid-cols-2 gap-2">
                         <div><h3 class="text-xs font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">Rows</h3><p id="rows-total-score" class="text-lg font-bold">0</p></div>
@@ -594,11 +548,10 @@
             </div>
         </div>
     </main>
-    
     <div id="rules-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
         <div class="modal-content w-full max-w-lg themed-modal p-6 transform scale-95 -translate-y-4">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-3xl font-bold" style="font-family: 'Pacifico', cursive; color: var(--accent);">How to Play Alloha - Cacti Facti</h2>
+                <h2 class="text-3xl font-bold" style="font-family: 'Pacifico', cursive; color: var(--accent);">How to Play Alloha - Cacti Facti - Box Vox Edition</h2>
                 <button id="close-rules-btn" class="w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
             </div>
             <div class="space-y-4 text-sm max-h-[70vh] overflow-y-auto pr-2" style="color: var(--text-secondary)">
@@ -616,13 +569,12 @@
                  </ul>
                  <h3 class="font-bold text-lg" style="color: var(--accent);">Scoring</h3>
                  <ul class="list-disc list-inside space-y-1"><li><b>3 in a line:</b> 3 points</li><li><b>4 in a line:</b> 8 points</li><li><b>5 in a line:</b> 10 points</li><li><b>6 in a line:</b> 14 points</li><li><b>7 in a line:</b> 20 points</li>
-                 <li><b>Twinning Bonus:</b> Scores on the special highlighted pattern are doubled!</li>
+                 <li><b>Twinning Pattern Bonus:</b> Scores on the special highlighted pattern are doubled!</li>
                  <li><b>Grid Bonus:</b> 2x2, 3x3, etc. grids of the same Alloha give bonus points (size * size).</li>
-                 <li><b>Penalty:</b> A row or column that can no longer form a 3-symbol sequence gets a -5 penalty. A "dead" line on the twinning pattern gets a -10 penalty.</li></ul>
+                 <li><b>Penalty:</b> A row or column that can no longer form a 3-symbol sequence gets a -5 penalty. A "dead" line on the twinning pattern gets a -5 penalty.</li></ul>
             </div>
         </div>
     </div>
-    
     <div id="game-over-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
         <div class="modal-content w-full max-w-md text-center themed-modal p-8 transform scale-95 -translate-y-4 relative">
             <button id="close-game-over-btn" class="absolute top-4 right-4 w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
@@ -642,27 +594,24 @@
             <button id="play-again-btn" class="w-full mt-6 themed-button text-white font-bold py-3 px-4 rounded-xl text-xl" style="background: var(--accent-gradient);">Play Again</button>
         </div>
     </div>
-    
     <div id="exchange-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
         <div class="modal-content w-full max-w-sm text-center themed-modal p-6 transform scale-95 -translate-y-4">
             <h2 class="text-xl font-bold mb-4" style="color: var(--accent);">Choose a new Alloha</h2>
             <div id="exchange-options" class="grid grid-cols-3 gap-4"></div>
         </div>
     </div>
-
     <script>
         class GameState {
             constructor() { this.states = { PRE_GAME: 'PRE_GAME', AWAITING_ROLL: 'AWAITING_ROLL', ANIMATING_ROLL: 'ANIMATING_ROLL', AWAITING_PLACEMENT: 'AWAITING_PLACEMENT', SUPERPOWER_ACTIVE: 'SUPERPOWER_ACTIVE', PROCESSING_TURN: 'PROCESSING_TURN', GAME_OVER: 'GAME_OVER' }; this.currentState = this.states.PRE_GAME; this.validTransitions = { [this.states.PRE_GAME]: [this.states.AWAITING_ROLL], [this.states.AWAITING_ROLL]: [this.states.ANIMATING_ROLL, this.states.PRE_GAME, this.states.SUPERPOWER_ACTIVE, this.states.AWAITING_PLACEMENT], [this.states.ANIMATING_ROLL]: [this.states.AWAITING_PLACEMENT], [this.states.AWAITING_PLACEMENT]: [this.states.PROCESSING_TURN, this.states.AWAITING_ROLL, this.states.SUPERPOWER_ACTIVE], [this.states.SUPERPOWER_ACTIVE]: [this.states.AWAITING_ROLL, this.states.AWAITING_PLACEMENT, this.states.PROCESSING_TURN], [this.states.PROCESSING_TURN]: [this.states.AWAITING_ROLL, this.states.GAME_OVER], [this.states.GAME_OVER]: [this.states.PRE_GAME] }; }
             setState(newState) { if (!this.validTransitions[this.currentState]?.includes(newState)) { console.warn(`Invalid state transition from ${this.currentState} to ${newState}`); return false; } this.currentState = newState; return true; }
             is(state) { return this.currentState === state; }
         }
-        
         class Game {
             constructor() {
                 this.DESERT_SYMBOLS = { 'Hut': '🛖', 'Cactus': '🌵', 'Rock': '🪨', 'Sun': '🌞', 'PalmTree': '🌴', 'Snake': '🐍' };
                 this.SPECIAL_SYMBOLS = { 'WILD': '💎', 'CURSED': '☠️' };
                 this.SYMBOLS = Object.values(this.DESERT_SYMBOLS);
-                this.SYMBOL_COLORS = { 
+                this.SYMBOL_COLORS = {
                     '🛖': 'text-amber-700',
                     '🌵': 'text-green-600',
                     '🪨': 'text-gray-500',
@@ -673,30 +622,25 @@
                 };
                 this.SCORING_RULES = { 7: 20, 6: 14, 5: 10, 4: 8, 3: 3 };
                 this.GRID_SIZE = 7; this.MAX_TURNS = 24; this.CROSS_MULTIPLIER = 2; this.LINE_DEATH_PENALTY = -5; this.CROSS_DEATH_PENALTY = -10; this.STUCK_BLOCK_PENALTY = -1; this.MIN_SEQUENCE_LENGTH = 3;
-                
                 this.gameStateManager = null; this.gridData = null; this.currentRoll = null; this.firstPlacementCell = null; this.turnCount = null; this.highScore = null; this.stuckBlocks = null;
                 this.lastGameState = null; this.usedSuperpowers = null; this.activeSuperpower = null; this.cellToExchange = null; this.currentTotalScore = null;
                 this.cursedBlockTurn = null; this.wildcardTurn = null;
                 this.swapFirstCell = null;
                 this.gridCells = [];
-
                 this.audio = { unlocked: false, context: null, sounds: new Map() };
-
                 this.DOMElements = this.getDOMElements();
-
                 this.init();
                 this.setupEventListeners();
             }
-            
             getDOMElements() {
                 const elements = {};
                 const elementIds = [
-                    'game-board', 'controls-area', 'row-scores-display', 'col-scores-display', 'total-score', 
-                    'high-score', 'rows-total-score', 'cols-total-score', 'cross-total-score', 'bonus-grid-score', 
-                    'empty-block-penalty', 'rules-btn', 'rules-modal', 'close-rules-btn', 
-                    'game-over-modal', 'game-over-reason', 'close-game-over-btn', 'final-score-modal', 
-                    'high-score-modal', 'play-again-btn', 'score-breakdown', 'final-rows-score', 
-                    'final-cols-score', 'final-cross-score', 'final-bonus-score', 'final-penalty-score', 
+                    'game-board', 'controls-area', 'row-scores-display', 'col-scores-display', 'total-score',
+                    'high-score', 'rows-total-score', 'cols-total-score', 'cross-total-score', 'bonus-grid-score',
+                    'empty-block-penalty', 'rules-btn', 'rules-modal', 'close-rules-btn',
+                    'game-over-modal', 'game-over-reason', 'close-game-over-btn', 'final-score-modal',
+                    'high-score-modal', 'play-again-btn', 'score-breakdown', 'final-rows-score',
+                    'final-cols-score', 'final-cross-score', 'final-bonus-score', 'final-penalty-score',
                     'exchange-modal', 'exchange-options', 'progress-bar-fill',
                     'new-game-btn', 'game-board-container', 'scoring-panel',
                     'effects-container'
@@ -704,7 +648,6 @@
                 elementIds.forEach(id => { elements[id] = document.getElementById(id); });
                 return elements;
             }
-
             init() {
                 this.gameStateManager = new GameState();
                 this.gridData = Array(this.GRID_SIZE).fill(null).map(() => Array(this.GRID_SIZE).fill(null));
@@ -715,7 +658,6 @@
                 this.cursedBlockTurn = Math.floor(Math.random() * 8) + 5;
                 this.wildcardTurn = Math.floor(Math.random() * 8) + 15;
                 if (this.wildcardTurn === this.cursedBlockTurn) this.wildcardTurn++;
-
                 this.audioInit();
                 this.DOMElements['high-score'].textContent = this.highScore;
                 ['game-over-modal', 'exchange-modal', 'rules-modal'].forEach(id => this.DOMElements[id].classList.remove('is-open'));
@@ -724,7 +666,6 @@
                 this.updateProgressBar();
                 this.syncPanelHeights();
             }
-
             // Audio System
             audioInit() { this.audioCreateContext(); this.audioCreateSounds(); }
             audioCreateContext() { try { this.audio.context = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
@@ -733,7 +674,6 @@
             audioPlaySequence(freqs, dur) { freqs.forEach((f, i) => setTimeout(()=>this.audioPlayTone(f,.1,dur/freqs.length), i*(dur*1000/freqs.length))); }
             audioUnlock() { if (this.audio.unlocked) return; document.getElementById('audio-unlocker').play().finally(() => { this.audio.unlocked = true; }); }
             audioPlay(soundName) { this.audio.sounds.get(soundName)?.(); }
-            
             triggerScoreBubbles(count) {
                 const effectsContainer = this.DOMElements['effects-container'];
                 if (!effectsContainer) return;
@@ -750,16 +690,13 @@
                     setTimeout(() => bubble.remove(), duration * 1000);
                 }
             }
-            
             calculateLineScore(line, type, lineIndex) {
                 let totalScore = 0;
                 const usedIndices = Array(this.GRID_SIZE).fill(false);
                 const wildSymbol = this.SPECIAL_SYMBOLS.WILD;
-
                 for (let len = this.GRID_SIZE; len >= this.MIN_SEQUENCE_LENGTH; len--) {
                     for (let i = 0; i <= this.GRID_SIZE - len; i++) {
                         const slice = line.slice(i, i + len);
-                        
                         let alreadyUsed = false;
                         for (let k = 0; k < len; k++) {
                             if (slice[k] !== wildSymbol && usedIndices[i + k]) {
@@ -770,10 +707,8 @@
                         if (alreadyUsed) {
                             continue;
                         }
-
                         if (this.isValidSequence(slice)) {
                             totalScore += this.SCORING_RULES[len];
-                            
                             for (let k = 0; k < len; k++) {
                                 if (slice[k] !== wildSymbol) {
                                     usedIndices[i + k] = true;
@@ -782,16 +717,13 @@
                         }
                     }
                 }
-                
                 if (totalScore === 0) {
                     if (this.isLineDead(line, type, lineIndex)) {
                         return { score: this.LINE_DEATH_PENALTY };
                     }
                 }
-                
                 return { score: totalScore };
             }
-            
             isValidSequence(slice) {
                 if (!slice[0]) return false;
                 if (slice.every(s => s === this.SPECIAL_SYMBOLS.WILD)) return true;
@@ -800,7 +732,6 @@
                 if (new Set(regularSymbols).size === 1) return true;
                 return false;
             }
-            
             isLineDead(line, type, lineIndex) {
                 for (let i = 0; i <= line.length - this.MIN_SEQUENCE_LENGTH; i++) {
                     const window = line.slice(i, i + this.MIN_SEQUENCE_LENGTH);
@@ -815,15 +746,14 @@
                     const nonNullSymbols = window.filter(cell => cell !== null);
                     if (nonNullSymbols.length > 0) {
                         const regularSymbols = nonNullSymbols.filter(s => s !== this.SPECIAL_SYMBOLS.WILD);
-                        if (regularSymbols.length > 0 && new Set(regularSymbols).size <= 1) { winnable = true; } 
-                        else if (regularSymbols.length === 0) { winnable = true; } 
+                        if (regularSymbols.length > 0 && new Set(regularSymbols).size <= 1) { winnable = true; }
+                        else if (regularSymbols.length === 0) { winnable = true; }
                         else { winnable = false; }
                     }
                     if (winnable) return false;
                 }
                 return true;
             }
-
             calculateBonusGrids(gridData) {
                 let points = 0;
                 for (let size = this.GRID_SIZE; size >= 2; size--) {
@@ -831,7 +761,6 @@
                         for (let c = 0; c <= this.GRID_SIZE - size; c++) {
                             const firstSymbol = gridData[r][c];
                             if (!firstSymbol || firstSymbol === this.SPECIAL_SYMBOLS.CURSED) continue;
-
                             let targetSymbol = firstSymbol;
                             if (targetSymbol === this.SPECIAL_SYMBOLS.WILD) {
                                 let foundSymbol = false;
@@ -847,13 +776,11 @@
                                     if (foundSymbol) break;
                                 }
                             }
-
                             let isGrid = true;
                             for (let i = r; i < r + size; i++) {
                                 for (let j = c; j < c + size; j++) {
                                     const currentSymbol = gridData[i][j];
                                     if (!currentSymbol || currentSymbol === this.SPECIAL_SYMBOLS.CURSED) { isGrid = false; break; }
-                                    
                                     if (targetSymbol === this.SPECIAL_SYMBOLS.WILD) {
                                         if (currentSymbol !== this.SPECIAL_SYMBOLS.WILD) { isGrid = false; break; }
                                     } else {
@@ -862,7 +789,6 @@
                                 }
                                 if (!isGrid) break;
                             }
-
                             if (isGrid) {
                                 points += size * size;
                             }
@@ -871,10 +797,7 @@
                 }
                 return points;
             }
-
             createCellElement(r, c) { const cell = document.createElement('div'); cell.dataset.row = r; cell.dataset.col = c; cell.className = this.getCellClasses(r, c); return cell; }
-            
-            // MODIFICATION: Logic for the new complex Twinning pattern highlighting
             getCellClasses(r, c) {
                 let classes = 'grid-cell';
                 const isTwinningCell = 
@@ -883,22 +806,18 @@
                     (c === 1 && r >= 1 && r <= 5) || // 2nd Column - Row 2 to 6
                     (c === 3) ||                     // 4th Column - Entire column
                     (c === 5 && r >= 0 && r <= 3);   // 6th Column - Row 1 to 4
-
                 if (isTwinningCell) {
-                    classes += ' cross-cell';
+                    classes += ' highlighted';
                 }
                 if (this.stuckBlocks.has(`${r},${c}`)) {
                     classes += ' stuck-cell';
                 }
                 return classes;
             }
-
             updateCell(cell, r, c) { const symbol = this.gridData[r][c]; cell.className = this.getCellClasses(r, c); if (symbol) { cell.textContent = symbol; if(this.SYMBOL_COLORS[symbol]) cell.classList.add(...this.SYMBOL_COLORS[symbol].split(' ')); cell.classList.add('pop-in'); } else if (this.stuckBlocks.has(`${r},${c}`)) { cell.textContent = '💣'; } else { cell.textContent = ''; } }
             addCellEventListeners(cell) { cell.addEventListener('click', this.handleCellClick.bind(this)); cell.addEventListener('mouseenter', () => { if (this.gameStateManager.is('AWAITING_PLACEMENT') || this.activeSuperpower) this.audioPlay('hover'); }); }
-
             syncPanelHeights() { setTimeout(() => { if (window.innerWidth < 1024) { this.DOMElements['scoring-panel'].style.height = 'auto'; return; } const boardHeight = this.DOMElements['game-board-container']?.getBoundingClientRect().height; if (boardHeight && this.DOMElements['scoring-panel']) { this.DOMElements['scoring-panel'].style.height = `${boardHeight}px`; } }, 50); }
             updateProgressBar() { if (!this.DOMElements['progress-bar-fill']) return; const percentage = (this.turnCount / this.MAX_TURNS) * 100; this.DOMElements['progress-bar-fill'].style.width = `${percentage}%`; }
-
             renderGrid() {
                 const fragment = document.createDocumentFragment(); this.DOMElements['game-board'].innerHTML = ''; this.gridCells = [];
                 for (let r = 0; r < this.GRID_SIZE; r++) {
@@ -911,10 +830,8 @@
                 }
                 this.DOMElements['game-board'].appendChild(fragment);
             }
-
             updateFullGrid() { for (let r = 0; r < this.GRID_SIZE; r++) for (let c = 0; c < this.GRID_SIZE; c++) this.updateGridCell(r, c); }
             updateGridCell(r, c) { if (this.gridCells[r]?.[c]) this.updateCell(this.gridCells[r][c], r, c); }
-
             renderScorePlaceholders() {
                 this.DOMElements['row-scores-display'].innerHTML = ''; this.DOMElements['col-scores-display'].innerHTML = '';
                 for (let i = 0; i < this.GRID_SIZE; i++) {
@@ -922,14 +839,12 @@
                     const colScore = document.createElement('div'); colScore.id = `col-score-${i}`; colScore.className = 'grid-cell score-display-cell text-lg lg:text-2xl'; colScore.textContent = '0'; this.DOMElements['col-scores-display'].appendChild(colScore);
                 }
             }
-
             renderControls() {
                 this.DOMElements['controls-area'].innerHTML = '';
-                if (this.gameStateManager.is('PRE_GAME')) { this.renderPreGameControls(); } 
+                if (this.gameStateManager.is('PRE_GAME')) { this.renderPreGameControls(); }
                 else { this.renderGameControls(); this.setupSuperpowerEventListeners(); this.updateSuperpowerButtonsUI(); }
                 this.syncPanelHeights();
             }
-
             renderPreGameControls() {
                 const container = document.createElement('div'); container.className = 'w-full flex flex-col items-center';
                 container.innerHTML = `<h2 class="text-base lg:text-lg font-semibold text-center mb-4 uppercase tracking-wider" style="color: var(--accent);">CHOOSE YOUR ALLOHA</h2>`;
@@ -945,7 +860,6 @@
                 container.appendChild(selector);
                 this.DOMElements['controls-area'].appendChild(container);
             }
-
             renderGameControls() {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'w-full flex flex-col justify-center gap-3 lg:gap-4';
@@ -954,7 +868,6 @@
                 this.DOMElements['controls-area'].appendChild(wrapper);
                 this.updateControlsState();
             }
-
             updateControlsState() {
                 if (this.gameStateManager.is('PRE_GAME')) return;
                 const rollBtn = document.getElementById('roll-dice-btn');
@@ -969,14 +882,12 @@
                     dice2.textContent = '?'; dice2.className = 'w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card shadow-lg flex items-center justify-center text-3xl lg:text-4xl';
                 }
             }
-
             handleSymbolSelect(symbol) { if (!this.gameStateManager.is('PRE_GAME')) return; this.audioUnlock(); this.audioPlay('pop'); this.gridData[0][0] = symbol; this.gameStateManager.setState('AWAITING_ROLL'); this.updateGridCell(0, 0); this.renderControls(); }
-
             handleRollDice() {
                 if (!this.gameStateManager.is('AWAITING_ROLL') || this.gameStateManager.is('GAME_OVER')) return;
                 const nextTurn = this.turnCount + 1; let tempRoll;
-                if (nextTurn === this.cursedBlockTurn) { this.audioPlay('thud'); tempRoll = [this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)], this.SPECIAL_SYMBOLS.CURSED]; } 
-                else if (nextTurn === this.wildcardTurn) { this.audioPlay('chime'); tempRoll = [this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)], this.SPECIAL_SYMBOLS.WILD]; } 
+                if (nextTurn === this.cursedBlockTurn) { this.audioPlay('thud'); tempRoll = [this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)], this.SPECIAL_SYMBOLS.CURSED]; }
+                else if (nextTurn === this.wildcardTurn) { this.audioPlay('chime'); tempRoll = [this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)], this.SPECIAL_SYMBOLS.WILD]; }
                 else { this.audioPlay('roll'); tempRoll = [this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)], this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)]]; }
                 this.currentRoll = tempRoll.sort(() => Math.random() - 0.5);
                 this.gameStateManager.setState('ANIMATING_ROLL'); this.updateControlsState();
@@ -990,7 +901,6 @@
                     this.updateSuperpowerButtonsUI();
                 }, 600);
             }
-
             handleCellClick(e) {
                 const cell = e.target.closest('[data-row]'); if (!cell) return;
                 const r = parseInt(cell.dataset.row), c = parseInt(cell.dataset.col);
@@ -998,18 +908,15 @@
                 if (!this.gameStateManager.is('AWAITING_PLACEMENT')) return;
                 if (this.firstPlacementCell) { this.handleSecondPlacement(r, c, cell); } else { this.handleFirstPlacement(r, c); }
             }
-
             handleFirstPlacement(r, c) { if (!this.gridData[r][c]) { this.gridData[r][c] = this.currentRoll[0]; this.firstPlacementCell = { r, c }; this.updateGridCell(r, c); this.updateSuperpowerButtonsUI(); } }
             handleSecondPlacement(r, c, cell) {
                 const { r: pR, c: pC } = this.firstPlacementCell;
                 if (pR === r && pC === c) { this.gridData[r][c] = null; this.firstPlacementCell = null; this.updateGridCell(r, c); this.updateSuperpowerButtonsUI(); return; }
-                if ((Math.abs(pR - r) + Math.abs(pC - c) === 1) && !this.gridData[r][c]) { this.completeMove(r, c); } 
+                if ((Math.abs(pR - r) + Math.abs(pC - c) === 1) && !this.gridData[r][c]) { this.completeMove(r, c); }
                 else { cell.classList.add('shake-animation'); setTimeout(() => cell.classList.remove('shake-animation'), 400); this.audioPlay('invalid'); }
             }
-
             saveStateForUndo() { this.lastGameState = { gridData: JSON.parse(JSON.stringify(this.gridData)), turnCount: this.turnCount, stuckBlocks: new Set(this.stuckBlocks), currentRoll: [...this.currentRoll] }; }
             completeMove(r, c) { this.gameStateManager.setState('PROCESSING_TURN'); this.gridData[r][c] = this.currentRoll[1]; this.firstPlacementCell = null; this.turnCount++; this.updateGridCell(r, c); this.audioPlay('pop'); setTimeout(this.processTurnEnd.bind(this), 300); }
-            
             processTurnEnd() {
                 if (this.gameStateManager.is('GAME_OVER')) return;
                 this.detectStuckBlocks(); this.updateAllScores(); this.updateProgressBar();
@@ -1017,7 +924,6 @@
                 if (!this.hasValidMoves()) { this.endGame("No valid moves!"); return; }
                 this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls();
             }
-
             endGame(reason = "") {
                 if (this.gameStateManager.is('GAME_OVER')) return;
                 this.gameStateManager.setState('GAME_OVER'); this.updateAllScores();
@@ -1033,10 +939,8 @@
                 this.DOMElements['final-penalty-score'].textContent = this.DOMElements['empty-block-penalty'].textContent;
                 setTimeout(() => this.DOMElements['game-over-modal'].classList.add('is-open'), 500);
             }
-
             hasValidMoves() { for (let r = 0; r < this.GRID_SIZE; r++) for (let c = 0; c < this.GRID_SIZE; c++) if (!this.gridData[r][c]) { const n = [[-1, 0], [1, 0], [0, -1], [0, 1]]; for (const [dr, dc] of n) { const nr = r + dr, nc = c + dc; if (nr >= 0 && nr < this.GRID_SIZE && nc >= 0 && nc < this.GRID_SIZE && !this.gridData[nr][nc]) return true; } } return false; }
             detectStuckBlocks() { this.stuckBlocks.clear(); for (let r = 0; r < this.GRID_SIZE; r++) for (let c = 0; c < this.GRID_SIZE; c++) if (!this.gridData[r][c]) { const n = [[-1, 0], [1, 0], [0, -1], [0, 1]]; if (n.every(([dr, dc]) => { const nr = r + dr, nc = c + dc; return nr < 0 || nr >= this.GRID_SIZE || nc < 0 || nc >= this.GRID_SIZE || this.gridData[nr][nc] })) this.stuckBlocks.add(`${r},${c}`); } this.updateFullGrid(); this.DOMElements['empty-block-penalty'].textContent = -this.stuckBlocks.size; }
-            
             updateAllScores() {
                 const oldScore = this.currentTotalScore;
                 const rS = this.calculateRowScores(), cS = this.calculateColumnScores(), crS = this.calculateCrossScore(), bS = this.calculateBonusGrids(this.gridData);
@@ -1050,21 +954,16 @@
             calculateTotalScore() { return this.currentTotalScore; }
             calculateRowScores() { let t = 0, ind = []; for (let i = 0; i < this.GRID_SIZE; i++) { const { score: s } = this.calculateLineScore(this.gridData[i], 'row', i); ind.push(s); t += s; } return { total: t, individual: ind }; }
             calculateColumnScores() { let t = 0, ind = []; for (let i = 0; i < this.GRID_SIZE; i++) { const col = this.gridData.map(row => row[i]); const { score: s } = this.calculateLineScore(col, 'col', i); ind.push(s); t += s; } return { total: t, individual: ind }; }
-            
-            // MODIFICATION: Logic for the new complex Twinning pattern scoring
             calculateCrossScore() {
                 let bonusScore = 0;
-
                 const getScoreForSegment = (segmentSymbols, segmentCoords) => {
                     let score = 0;
                     const usedIndices = Array(segmentSymbols.length).fill(false);
                     const localScoringRules = { 7: 20, 6: 14, 5: 10, 4: 8, 3: 3 };
-
                     for (let len = segmentSymbols.length; len >= this.MIN_SEQUENCE_LENGTH; len--) {
                         if (!localScoringRules[len]) continue;
                         for (let i = 0; i <= segmentSymbols.length - len; i++) {
                             if (usedIndices.slice(i, i + len).some(used => used)) continue;
-                            
                             const slice = segmentSymbols.slice(i, i + len);
                             if (this.isValidSequence(slice)) {
                                 score += localScoringRules[len];
@@ -1076,15 +975,12 @@
                             }
                         }
                     }
-
-                    if (score > 0) return score; // Apply doubling bonus here
-
+                    if (score > 0) return score;
                     let isDead = true;
                     if (segmentCoords.length >= this.MIN_SEQUENCE_LENGTH) {
                         for (let i = 0; i <= segmentCoords.length - this.MIN_SEQUENCE_LENGTH; i++) {
                             const windowCoords = segmentCoords.slice(i, i + this.MIN_SEQUENCE_LENGTH);
                             const windowSymbols = windowCoords.map(coord => this.gridData[coord.r][coord.c]);
-                            
                             let isWindowWinnable = true;
                             if (windowSymbols.includes(this.SPECIAL_SYMBOLS.CURSED)) {
                                 isWindowWinnable = false;
@@ -1103,7 +999,6 @@
                                     isWindowWinnable = false;
                                 }
                             }
-
                             if (isWindowWinnable) {
                                 isDead = false;
                                 break;
@@ -1112,14 +1007,11 @@
                     } else {
                         isDead = !segmentSymbols.includes(null);
                     }
-
                     if (isDead) {
                         return this.CROSS_DEATH_PENALTY - this.LINE_DEATH_PENALTY;
                     }
-
                     return 0;
                 };
-                
                 const segments = [
                     { type: 'row', index: 3, start: 3, end: 5 }, // R4, C4-6
                     { type: 'row', index: 5, start: 1, end: 3 }, // R6, C2-4
@@ -1127,7 +1019,6 @@
                     { type: 'col', index: 3, start: 0, end: 6 }, // C4, R1-7
                     { type: 'col', index: 5, start: 0, end: 3 }  // C6, R1-4
                 ];
-
                 segments.forEach(seg => {
                     const segmentSymbols = [];
                     const segmentCoords = [];
@@ -1142,16 +1033,12 @@
                     }
                     bonusScore += getScoreForSegment(segmentSymbols, segmentCoords);
                 });
-
                 return bonusScore;
             }
-
             updateScoreDisplays(r, c, cross, b, s) { const t = r + c + cross + b - s; this.animateScoreUpdate(this.DOMElements['total-score'], t); this.animateScoreUpdate(this.DOMElements['rows-total-score'], r); this.animateScoreUpdate(this.DOMElements['cols-total-score'], c); this.animateScoreUpdate(this.DOMElements['cross-total-score'], cross); this.animateScoreUpdate(this.DOMElements['bonus-grid-score'], b); }
-            
             animateScoreUpdate(el, val) {
                 const startVal = parseInt(el.textContent) || 0;
                 if (startVal === val) return;
-
                 el.classList.add('score-update');
                 const duration = 500;
                 const stepTime = 20;
@@ -1159,7 +1046,6 @@
                 const increment = (val - startVal) / totalSteps;
                 let currentVal = startVal;
                 let step = 0;
-
                 const timer = setInterval(() => {
                     step++;
                     if (step >= totalSteps) {
@@ -1172,28 +1058,22 @@
                     el.textContent = Math.round(currentVal);
                 }, stepTime);
             }
-
             updateIndividualScores(rS, cS) { rS.forEach((s, i) => this.updateScoreElement(`row-score-${i}`, s)); cS.forEach((s, i) => this.updateScoreElement(`col-score-${i}`, s)); }
             updateScoreElement(id, score) { const el = document.getElementById(id); if (el && parseInt(el.textContent) !== score) { el.textContent = score; el.classList.toggle('text-red-500', score < 0); if (score !== 0) { el.classList.add('score-flash'); setTimeout(() => el.classList.remove('score-flash'), 600); } } }
-
             updateSuperpowerButtonsUI() {
                 const totalUsed = this.usedSuperpowers.size;
                 const isMidMove = this.firstPlacementCell !== null;
                 const isPowerActive = this.activeSuperpower !== null;
                 const isAwaitingRoll = this.gameStateManager.is('AWAITING_ROLL');
-
                 const pastLivesBtn = document.getElementById('past-lives-btn');
                 const bombBaeBtn = document.getElementById('bomb-bae-btn');
                 const noReturnBtn = document.getElementById('no-return-btn');
                 const swapThemBtn = document.getElementById('swap-them-btn');
-
                 if (pastLivesBtn) pastLivesBtn.disabled = totalUsed >= 2 || this.usedSuperpowers.has('pastLives') || !this.lastGameState || isMidMove || isPowerActive || this.gameStateManager.is('AWAITING_PLACEMENT');
                 if (bombBaeBtn) bombBaeBtn.disabled = totalUsed >= 2 || this.usedSuperpowers.has('bombBae') || this.stuckBlocks.size === 0 || isMidMove || isPowerActive;
                 if (noReturnBtn) noReturnBtn.disabled = totalUsed >= 2 || this.usedSuperpowers.has('noReturn') || isMidMove || isPowerActive;
                 if (swapThemBtn) swapThemBtn.disabled = this.turnCount < 1 || totalUsed >= 2 || this.usedSuperpowers.has('swapThem') || !isAwaitingRoll || isMidMove || isPowerActive;
-
                 [pastLivesBtn, bombBaeBtn, noReturnBtn, swapThemBtn].forEach(btn => btn?.classList.remove('superpower-btn--active'));
-                
                 if (this.activeSuperpower) {
                     const id = { 'bombBae': 'bomb-bae-btn', 'noReturn': 'no-return-btn', 'swapThem': 'swap-them-btn' }[this.activeSuperpower];
                     const activeBtn = document.getElementById(id);
@@ -1201,7 +1081,6 @@
                 }
                 document.body.classList.toggle('cursor-target', this.activeSuperpower === 'bombBae');
             }
-
             handleSuperpowerCellClick(r, c, cell) {
                 if (this.activeSuperpower === 'swapThem') {
                     if (!this.gridData[r][c] || this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) { this.audioPlay('invalid'); return; }
@@ -1234,13 +1113,11 @@
                     }
                     return;
                 }
-
                 if (this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) { this.audioPlay('invalid'); cell.classList.add('shake-animation'); setTimeout(() => cell.classList.remove('shake-animation'), 400); return; }
-                if (this.activeSuperpower === 'bombBae' && this.stuckBlocks.has(`${r},${c}`)) { this.stuckBlocks.delete(`${r},${c}`); this.gridData[r][c] = this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)]; this.consumeSuperpower('bombBae'); this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls(); } 
-                else if (this.activeSuperpower === 'noReturn' && this.gridData[r][c]) { this.showSymbolSelectorForExchange(r, c); } 
+                if (this.activeSuperpower === 'bombBae' && this.stuckBlocks.has(`${r},${c}`)) { this.stuckBlocks.delete(`${r},${c}`); this.gridData[r][c] = this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)]; this.consumeSuperpower('bombBae'); this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls(); }
+                else if (this.activeSuperpower === 'noReturn' && this.gridData[r][c]) { this.showSymbolSelectorForExchange(r, c); }
                 else { this.audioPlay('invalid'); }
             }
-            
             showSymbolSelectorForExchange(r, c) {
                  this.cellToExchange = {r, c}; this.DOMElements['exchange-options'].innerHTML = '';
                  this.SYMBOLS.filter(s => s !== this.gridData[r][c]).forEach(symbol => {
@@ -1251,14 +1128,12 @@
                  });
                  this.DOMElements['exchange-modal'].classList.add('is-open');
             }
-            
             handleSymbolExchange(newSymbol) {
                 if (!this.cellToExchange) return;
                 const {r, c} = this.cellToExchange; this.gridData[r][c] = newSymbol;
                 this.DOMElements['exchange-modal'].classList.remove('is-open'); this.cellToExchange = null;
                 this.consumeSuperpower('noReturn'); this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls();
             }
-
             consumeSuperpower(powerName) {
                 this.audioPlay('power-use');
                 this.usedSuperpowers.add(powerName);
@@ -1267,14 +1142,13 @@
                 this.updateAllScores();
                 this.updateSuperpowerButtonsUI();
             }
-
             setupSuperpowerEventListeners() {
                 const pastLivesBtn = document.getElementById('past-lives-btn');
                 if (pastLivesBtn) {
                     pastLivesBtn.addEventListener('click', () => {
                         if (pastLivesBtn.disabled) return;
                         this.audioPlay('power-activate');
-                        this.gridData = this.lastGameState.gridData; this.turnCount = this.lastGameState.turnCount; this.stuckBlocks = this.lastGameState.stuckBlocks; this.currentRoll = this.lastGameState.currentRoll; this.lastGameState = null; 
+                        this.gridData = this.lastGameState.gridData; this.turnCount = this.lastGameState.turnCount; this.stuckBlocks = this.lastGameState.stuckBlocks; this.currentRoll = this.lastGameState.currentRoll; this.lastGameState = null;
                         this.activeSuperpower = null;
                         this.consumeSuperpower('pastLives');
                         this.updateFullGrid(); this.updateAllScores();
@@ -1294,7 +1168,6 @@
                     swapThemBtn.addEventListener('click', () => { if (swapThemBtn.disabled) return; this.activeSuperpower = 'swapThem'; this.gameStateManager.setState('SUPERPOWER_ACTIVE'); this.audioPlay('power-activate'); this.updateSuperpowerButtonsUI(); });
                 }
             }
-
             setupEventListeners() {
                 this.DOMElements['new-game-btn'].addEventListener('click', this.init.bind(this));
                 this.DOMElements['rules-btn'].addEventListener('click', () => this.DOMElements['rules-modal'].classList.add('is-open'));
@@ -1312,14 +1185,13 @@
                             this.activeSuperpower = null;
                             this.updateSuperpowerButtonsUI();
                             this.gameStateManager.setState(this.firstPlacementCell ? 'AWAITING_PLACEMENT' : 'AWAITING_ROLL');
-                        } 
+                        }
                         else { ['rules-modal', 'game-over-modal', 'exchange-modal'].forEach(id => this.DOMElements[id].classList.remove('is-open')); }
                     }
                     if ((e.key === ' ' || e.key === 'Enter') && this.gameStateManager.is('AWAITING_ROLL')) { e.preventDefault(); this.handleRollDice(); }
                 });
             };
         }
-
         document.addEventListener('DOMContentLoaded', () => {
             new Game();
         });
