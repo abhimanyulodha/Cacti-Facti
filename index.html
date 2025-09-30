@@ -317,6 +317,14 @@
         #roll-dice-btn:not(:disabled) {
             animation: pulse 2s infinite;
         }
+
+        @keyframes pulse-select {
+            0% { box-shadow: 0 0 0 0px rgba(229, 115, 115, 0.7); }
+            100% { box-shadow: 0 0 0 10px rgba(229, 115, 115, 0); }
+        }
+        .pulse-animation {
+            animation: pulse-select 1s infinite;
+        }
         
         .cross-cell {
             background: var(--cross-highlight) !important;
@@ -351,7 +359,6 @@
         }
         
         .controls-area {
-            min-height: 165px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -398,7 +405,7 @@
             color: var(--text-secondary); 
             font-weight: 500;
             border-radius: 12px;
-            padding: 8px;
+            padding: 4px;
             transition: all 0.3s ease;
             cursor: pointer;
         }
@@ -550,9 +557,9 @@
         </div>
         
         <div class="w-full lg:w-1/3">
-            <div id="scoring-panel" class="flex-1 flex flex-col gap-3 lg:gap-4 p-4 lg:p-6 glass-card rounded-2xl justify-between">
+            <div id="scoring-panel" class="flex-1 flex flex-col gap-4 p-4 lg:p-6 glass-card rounded-2xl justify-between">
                 <div class="flex justify-center items-center gap-3">
-                    <button id="rules-btn" class="flex-1 py-2 px-4 themed-button text-sm font-semibold" style="color: var(--accent); background: var(--accent-light);">No Rules</button>
+                    <button id="rules-btn" class="flex-1 py-2 px-4 themed-button text-sm font-semibold" style="color: var(--accent); background: var(--accent-light);">How to Play</button>
                     <button id="new-game-btn" class="flex-1 py-2 px-4 themed-button text-white font-semibold rounded-xl text-sm" style="background: var(--accent-gradient);">New Game</button>
                 </div>
 
@@ -562,7 +569,7 @@
                 
                 <div id="controls-area" class="controls-area"></div>
                 
-                <div class="grid grid-cols-2 gap-2 lg:gap-3 text-center">
+                <div class="grid grid-cols-2 gap-3 text-center">
                     <div class="glass-card rounded-xl px-3 py-2">
                         <h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Total Score</h3>
                         <p id="total-score" class="text-2xl font-bold transition-all duration-300" style="color: var(--accent);">0</p>
@@ -573,15 +580,16 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2 lg:gap-3 text-center">
-                    <div class="glass-card rounded-xl px-3 py-2"><h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Rows</h3><p id="rows-total-score" class="text-lg font-bold">0</p></div>
-                    <div class="glass-card rounded-xl px-3 py-2"><h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Columns</h3><p id="cols-total-score" class="text-lg font-bold">0</p></div>
-                    <div class="glass-card rounded-xl px-3 py-2"><h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Twinning</h3><p id="cross-total-score" class="text-lg font-bold" style="color: #FFC107;">0</p></div>
-                    <div class="glass-card rounded-xl px-3 py-2"><h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Grid Bonus</h3><p id="bonus-grid-score" class="text-lg font-bold" style="color: #FFC107;">0</p></div>
-                </div>
-                
-                <div class="glass-card rounded-xl px-3 py-2">
-                    <div class="text-center"><h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Bomb Squad Charge</h3><p id="empty-block-penalty" class="text-lg font-bold" style="color: var(--text);">0</p></div>
+                <div id="score-breakdown-card" class="glass-card rounded-xl p-3 text-center">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><h3 class="text-xs font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">Rows</h3><p id="rows-total-score" class="text-lg font-bold">0</p></div>
+                        <div><h3 class="text-xs font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">Columns</h3><p id="cols-total-score" class="text-lg font-bold">0</p></div>
+                        <div><h3 class="text-xs font-semibold uppercase tracking-wider mt-2" style="color: var(--text-secondary);">Twinning</h3><p id="cross-total-score" class="text-lg font-bold" style="color: #FFC107;">0</p></div>
+                        <div><h3 class="text-xs font-semibold uppercase tracking-wider mt-2" style="color: var(--text-secondary);">Grid Bonus</h3><p id="bonus-grid-score" class="text-lg font-bold" style="color: #FFC107;">0</p></div>
+                    </div>
+                    <div class="border-t border-white/20 mt-2 pt-2">
+                        <h3 class="text-xs font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">Bomb Squad Charge</h3><p id="empty-block-penalty" class="text-lg font-bold" style="color: var(--text);">0</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -599,8 +607,8 @@
                  <h3 class="font-bold text-lg" style="color: var(--accent);">Gameplay</h3>
                  <ol class="list-decimal list-inside space-y-1"><li>Choose your starting Alloha.</li><li>Click "Roll Dice" to get two new Allohas.</li><li>Place both Allohas in any two empty, adjacent (not diagonal) squares.</li></ol>
                  <h3 class="font-bold text-lg" style="color: var(--accent);">Special Powers</h3>
-                 <p>Use one of three powerful, single-use abilities per game.</p>
-                 <ul class="list-disc list-inside space-y-1"><li><b>Past Lives:</b> Undoes your last completed move.</li><li><b>Bomb Bae:</b> Click to activate, then click a stuck block (💣) to fill it with a random Alloha.</li><li><b>No Return:</b> Click to activate, then click any Alloha on the grid to swap it.</li></ul>
+                 <p>Use two different superpowers per game. Each power can only be used once.</p>
+                 <ul class="list-disc list-inside space-y-1"><li><b>Past Lives:</b> Undoes your last completed move.</li><li><b>Bomb Bae:</b> Click to activate, then click a stuck block (💣) to fill it with a random Alloha.</li><li><b>No Return:</b> Click to activate, then click any Alloha on the grid to swap it.</li><li><b>Swap Them:</b> Click to activate, then click any two adjacent Allohas to swap their positions. Must be used before you roll the dice.</li></ul>
                  <h3 class="font-bold text-lg" style="color: var(--accent);">Special Blocks</h3>
                  <ul class="list-disc list-inside space-y-1">
                     <li><b>Wild Card (💎):</b> A rare treasure! This special piece acts as any Alloha and can complete any line. Appears once per game.</li>
@@ -667,8 +675,9 @@
                 this.GRID_SIZE = 7; this.MAX_TURNS = 24; this.CROSS_MULTIPLIER = 2; this.LINE_DEATH_PENALTY = -5; this.CROSS_DEATH_PENALTY = -10; this.STUCK_BLOCK_PENALTY = -1; this.MIN_SEQUENCE_LENGTH = 3;
                 
                 this.gameStateManager = null; this.gridData = null; this.currentRoll = null; this.firstPlacementCell = null; this.turnCount = null; this.highScore = null; this.stuckBlocks = null;
-                this.lastGameState = null; this.hasSuperpowerBeenUsed = null; this.activeSuperpower = null; this.cellToExchange = null; this.currentTotalScore = null;
+                this.lastGameState = null; this.usedSuperpowers = null; this.activeSuperpower = null; this.cellToExchange = null; this.currentTotalScore = null;
                 this.cursedBlockTurn = null; this.wildcardTurn = null;
+                this.swapFirstCell = null;
                 this.gridCells = [];
 
                 this.audio = { unlocked: false, context: null, sounds: new Map() };
@@ -701,7 +710,8 @@
                 this.gridData = Array(this.GRID_SIZE).fill(null).map(() => Array(this.GRID_SIZE).fill(null));
                 this.currentRoll = []; this.firstPlacementCell = null; this.turnCount = 0; this.stuckBlocks = new Set();
                 this.highScore = parseInt(localStorage.getItem('cactiFactiHighScore')) || 0;
-                this.hasSuperpowerBeenUsed = false; this.activeSuperpower = null; this.lastGameState = null; this.cellToExchange = null; this.currentTotalScore = 0;
+                this.usedSuperpowers = new Set(); this.activeSuperpower = null; this.lastGameState = null; this.cellToExchange = null; this.currentTotalScore = 0;
+                this.swapFirstCell = null;
                 this.cursedBlockTurn = Math.floor(Math.random() * 8) + 5;
                 this.wildcardTurn = Math.floor(Math.random() * 8) + 15;
                 if (this.wildcardTurn === this.cursedBlockTurn) this.wildcardTurn++;
@@ -937,8 +947,9 @@
             }
 
             renderGameControls() {
-                const wrapper = document.createElement('div'); wrapper.className = 'w-full flex flex-col justify-center gap-3 lg:gap-4';
-                wrapper.innerHTML = `<div class="flex justify-center items-center gap-2 lg:gap-4"><button id="roll-dice-btn" class="w-14 h-14 lg:w-16 lg:h-16 text-4xl lg:text-5xl flex items-center justify-center transition-transform hover:scale-110 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" style="color: var(--accent);">🎲</button><div id="dice-1" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card shadow-lg flex items-center justify-center text-3xl lg:text-4xl">?</div><div id="dice-2" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card shadow-lg flex items-center justify-center text-3xl lg:text-4xl">?</div></div><div id="alloha-power-panel" class="glass-card rounded-xl px-3 py-4 text-center"><h2 class="text-sm font-semibold uppercase tracking-wider mb-3 flex items-center justify-center gap-2" style="color: var(--text-secondary);"><span style="font-size: 16px;">🪄</span>Special Powers</h2><div class="grid grid-cols-3 gap-2 text-xs"><button id="past-lives-btn" class="superpower-btn"><div>Past</div><div>Lives</div></button><button id="bomb-bae-btn" class="superpower-btn"><div>Bomb</div><div>Bae</div></button><button id="no-return-btn" class="superpower-btn"><div>No</div><div>Return</div></button></div></div>`;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'w-full flex flex-col justify-center gap-3 lg:gap-4';
+                wrapper.innerHTML = `<div class="flex justify-center items-center gap-2 lg:gap-4"><button id="roll-dice-btn" class="w-14 h-14 lg:w-16 lg:h-16 text-4xl lg:text-5xl flex items-center justify-center transition-transform hover:scale-110 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" style="color: var(--accent);">🎲</button><div id="dice-1" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card shadow-lg flex items-center justify-center text-3xl lg:text-4xl">?</div><div id="dice-2" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card shadow-lg flex items-center justify-center text-3xl lg:text-4xl">?</div></div><div id="alloha-power-panel" class="glass-card rounded-xl px-3 py-4 text-center"><h2 class="text-sm font-semibold uppercase tracking-wider mb-3 flex items-center justify-center gap-2" style="color: var(--text-secondary);">Alloha Power 🪄</h2><div class="grid grid-cols-2 gap-2 text-xs"><button id="past-lives-btn" class="superpower-btn"><div>Past</div><div>Lives</div></button><button id="bomb-bae-btn" class="superpower-btn"><div>Bomb</div><div>Bae</div></button><button id="no-return-btn" class="superpower-btn"><div>No</div><div>Return</div></button><button id="swap-them-btn" class="superpower-btn"><div>Swap</div><div>Them</div></button></div></div>`;
                 wrapper.querySelector('#roll-dice-btn').onclick = this.handleRollDice.bind(this);
                 this.DOMElements['controls-area'].appendChild(wrapper);
                 this.updateControlsState();
@@ -1103,7 +1114,7 @@
                     }
 
                     if (isDead) {
-                        return this.CROSS_DEATH_PENALTY;
+                        return this.CROSS_DEATH_PENALTY - this.LINE_DEATH_PENALTY;
                     }
 
                     return 0;
@@ -1166,19 +1177,66 @@
             updateScoreElement(id, score) { const el = document.getElementById(id); if (el && parseInt(el.textContent) !== score) { el.textContent = score; el.classList.toggle('text-red-500', score < 0); if (score !== 0) { el.classList.add('score-flash'); setTimeout(() => el.classList.remove('score-flash'), 600); } } }
 
             updateSuperpowerButtonsUI() {
-                const isUsed = this.hasSuperpowerBeenUsed; const isMidMove = this.firstPlacementCell !== null; const isPowerActive = this.activeSuperpower !== null;
-                const pastLivesBtn = document.getElementById('past-lives-btn'); const bombBaeBtn = document.getElementById('bomb-bae-btn'); const noReturnBtn = document.getElementById('no-return-btn');
-                if (pastLivesBtn) pastLivesBtn.disabled = isUsed || !this.lastGameState || isMidMove || isPowerActive || this.gameStateManager.is('AWAITING_PLACEMENT');
-                if (bombBaeBtn) bombBaeBtn.disabled = isUsed || this.stuckBlocks.size === 0 || isMidMove || isPowerActive;
-                if (noReturnBtn) noReturnBtn.disabled = isUsed || isMidMove || isPowerActive;
-                [pastLivesBtn, bombBaeBtn, noReturnBtn].forEach(btn => btn?.classList.remove('superpower-btn--active'));
-                if (this.activeSuperpower) { const id = { 'bombBae': 'bomb-bae-btn', 'noReturn': 'no-return-btn' }[this.activeSuperpower]; const activeBtn = document.getElementById(id); if (activeBtn) activeBtn.classList.add('superpower-btn--active'); }
+                const totalUsed = this.usedSuperpowers.size;
+                const isMidMove = this.firstPlacementCell !== null;
+                const isPowerActive = this.activeSuperpower !== null;
+                const isAwaitingRoll = this.gameStateManager.is('AWAITING_ROLL');
+
+                const pastLivesBtn = document.getElementById('past-lives-btn');
+                const bombBaeBtn = document.getElementById('bomb-bae-btn');
+                const noReturnBtn = document.getElementById('no-return-btn');
+                const swapThemBtn = document.getElementById('swap-them-btn');
+
+                if (pastLivesBtn) pastLivesBtn.disabled = totalUsed >= 2 || this.usedSuperpowers.has('pastLives') || !this.lastGameState || isMidMove || isPowerActive || this.gameStateManager.is('AWAITING_PLACEMENT');
+                if (bombBaeBtn) bombBaeBtn.disabled = totalUsed >= 2 || this.usedSuperpowers.has('bombBae') || this.stuckBlocks.size === 0 || isMidMove || isPowerActive;
+                if (noReturnBtn) noReturnBtn.disabled = totalUsed >= 2 || this.usedSuperpowers.has('noReturn') || isMidMove || isPowerActive;
+                if (swapThemBtn) swapThemBtn.disabled = this.turnCount < 1 || totalUsed >= 2 || this.usedSuperpowers.has('swapThem') || !isAwaitingRoll || isMidMove || isPowerActive;
+
+                [pastLivesBtn, bombBaeBtn, noReturnBtn, swapThemBtn].forEach(btn => btn?.classList.remove('superpower-btn--active'));
+                
+                if (this.activeSuperpower) {
+                    const id = { 'bombBae': 'bomb-bae-btn', 'noReturn': 'no-return-btn', 'swapThem': 'swap-them-btn' }[this.activeSuperpower];
+                    const activeBtn = document.getElementById(id);
+                    if (activeBtn) activeBtn.classList.add('superpower-btn--active');
+                }
                 document.body.classList.toggle('cursor-target', this.activeSuperpower === 'bombBae');
             }
 
             handleSuperpowerCellClick(r, c, cell) {
+                if (this.activeSuperpower === 'swapThem') {
+                    if (!this.gridData[r][c] || this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) { this.audioPlay('invalid'); return; }
+                    if (!this.swapFirstCell) {
+                        this.swapFirstCell = { r, c };
+                        cell.classList.add('pulse-animation');
+                    } else {
+                        const { r: r1, c: c1 } = this.swapFirstCell;
+                        if (r1 === r && c1 === c) {
+                            this.swapFirstCell = null;
+                            cell.classList.remove('pulse-animation');
+                            return;
+                        }
+                        if (Math.abs(r1 - r) + Math.abs(c1 - c) === 1) {
+                            const temp = this.gridData[r1][c1];
+                            this.gridData[r1][c1] = this.gridData[r][c];
+                            this.gridData[r][c] = temp;
+                            this.gridCells[r1][c1].classList.remove('pulse-animation');
+                            this.swapFirstCell = null;
+                            this.consumeSuperpower('swapThem');
+                            this.gameStateManager.setState('AWAITING_ROLL');
+                            this.renderControls();
+                        } else {
+                            this.audioPlay('invalid');
+                            cell.classList.add('shake-animation');
+                            setTimeout(() => cell.classList.remove('shake-animation'), 400);
+                            this.gridCells[this.swapFirstCell.r][this.swapFirstCell.c].classList.remove('pulse-animation');
+                            this.swapFirstCell = null;
+                        }
+                    }
+                    return;
+                }
+
                 if (this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) { this.audioPlay('invalid'); cell.classList.add('shake-animation'); setTimeout(() => cell.classList.remove('shake-animation'), 400); return; }
-                if (this.activeSuperpower === 'bombBae' && this.stuckBlocks.has(`${r},${c}`)) { this.stuckBlocks.delete(`${r},${c}`); this.gridData[r][c] = this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)]; this.consumeSuperpower(); this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls(); } 
+                if (this.activeSuperpower === 'bombBae' && this.stuckBlocks.has(`${r},${c}`)) { this.stuckBlocks.delete(`${r},${c}`); this.gridData[r][c] = this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)]; this.consumeSuperpower('bombBae'); this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls(); } 
                 else if (this.activeSuperpower === 'noReturn' && this.gridData[r][c]) { this.showSymbolSelectorForExchange(r, c); } 
                 else { this.audioPlay('invalid'); }
             }
@@ -1198,10 +1256,17 @@
                 if (!this.cellToExchange) return;
                 const {r, c} = this.cellToExchange; this.gridData[r][c] = newSymbol;
                 this.DOMElements['exchange-modal'].classList.remove('is-open'); this.cellToExchange = null;
-                this.consumeSuperpower(); this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls();
+                this.consumeSuperpower('noReturn'); this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls();
             }
 
-            consumeSuperpower() { this.audioPlay('power-use'); this.hasSuperpowerBeenUsed = true; this.activeSuperpower = null; this.updateFullGrid(); this.updateAllScores(); this.updateSuperpowerButtonsUI(); }
+            consumeSuperpower(powerName) {
+                this.audioPlay('power-use');
+                this.usedSuperpowers.add(powerName);
+                this.activeSuperpower = null;
+                this.updateFullGrid();
+                this.updateAllScores();
+                this.updateSuperpowerButtonsUI();
+            }
 
             setupSuperpowerEventListeners() {
                 const pastLivesBtn = document.getElementById('past-lives-btn');
@@ -1210,7 +1275,8 @@
                         if (pastLivesBtn.disabled) return;
                         this.audioPlay('power-activate');
                         this.gridData = this.lastGameState.gridData; this.turnCount = this.lastGameState.turnCount; this.stuckBlocks = this.lastGameState.stuckBlocks; this.currentRoll = this.lastGameState.currentRoll; this.lastGameState = null; 
-                        this.hasSuperpowerBeenUsed = true; this.activeSuperpower = null; this.audioPlay('power-use');
+                        this.activeSuperpower = null;
+                        this.consumeSuperpower('pastLives');
                         this.updateFullGrid(); this.updateAllScores();
                         this.updateProgressBar(); this.gameStateManager.setState('AWAITING_PLACEMENT'); this.updateControlsState();
                     });
@@ -1223,6 +1289,10 @@
                 if (noReturnBtn) {
                     noReturnBtn.addEventListener('click', () => { if (noReturnBtn.disabled) return; this.activeSuperpower = 'noReturn'; this.gameStateManager.setState('SUPERPOWER_ACTIVE'); this.audioPlay('power-activate'); this.updateSuperpowerButtonsUI(); });
                 }
+                const swapThemBtn = document.getElementById('swap-them-btn');
+                if (swapThemBtn) {
+                    swapThemBtn.addEventListener('click', () => { if (swapThemBtn.disabled) return; this.activeSuperpower = 'swapThem'; this.gameStateManager.setState('SUPERPOWER_ACTIVE'); this.audioPlay('power-activate'); this.updateSuperpowerButtonsUI(); });
+                }
             }
 
             setupEventListeners() {
@@ -1234,7 +1304,15 @@
                 window.addEventListener('resize', this.syncPanelHeights.bind(this));
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape') {
-                        if (this.activeSuperpower) { this.activeSuperpower = null; this.updateSuperpowerButtonsUI(); this.gameStateManager.setState(this.firstPlacementCell ? 'AWAITING_PLACEMENT' : 'AWAITING_ROLL'); } 
+                        if (this.activeSuperpower) {
+                            if (this.activeSuperpower === 'swapThem' && this.swapFirstCell) {
+                                this.gridCells[this.swapFirstCell.r][this.swapFirstCell.c].classList.remove('pulse-animation');
+                                this.swapFirstCell = null;
+                            }
+                            this.activeSuperpower = null;
+                            this.updateSuperpowerButtonsUI();
+                            this.gameStateManager.setState(this.firstPlacementCell ? 'AWAITING_PLACEMENT' : 'AWAITING_ROLL');
+                        } 
                         else { ['rules-modal', 'game-over-modal', 'exchange-modal'].forEach(id => this.DOMElements[id].classList.remove('is-open')); }
                     }
                     if ((e.key === ' ' || e.key === 'Enter') && this.gameStateManager.is('AWAITING_ROLL')) { e.preventDefault(); this.handleRollDice(); }
