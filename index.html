@@ -491,7 +491,7 @@
             <button id="close-game-over-btn" aria-label="Close Game Over" class="absolute top-4 right-4 w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
             <h2 class="text-4xl font-bold mb-2" style="font-family: 'Pacifico', cursive; color: var(--accent);">Game Over Alloha!</h2>
             <p id="game-over-reason" class="text-lg mt-2 mb-4" style="color: var(--accent);"></p>
-            <div id="final-score-modal" class="text-7xl font-bold my-8" style="color: var(--accent);"></div>
+            <div id="final-score-modal" class="text-7xl font-bold my-4" style="color: var(--accent);"></div>
             <div id="score-breakdown" class="mb-6 p-4 glass-card rounded-xl text-xs" style="display: grid;">
                 <div class="grid grid-cols-2 gap-2">
                     <div class="text-left">Rows: <span id="final-rows-score" class="float-right font-bold">0</span></div>
@@ -732,33 +732,149 @@
         }
 
         class Game {
+            // --- REFACTOR: Constructor is now cleaner, calling helper methods. ---
             constructor(variantConfig, themeConfig, isTimeBurst, savedState = null) {
                 this.config = variantConfig;
                 this.theme = themeConfig;
                 this.isTimeBurst = isTimeBurst;
-                this.timerId = null;
-                this.timeLeft = this.config.timeLimit;
                 
-                this.tutorialMode = false;
-                this.tutorialStep = 0;
-                this.tutorialModal = null;
-                
+                // Game constants
                 this.SYMBOLS = this.theme.symbols;
                 this.SYMBOL_COLORS = this.theme.symbolColors;
                 this.SPECIAL_SYMBOLS = { 'WILD': '💎', 'CURSED': '☠️' };
-
                 this.SCORING_RULES = { 7: 20, 6: 12, 5: 8, 4: 5, 3: 3 };
                 this.GRID_SIZE = 7; this.MAX_TURNS = 24; this.CROSS_MULTIPLIER = 2; this.LINE_DEATH_PENALTY = -5; this.CROSS_DEATH_PENALTY = -5; this.MIN_SEQUENCE_LENGTH = 3;
-                
+
+                // Core properties
                 this.gridCells = [];
+                this.DOMElements = this._getDOMElements();
                 this.audio = { unlocked: false, context: null, sounds: new Map() };
-                this.DOMElements = this.getDOMElements();
                 
-                this.init(savedState);
-                this.setupEventListeners();
+                this._initializeState(savedState);
+                this._setupUI();
+                this._attachEventListeners();
             }
 
-            getDOMElements() {
+            // --- REFACTOR: New private method to initialize game state. ---
+            _initializeState(savedState = null) {
+                this.stopTimer();
+                this.gridData = Array(this.GRID_SIZE).fill(null).map(() => Array(this.GRID_SIZE).fill(null));
+                this.currentRoll = [];
+                this.firstPlacementCell = null;
+                this.turnCount = 0;
+                this.stuckBlocks = new Set();
+                this.usedSuperpowers = new Set();
+                this.activeSuperpower = null;
+                this.lastGameState = null;
+                this.lastMoveCoords = null;
+                this.currentTotalScore = 0;
+                this.scores = { rows: 0, cols: 0, cross: 0, bonus: 0, hero: 0, penalty: 0 };
+                this.gameStateManager = new GameState();
+                this.vibratedForScoreThisTurn = false;
+                this.cellToExchange = null;
+                this.swapFirstCell = null;
+                
+                this.tutorialMode = false;
+                this.tutorialStep = 0;
+
+                if (savedState) {
+                    this.gridData = JSON.parse(savedState.gridData);
+                    this.currentRoll = savedState.currentRoll;
+                    this.firstPlacementCell = savedState.firstPlacementCell;
+                    this.turnCount = savedState.turnCount;
+                    this.stuckBlocks = new Set(savedState.stuckBlocks);
+                    this.usedSuperpowers = new Set(savedState.usedSuperpowers);
+                    this.lastGameState = savedState.lastGameState ? { ...this.lastGameState, gridData: JSON.parse(savedState.lastGameState.gridData), stuckBlocks: new Set(savedState.lastGameState.stuckBlocks) } : null;
+                    this.activeSuperpower = savedState.activeSuperpower;
+                    this.currentTotalScore = savedState.currentTotalScore;
+                    this.cursedBlockTurn = savedState.cursedBlockTurn;
+                    this.wildcardTurn = savedState.wildcardTurn;
+                    this.heroSymbol = savedState.heroSymbol;
+                    this.heroBlocks = new Set(savedState.heroBlocks);
+                    this.gameStateManager.currentState = savedState.currentState;
+                    this.timeLeft = savedState.timeLeft;
+                    if(this.isTimeBurst && this.turnCount > 0 && !this.gameStateManager.is('GAME_OVER')) this.startTimer();
+                } else {
+                    this.gameStateManager.setState('AWAITING_ROLL');
+                    this.timeLeft = this.config.timeLimit;
+                    this.cursedBlockTurn = Math.floor(Math.random() * 8) + 5;
+                    this.wildcardTurn = Math.floor(Math.random() * 8) + 15;
+                    if (this.wildcardTurn === this.cursedBlockTurn) this.wildcardTurn++;
+                    this._initializeHeroFeature();
+                    this._initTutorial();
+                }
+
+                const highScoreKey = `cactiFactiHighScore_${this.config.id}_${this.isTimeBurst ? 'timeburst' : 'classic'}`;
+                this.highScore = parseInt(localStorage.getItem(highScoreKey)) || 0;
+                
+                this.audioInit();
+
+                // --- REFACTOR: Strategy pattern for superpower logic. ---
+                this._superpowerStrategies = {
+                    swapThem: (r, c, cell) => {
+                        if (!this.gridData[r][c] || this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) { this.audioPlay('invalid'); return; }
+                        if (!this.swapFirstCell) {
+                            this.swapFirstCell = { r, c };
+                            cell.classList.add('pulse-animation');
+                        } else {
+                            const { r: r1, c: c1 } = this.swapFirstCell;
+                            if (r1 === r && c1 === c) { this.swapFirstCell = null; cell.classList.remove('pulse-animation'); return; }
+                            if (Math.abs(r1 - r) + Math.abs(c1 - c) === 1) {
+                                [this.gridData[r1][c1], this.gridData[r][c]] = [this.gridData[r][c], this.gridData[r1][c1]];
+                                this.gridCells[r1][c1].classList.remove('pulse-animation');
+                                this.swapFirstCell = null;
+                                this.consumeSuperpower('swapThem');
+                                this.gameStateManager.setState('AWAITING_ROLL');
+                                this.renderControls();
+                            } else {
+                                this.audioPlay('invalid');
+                                cell.classList.add('shake-animation');
+                                setTimeout(() => cell.classList.remove('shake-animation'), 400);
+                                this.gridCells[r1][c1].classList.remove('pulse-animation');
+                                this.swapFirstCell = null;
+                            }
+                        }
+                    },
+                    bombBae: (r, c, cell) => {
+                        if (this.stuckBlocks.has(`${r},${c}`)) {
+                            this.stuckBlocks.delete(`${r},${c}`);
+                            this.gridData[r][c] = this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)];
+                            this.consumeSuperpower('bombBae');
+                            this.gameStateManager.setState('AWAITING_ROLL');
+                            this.renderControls();
+                        } else {
+                            this.audioPlay('invalid');
+                        }
+                    },
+                    noReturn: (r, c, cell) => {
+                        if (this.gridData[r][c]) {
+                            this.showSymbolSelectorForExchange(r, c);
+                        } else {
+                            this.audioPlay('invalid');
+                        }
+                    }
+                };
+            }
+
+            // --- REFACTOR: New private method for initial UI setup. ---
+            _setupUI() {
+                animateScoreUpdate('high-score', this.highScore, 3);
+                ['game-over-modal', 'exchange-modal', 'rules-modal', 'tutorial-modal', 'warning-modal'].forEach(id => document.getElementById(id)?.classList.remove('is-open'));
+                
+                this.renderGrid().then(() => {
+                    // Only flash on a brand new game, not a restored one.
+                    if (!this.lastGameState && this.turnCount === 0) {
+                        this.flashTwinningPattern();
+                    }
+                });
+                this.renderScorePlaceholders();
+                this.renderControls();
+                this.updateAllScores();
+                this.updateProgressBar();
+                this.syncPanelHeights();
+            }
+
+            _getDOMElements() {
                 const elements = {};
                 const idMap = {
                     game_board: 'game-board', row_scores_display: 'row-scores-display',
@@ -789,72 +905,7 @@
                 return elements;
             }
 
-            init(savedState = null) {
-                this.stopTimer();
-                this.gridData = Array(this.GRID_SIZE).fill(null).map(() => Array(this.GRID_SIZE).fill(null));
-                this.currentRoll = [];
-                this.firstPlacementCell = null;
-                this.turnCount = 0;
-                this.stuckBlocks = new Set();
-                this.usedSuperpowers = new Set();
-                this.activeSuperpower = null;
-                this.lastGameState = null;
-                this.lastMoveCoords = null;
-                this.currentTotalScore = 0;
-                this.scores = { rows: 0, cols: 0, cross: 0, bonus: 0, hero: 0, penalty: 0 };
-                this.gameStateManager = new GameState();
-                this.vibratedForScoreThisTurn = false;
-
-                if (savedState) {
-                    this.gridData = JSON.parse(savedState.gridData);
-                    this.currentRoll = savedState.currentRoll;
-                    this.firstPlacementCell = savedState.firstPlacementCell;
-                    this.turnCount = savedState.turnCount;
-                    this.stuckBlocks = new Set(savedState.stuckBlocks);
-                    this.usedSuperpowers = new Set(savedState.usedSuperpowers);
-                    this.lastGameState = savedState.lastGameState ? { ...this.lastGameState, gridData: JSON.parse(savedState.lastGameState.gridData), stuckBlocks: new Set(savedState.lastGameState.stuckBlocks) } : null;
-                    this.activeSuperpower = savedState.activeSuperpower;
-                    this.currentTotalScore = savedState.currentTotalScore;
-                    this.cursedBlockTurn = savedState.cursedBlockTurn;
-                    this.wildcardTurn = savedState.wildcardTurn;
-                    this.heroSymbol = savedState.heroSymbol;
-                    this.heroBlocks = new Set(savedState.heroBlocks);
-                    this.gameStateManager.currentState = savedState.currentState;
-                    this.timeLeft = savedState.timeLeft;
-                    if(this.isTimeBurst && this.turnCount > 0 && !this.gameStateManager.is('GAME_OVER')) this.startTimer();
-
-                } else {
-                    this.gameStateManager.setState('AWAITING_ROLL');
-                    this.timeLeft = this.config.timeLimit;
-                    this.cursedBlockTurn = Math.floor(Math.random() * 8) + 5;
-                    this.wildcardTurn = Math.floor(Math.random() * 8) + 15;
-                    if (this.wildcardTurn === this.cursedBlockTurn) this.wildcardTurn++;
-                    this.initializeHeroFeature();
-                    this.initTutorial();
-                }
-
-                this.cellToExchange = null; this.swapFirstCell = null;
-                
-                const highScoreKey = `cactiFactiHighScore_${this.config.id}_${this.isTimeBurst ? 'timeburst' : 'classic'}`;
-                this.highScore = parseInt(localStorage.getItem(highScoreKey)) || 0;
-                animateScoreUpdate('high-score', this.highScore, 3);
-
-                ['game-over-modal', 'exchange-modal', 'rules-modal', 'tutorial-modal', 'warning-modal'].forEach(id => document.getElementById(id)?.classList.remove('is-open'));
-                
-                this.audioInit();
-                this.renderGrid().then(() => {
-                    if (!savedState) {
-                        this.flashTwinningPattern();
-                    }
-                });
-                this.renderScorePlaceholders();
-                this.renderControls();
-                this.updateAllScores();
-                this.updateProgressBar();
-                this.syncPanelHeights();
-            }
-
-            initializeHeroFeature() {
+            _initializeHeroFeature() {
                 this.heroSymbol = this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)];
                 this.heroBlocks = new Set();
                 while (this.heroBlocks.size < 7) {
@@ -864,7 +915,7 @@
                 }
             }
 
-            initTutorial() {
+            _initTutorial() {
                 if (localStorage.getItem('allohaTutorialCompleted')) return;
                 
                 this.tutorialMode = true;
@@ -1162,10 +1213,11 @@
                 container.appendChild(wrapper);
 
                 const rollBtn = wrapper.querySelector('#roll-dice-btn');
-                if(rollBtn) rollBtn.onclick = this.handleRollDice.bind(this);
+                // --- REFACTOR: Using addEventListener ---
+                if(rollBtn) rollBtn.addEventListener('click', this.handleRollDice.bind(this));
                 
                 this.updateControlsState();
-                this.setupSuperpowerEventListeners(); 
+                this._attachSuperpowerEventListeners(); 
                 this.updateSuperpowerButtonsUI();
                 if(this.isTimeBurst) this.updateTimerDisplay();
             }
@@ -1401,10 +1453,8 @@
                     wrapper.className = 'w-full flex flex-col items-center justify-center h-full gap-4 pt-2';
                     
                     const title = document.createElement('h2');
-                    // Restored original font size as the new text is shorter
                     title.className = 'text-base lg:text-lg font-semibold text-center uppercase tracking-wider';
                     title.style.color = 'var(--accent)';
-                    // UPDATED TEXT as per your request
                     title.textContent = 'Choose Last Alloha';
 
                     const selector = document.createElement('div');
@@ -1417,7 +1467,8 @@
                         symbolSpan.className = this.SYMBOL_COLORS[symbol] || '';
                         symbolSpan.textContent = symbol;
                         btn.appendChild(symbolSpan);
-                        btn.onclick = () => resolve(symbol);
+                        // --- REFACTOR: Using addEventListener ---
+                        btn.addEventListener('click', () => resolve(symbol));
                         selector.appendChild(btn);
                     });
 
@@ -1485,7 +1536,7 @@
 
                 this.gridData[targetCell.r][targetCell.c] = chosenSymbol;
                 this.updateGridCell(targetCell.r, targetCell.c);
-                createSparkles(this.gridCells[targetCell.r][targetCell.c]); // --- NEW: Sparkle on Golden Alloha placement
+                createSparkles(this.gridCells[targetCell.r][targetCell.c]);
                 this.audioPlay('chime');
                 this.triggerVibration(50);
 
@@ -1552,16 +1603,18 @@
                     this.DOMElements.game_over_modal.classList.add('is-open');
                     document.body.classList.add('modal-open');
                     const shareBtn = document.getElementById('share-score-btn');
-                    if (shareBtn) {
-                        shareBtn.onclick = () => this.handleShareScore(finalScore, this.highScore);
-                    }
                     const changeEditionBtn = document.getElementById('change-edition-btn-modal');
+                    
+                    // --- REFACTOR: Using addEventListener ---
+                    if (shareBtn) {
+                        shareBtn.addEventListener('click', () => this.handleShareScore(finalScore, this.highScore));
+                    }
                     if (changeEditionBtn) {
-                        changeEditionBtn.onclick = () => {
+                        changeEditionBtn.addEventListener('click', () => {
                             this.DOMElements.game_over_modal.classList.remove('is-open');
                             document.body.classList.remove('modal-open');
                             document.getElementById('select-edition-btn').click();
-                        };
+                        });
                     }
                 }, 500);
             }
@@ -1660,7 +1713,7 @@
                             heroScore += 2;
                             this.heroBlocks.delete(`${coord.r},${coord.c}`);
                             showFloatingScore('+2', this.gridCells[coord.r][coord.c]);
-                            createSparkles(this.gridCells[coord.r][coord.c]); // --- NEW: Sparkle on Hero placement
+                            createSparkles(this.gridCells[coord.r][coord.c]);
                         }
                     });
                 }
@@ -1696,7 +1749,6 @@
                 scoredLines.forEach(line => {
                     const isNewlyFormed = line.cells.some(cell => lastMoveSet.has(`${cell.r},${cell.c}`));
                     if (line.score > 0 && isNewlyFormed) {
-                        // --- NEW: Vibrate on score ---
                         if (!this.vibratedForScoreThisTurn) {
                             this.triggerVibration(40);
                             this.vibratedForScoreThisTurn = true;
@@ -1771,7 +1823,6 @@
                     const oldScore = parseInt(el.textContent);
                     el.textContent = score; 
                     el.classList.toggle('text-red-500', score < 0); 
-                    // --- NEW: Vibrate on penalty ---
                     if (score < 0 && oldScore >= 0) {
                         this.triggerVibration([70, 40, 70]);
                     }
@@ -1817,25 +1868,24 @@
                     }
                 }
             }
+            
+            // --- REFACTOR: Refactored with strategy pattern. ---
             handleSuperpowerCellClick(r, c, cell) {
-                if (this.activeSuperpower === 'swapThem') {
-                    if (!this.gridData[r][c] || this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) { this.audioPlay('invalid'); return; }
-                    if (!this.swapFirstCell) { this.swapFirstCell = { r, c }; cell.classList.add('pulse-animation'); }
-                    else {
-                        const { r: r1, c: c1 } = this.swapFirstCell;
-                        if (r1 === r && c1 === c) { this.swapFirstCell = null; cell.classList.remove('pulse-animation'); return; }
-                        if (Math.abs(r1 - r) + Math.abs(c1 - c) === 1) {
-                            [this.gridData[r1][c1], this.gridData[r][c]] = [this.gridData[r][c], this.gridData[r1][c1]];
-                            this.gridCells[r1][c1].classList.remove('pulse-animation'); this.swapFirstCell = null;
-                            this.consumeSuperpower('swapThem'); this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls();
-                        } else { this.audioPlay('invalid'); cell.classList.add('shake-animation'); setTimeout(() => cell.classList.remove('shake-animation'), 400); this.gridCells[r1][c1].classList.remove('pulse-animation'); this.swapFirstCell = null; }
-                    } return;
+                if (this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) {
+                    this.audioPlay('invalid');
+                    cell.classList.add('shake-animation');
+                    setTimeout(() => cell.classList.remove('shake-animation'), 400);
+                    return;
                 }
-                if (this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) { this.audioPlay('invalid'); cell.classList.add('shake-animation'); setTimeout(() => cell.classList.remove('shake-animation'), 400); return; }
-                if (this.activeSuperpower === 'bombBae' && this.stuckBlocks.has(`${r},${c}`)) { this.stuckBlocks.delete(`${r},${c}`); this.gridData[r][c] = this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)]; this.consumeSuperpower('bombBae'); this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls(); }
-                else if (this.activeSuperpower === 'noReturn' && this.gridData[r][c]) { this.showSymbolSelectorForExchange(r, c); }
-                else { this.audioPlay('invalid'); }
+
+                const strategy = this._superpowerStrategies[this.activeSuperpower];
+                if (strategy) {
+                    strategy(r, c, cell);
+                } else {
+                    this.audioPlay('invalid');
+                }
             }
+
             showSymbolSelectorForExchange(r, c) {
                  this.cellToExchange = {r, c}; this.DOMElements.exchange_options.innerHTML = '';
                  this.SYMBOLS.filter(s => s !== this.gridData[r][c]).forEach(symbol => {
@@ -1845,7 +1895,9 @@
                     symbolSpan.className = this.SYMBOL_COLORS[symbol] || '';
                     symbolSpan.textContent = symbol;
                     btn.appendChild(symbolSpan);
-                    btn.onclick = () => this.handleSymbolExchange(symbol); this.DOMElements.exchange_options.appendChild(btn);
+                    // --- REFACTOR: Using addEventListener ---
+                    btn.addEventListener('click', () => this.handleSymbolExchange(symbol));
+                    this.DOMElements.exchange_options.appendChild(btn);
                  });
                  this.DOMElements.exchange_modal.classList.add('is-open');
                  document.body.classList.add('modal-open');
@@ -1863,7 +1915,7 @@
                 this.audioPlay('power-use'); this.usedSuperpowers.add(powerName); this.activeSuperpower = null;
                 this.updateFullGrid(); this.updateAllScores(); this.updateSuperpowerButtonsUI();
             }
-            setupSuperpowerEventListeners() {
+            _attachSuperpowerEventListeners() {
                 document.getElementById('past-lives-btn')?.addEventListener('click', () => {
                     if (document.getElementById('past-lives-btn').disabled) return;
                     this.audioPlay('power-activate');
@@ -1886,18 +1938,26 @@
                     this.consumeSuperpower('pastLives');
                 });
                 const powerBtns = { bombBae: 'bomb-bae-btn', noReturn: 'no-return-btn', swapThem: 'swap-them-btn' };
-                for (const [power, id] of Object.entries(powerBtns)) { document.getElementById(id)?.addEventListener('click', () => { if (document.getElementById(id).disabled) return; this.activeSuperpower = power; this.gameStateManager.setState('SUPERPOWER_ACTIVE'); this.audioPlay('power-activate'); this.triggerVibration(30); this.updateSuperpowerButtonsUI(); }); }
+                for (const [power, id] of Object.entries(powerBtns)) { 
+                    const btn = document.getElementById(id);
+                    if (btn) {
+                        btn.addEventListener('click', () => {
+                            if (btn.disabled) return;
+                            this.activeSuperpower = power;
+                            this.gameStateManager.setState('SUPERPOWER_ACTIVE');
+                            this.audioPlay('power-activate');
+                            this.triggerVibration(30);
+                            this.updateSuperpowerButtonsUI();
+                        });
+                    }
+                }
             }
-            setupEventListeners() {
+            _attachEventListeners() {
                 this.DOMElements.close_rules_btn.addEventListener('click', () => { this.DOMElements.rules_modal.classList.remove('is-open'); document.body.classList.remove('modal-open'); });
                 this.DOMElements.close_game_over_btn.addEventListener('click', () => { this.DOMElements.game_over_modal.classList.remove('is-open'); document.body.classList.remove('modal-open'); });
                 this.DOMElements.play_again_btn.addEventListener('click', () => { this.DOMElements.game_over_modal.classList.remove('is-open'); document.body.classList.remove('modal-open'); gameManager.resetCurrentVariant(); });
                 this.DOMElements.close_warning_btn.addEventListener('click', () => { this.DOMElements.warning_modal.classList.remove('is-open'); document.body.classList.remove('modal-open'); });
-
-                this.DOMElements.close_tutorial_btn.addEventListener('click', () => {
-                    this.completeTutorial();
-                });
-                
+                this.DOMElements.close_tutorial_btn.addEventListener('click', () => this.completeTutorial());
                 this.DOMElements.tutorial_next_btn.addEventListener('click', () => {
                     this.tutorialStep++;
                     this.showTutorialStep();
@@ -1928,8 +1988,9 @@
                     const button = document.createElement('button');
                     button.className = 'w-full text-left p-3 rounded-lg hover:bg-gray-200/50 font-semibold transition-colors';
                     button.textContent = config.name;
-                    button.dataset.editionId = config.id; 
-                    button.onclick = () => {
+                    button.dataset.editionId = config.id;
+                    // --- REFACTOR: Using addEventListener ---
+                    button.addEventListener('click', () => {
                         const game = this.currentGameInstance;
                         const isGameInProgress = game && game.turnCount > 0 && !game.gameStateManager.is('GAME_OVER');
                         
@@ -1944,7 +2005,7 @@
                         } else {
                             this.switchVariant(config.id, isTimeBurst);
                         }
-                    };
+                    });
                     container.appendChild(button);
                 });
             },
