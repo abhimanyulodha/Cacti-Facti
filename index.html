@@ -250,7 +250,6 @@
             100% { opacity: 0; transform: scale(1.5) translate(var(--sparkle-x), var(--sparkle-y)); }
         }
 
-        /* --- UPDATED: Smaller Hero Symbol Hint Style --- */
         .hero-block-hint::before {
             content: var(--hero-symbol);
             position: absolute;
@@ -264,7 +263,6 @@
             z-index: 0;
         }
         
-        /* --- NEW: Curse Block Overlay Style --- */
         .curse-overlay {
             position: fixed;
             font-size: 3rem;
@@ -279,7 +277,6 @@
             100% { transform: scale(1.5); opacity: 0; }
         }
         
-        /* --- NEW: Final fix for score truncation --- */
         #total-score, #high-score, #final-score-modal, #high-score-modal {
             line-height: 1.2;
         }
@@ -503,7 +500,7 @@
                 </div>
             </div>
             <p>High score: <span id="high-score-modal" class="font-bold" style="color: #FFC107;">0</span></p>
-            <div id="game-over-buttons" class="flex flex-col items-center gap-3 mt-6">
+            <div id="game-over-buttons" class="no-screenshot flex flex-col items-center gap-3 mt-6">
                 <div class="flex w-full items-center gap-3">
                     <button id="play-again-btn" class="flex-1 themed-button text-white font-bold py-3 px-4 rounded-xl text-lg">Play Again</button>
                     <button id="share-score-btn" class="flex-1 themed-button text-white font-bold py-3 px-4 rounded-xl text-lg flex items-center justify-center gap-2" style="background: var(--accent-gradient-shaded);">
@@ -732,20 +729,17 @@
         }
 
         class Game {
-            // --- REFACTOR: Constructor is now cleaner, calling helper methods. ---
             constructor(variantConfig, themeConfig, isTimeBurst, savedState = null) {
                 this.config = variantConfig;
                 this.theme = themeConfig;
                 this.isTimeBurst = isTimeBurst;
                 
-                // Game constants
                 this.SYMBOLS = this.theme.symbols;
                 this.SYMBOL_COLORS = this.theme.symbolColors;
                 this.SPECIAL_SYMBOLS = { 'WILD': '💎', 'CURSED': '☠️' };
                 this.SCORING_RULES = { 7: 20, 6: 12, 5: 8, 4: 5, 3: 3 };
                 this.GRID_SIZE = 7; this.MAX_TURNS = 24; this.CROSS_MULTIPLIER = 2; this.LINE_DEATH_PENALTY = -5; this.CROSS_DEATH_PENALTY = -5; this.MIN_SEQUENCE_LENGTH = 3;
 
-                // Core properties
                 this.gridCells = [];
                 this.DOMElements = this._getDOMElements();
                 this.audio = { unlocked: false, context: null, sounds: new Map() };
@@ -755,7 +749,6 @@
                 this._attachEventListeners();
             }
 
-            // --- REFACTOR: New private method to initialize game state. ---
             _initializeState(savedState = null) {
                 this.stopTimer();
                 this.gridData = Array(this.GRID_SIZE).fill(null).map(() => Array(this.GRID_SIZE).fill(null));
@@ -809,7 +802,6 @@
                 
                 this.audioInit();
 
-                // --- REFACTOR: Strategy pattern for superpower logic. ---
                 this._superpowerStrategies = {
                     swapThem: (r, c, cell) => {
                         if (!this.gridData[r][c] || this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) { this.audioPlay('invalid'); return; }
@@ -856,13 +848,11 @@
                 };
             }
 
-            // --- REFACTOR: New private method for initial UI setup. ---
             _setupUI() {
                 animateScoreUpdate('high-score', this.highScore, 3);
                 ['game-over-modal', 'exchange-modal', 'rules-modal', 'tutorial-modal', 'warning-modal'].forEach(id => document.getElementById(id)?.classList.remove('is-open'));
                 
                 this.renderGrid().then(() => {
-                    // Only flash on a brand new game, not a restored one.
                     if (!this.lastGameState && this.turnCount === 0) {
                         this.flashTwinningPattern();
                     }
@@ -1213,7 +1203,6 @@
                 container.appendChild(wrapper);
 
                 const rollBtn = wrapper.querySelector('#roll-dice-btn');
-                // --- REFACTOR: Using addEventListener ---
                 if(rollBtn) rollBtn.addEventListener('click', this.handleRollDice.bind(this));
                 
                 this.updateControlsState();
@@ -1359,7 +1348,6 @@
 
                 this.vibratedForScoreThisTurn = false;
 
-                // --- NEW: Check for special symbol placements for effects ---
                 const placedSymbols = [this.gridData[r][c], this.gridData[firstCellCoords.r][firstCellCoords.c]];
                 if (placedSymbols.includes(this.SPECIAL_SYMBOLS.WILD)) {
                     createSparkles(this.gridCells[r][c]);
@@ -1467,7 +1455,6 @@
                         symbolSpan.className = this.SYMBOL_COLORS[symbol] || '';
                         symbolSpan.textContent = symbol;
                         btn.appendChild(symbolSpan);
-                        // --- REFACTOR: Using addEventListener ---
                         btn.addEventListener('click', () => resolve(symbol));
                         selector.appendChild(btn);
                     });
@@ -1605,7 +1592,6 @@
                     const shareBtn = document.getElementById('share-score-btn');
                     const changeEditionBtn = document.getElementById('change-edition-btn-modal');
                     
-                    // --- REFACTOR: Using addEventListener ---
                     if (shareBtn) {
                         shareBtn.addEventListener('click', () => this.handleShareScore(finalScore, this.highScore));
                     }
@@ -1625,21 +1611,20 @@
                 if (!shareBtn || !shareBtnSpan) return;
 
                 const originalBtnText = shareBtnSpan.textContent;
-                const buttonContainer = document.getElementById('game-over-buttons');
                 const modalContent = document.querySelector('#game-over-modal .modal-content');
 
                 try {
                     shareBtnSpan.textContent = 'Generating...';
                     shareBtn.disabled = true;
 
-                    if (buttonContainer) buttonContainer.style.display = 'none';
-
                     await new Promise(resolve => setTimeout(resolve, 50));
 
+                    // CHANGE: Updated html2canvas call
                     const canvas = await html2canvas(modalContent, {
                         allowTaint: true,
                         useCORS: true,
-                        backgroundColor: null
+                        backgroundColor: null,
+                        ignoreElements: (element) => element.classList.contains('no-screenshot')
                     });
 
                     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
@@ -1667,7 +1652,6 @@
                     console.error('Sharing failed:', error);
                     shareBtnSpan.textContent = 'Error!';
                 } finally {
-                    if (buttonContainer) buttonContainer.style.display = 'flex';
                     setTimeout(() => {
                         shareBtnSpan.textContent = originalBtnText;
                         shareBtn.disabled = false;
@@ -1869,7 +1853,6 @@
                 }
             }
             
-            // --- REFACTOR: Refactored with strategy pattern. ---
             handleSuperpowerCellClick(r, c, cell) {
                 if (this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) {
                     this.audioPlay('invalid');
@@ -1895,7 +1878,6 @@
                     symbolSpan.className = this.SYMBOL_COLORS[symbol] || '';
                     symbolSpan.textContent = symbol;
                     btn.appendChild(symbolSpan);
-                    // --- REFACTOR: Using addEventListener ---
                     btn.addEventListener('click', () => this.handleSymbolExchange(symbol));
                     this.DOMElements.exchange_options.appendChild(btn);
                  });
@@ -1989,7 +1971,6 @@
                     button.className = 'w-full text-left p-3 rounded-lg hover:bg-gray-200/50 font-semibold transition-colors';
                     button.textContent = config.name;
                     button.dataset.editionId = config.id;
-                    // --- REFACTOR: Using addEventListener ---
                     button.addEventListener('click', () => {
                         const game = this.currentGameInstance;
                         const isGameInProgress = game && game.turnCount > 0 && !game.gameStateManager.is('GAME_OVER');
