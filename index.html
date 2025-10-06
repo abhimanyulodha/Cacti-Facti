@@ -519,7 +519,15 @@
             </div>
             <p>High score: <span id="high-score-modal" class="font-bold" style="color: #FFC107;">0</span></p>
             <div id="game-over-buttons" class="flex flex-col items-center gap-3 mt-6">
-                <button id="play-again-btn" class="w-full themed-button text-white font-bold py-3 px-4 rounded-xl text-lg">Play Again</button>
+                <div class="flex w-full items-center gap-3">
+                    <button id="play-again-btn" class="flex-1 themed-button text-white font-bold py-3 px-4 rounded-xl text-lg">Play Again</button>
+                    <button id="share-score-btn" class="flex-1 themed-button text-white font-bold py-3 px-4 rounded-xl text-lg flex items-center justify-center gap-2" style="background: var(--accent-gradient-shaded);">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+                        </svg>
+                        <span>Share Now</span>
+                    </button>
+                </div>
                 <button id="change-edition-btn-modal" class="no-screenshot themed-button w-full py-2.5 px-4 text-sm font-semibold rounded-lg mt-2" style="color: var(--accent); background-color: var(--accent-light);">
                     Choose a different Game Edition
                 </button>
@@ -1601,6 +1609,10 @@
                 setTimeout(() => {
                     this.DOMElements.game_over_modal.classList.add('is-open');
                     document.body.classList.add('modal-open');
+                    const shareBtn = document.getElementById('share-score-btn');
+                    if (shareBtn) {
+                        shareBtn.onclick = () => this.handleShareScore(finalScore, this.highScore);
+                    }
                     const changeEditionBtn = document.getElementById('change-edition-btn-modal');
                     if (changeEditionBtn) {
                         changeEditionBtn.onclick = () => {
@@ -1610,6 +1622,62 @@
                         };
                     }
                 }, 500);
+            }
+
+            async handleShareScore(score, highScore) {
+                const shareBtn = document.getElementById('share-score-btn');
+                const shareBtnSpan = shareBtn.querySelector('span');
+                if (!shareBtn || !shareBtnSpan) return;
+
+                const originalBtnText = shareBtnSpan.textContent;
+                const buttonContainer = document.getElementById('game-over-buttons');
+                const modalContent = document.querySelector('#game-over-modal .modal-content');
+
+                try {
+                    shareBtnSpan.textContent = 'Generating...';
+                    shareBtn.disabled = true;
+
+                    if (buttonContainer) buttonContainer.style.display = 'none';
+
+                    await new Promise(resolve => setTimeout(resolve, 50));
+
+                    const canvas = await html2canvas(modalContent, {
+                        allowTaint: true,
+                        useCORS: true,
+                        backgroundColor: null
+                    });
+
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                    if (!blob) throw new Error("Canvas to Blob conversion failed.");
+                    
+                    const file = new File([blob], 'alloha-score.png', { type: 'image/png' });
+                    const shareText = `✨ I scored ${score} in Alloha! ✨\n\nThink you can beat my score in Alloha? 🎲\n\nPlay now: https://abhimanyulodha.github.io/alloha/`;
+
+                    if (navigator.share && navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            title: 'My Alloha Score!',
+                            text: shareText,
+                            files: [file]
+                        });
+                    } else {
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = 'Alloha-Score.png';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(link.href);
+                    }
+                } catch (error) {
+                    console.error('Sharing failed:', error);
+                    shareBtnSpan.textContent = 'Error!';
+                } finally {
+                    if (buttonContainer) buttonContainer.style.display = 'flex';
+                    setTimeout(() => {
+                        shareBtnSpan.textContent = originalBtnText;
+                        shareBtn.disabled = false;
+                    }, 2000);
+                }
             }
 
             triggerConfetti() {
