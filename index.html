@@ -283,6 +283,21 @@
             opacity: 0.1;
             z-index: 0;
         }
+        
+        /* --- NEW: Curse Block Overlay Style --- */
+        .curse-overlay {
+            position: fixed;
+            font-size: 3rem;
+            pointer-events: none;
+            z-index: 1000;
+            animation: curse-overlay-anim 0.7s ease-out forwards;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        @keyframes curse-overlay-anim {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
     </style>
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-62DV4PDJ4X"></script>
@@ -838,6 +853,7 @@
                 this.currentTotalScore = 0;
                 this.scores = { rows: 0, cols: 0, cross: 0, bonus: 0, hero: 0, penalty: 0 };
                 this.gameStateManager = new GameState();
+                this.vibratedForScoreThisTurn = false;
 
                 if (savedState) {
                     this.gridData = JSON.parse(savedState.gridData);
@@ -987,7 +1003,7 @@
             audioPlayTone(freq, vol, dur) { if (!this.audio.unlocked || !this.audio.context) return; try { const o = this.audio.context.createOscillator(), g = this.audio.context.createGain(); o.connect(g); g.connect(this.audio.context.destination); o.frequency.value = freq; g.gain.setValueAtTime(0, this.audio.context.currentTime); g.gain.linearRampToValueAtTime(vol*.1, this.audio.context.currentTime+.01); g.gain.exponentialRampToValueAtTime(.001, this.audio.context.currentTime+dur); o.start(); o.stop(this.audio.context.currentTime+dur); } catch (e) {} }
             audioUnlock() { if (this.audio.unlocked) return; document.getElementById('audio-unlocker').play().finally(() => { this.audio.unlocked = true; }); }
             audioPlay(soundName) { this.audio.sounds.get(soundName)?.(); }
-            triggerVibration(duration = 10) { if (navigator.vibrate) { navigator.vibrate(duration); } }
+            triggerVibration(patternOrDuration = 10) { if (navigator.vibrate) { navigator.vibrate(patternOrDuration); } }
 
 
             startTimer() {
@@ -1304,6 +1320,29 @@
                 }
             }
             saveStateForUndo() { this.lastGameState = this.getState(); }
+
+            showCurseEffect(cellElement) {
+                const board = this.DOMElements.game_board_container;
+                board.classList.add('shake-animation');
+                setTimeout(() => board.classList.remove('shake-animation'), 400);
+
+                const overlay = document.createElement('div');
+                overlay.textContent = '☠️';
+                overlay.className = 'curse-overlay';
+                
+                const rect = cellElement.getBoundingClientRect();
+                overlay.style.top = `${rect.top}px`;
+                overlay.style.left = `${rect.left}px`;
+                overlay.style.width = `${rect.width}px`;
+                overlay.style.height = `${rect.height}px`;
+                overlay.style.display = 'flex';
+                overlay.style.alignItems = 'center';
+                overlay.style.justifyContent = 'center';
+
+                document.body.appendChild(overlay);
+                setTimeout(() => overlay.remove(), 700);
+            }
+            
             async completeMove(r, c) {
                 this.gameStateManager.setState('PROCESSING_TURN');
                 const firstCellCoords = this.firstPlacementCell; 
@@ -1315,6 +1354,20 @@
                 this.updateGridCell(r, c);
                 this.audioPlay('pop');
                 this.triggerVibration(20);
+
+                this.vibratedForScoreThisTurn = false;
+
+                // --- NEW: Check for special symbol placements for effects ---
+                const placedSymbols = [this.gridData[r][c], this.gridData[firstCellCoords.r][firstCellCoords.c]];
+                if (placedSymbols.includes(this.SPECIAL_SYMBOLS.WILD)) {
+                    createSparkles(this.gridCells[r][c]);
+                    createSparkles(this.gridCells[firstCellCoords.r][firstCellCoords.c]);
+                }
+                if (placedSymbols.includes(this.SPECIAL_SYMBOLS.CURSED)) {
+                    const cursedCell = this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED ? this.gridCells[r][c] : this.gridCells[firstCellCoords.r][firstCellCoords.c];
+                    this.showCurseEffect(cursedCell);
+                    this.triggerVibration([100, 50, 100]);
+                }
                 
                 await delay(300);
                 this.processTurnEnd();
@@ -1482,8 +1535,9 @@
 
                 this.gridData[targetCell.r][targetCell.c] = chosenSymbol;
                 this.updateGridCell(targetCell.r, targetCell.c);
+                createSparkles(this.gridCells[targetCell.r][targetCell.c]); // --- NEW: Sparkle on Golden Alloha placement
                 this.audioPlay('chime');
-                this.triggerVibration(20);
+                this.triggerVibration(50);
 
                 emptyCells.forEach(({ r, c }) => {
                     if (r !== targetCell.r || c !== targetCell.c) {
@@ -1519,6 +1573,10 @@
                 }
 
                 this.renderEndGamePanel(finalScore);
+
+                if (this.scores.penalty < 0) {
+                    this.triggerVibration([150, 50, 70]);
+                }
 
                 const highScoreKey = `cactiFactiHighScore_${this.config.id}_${this.isTimeBurst ? 'timeburst' : 'classic'}`;
                 const currentHighScore = parseInt(localStorage.getItem(highScoreKey)) || 0;
@@ -1592,6 +1650,7 @@
                             heroScore += 2;
                             this.heroBlocks.delete(`${coord.r},${coord.c}`);
                             showFloatingScore('+2', this.gridCells[coord.r][coord.c]);
+                            createSparkles(this.gridCells[coord.r][coord.c]); // --- NEW: Sparkle on Hero placement
                         }
                     });
                 }
@@ -1627,6 +1686,11 @@
                 scoredLines.forEach(line => {
                     const isNewlyFormed = line.cells.some(cell => lastMoveSet.has(`${cell.r},${cell.c}`));
                     if (line.score > 0 && isNewlyFormed) {
+                        // --- NEW: Vibrate on score ---
+                        if (!this.vibratedForScoreThisTurn) {
+                            this.triggerVibration(40);
+                            this.vibratedForScoreThisTurn = true;
+                        }
                         const sourceCell = this.gridCells[line.cells[Math.floor(line.cells.length / 2)].r][line.cells[Math.floor(line.cells.length / 2)].c];
                         showFloatingScore(`+${line.score}`, sourceCell);
                         line.cells.forEach(coord => {
@@ -1691,7 +1755,18 @@
                 rS.forEach((s, i) => this.updateScoreElement(`row-score-${i}`, s)); 
                 cS.forEach((s, i) => this.updateScoreElement(`col-score-${i}`, s)); 
             }
-            updateScoreElement(id, score) { const el = document.getElementById(id); if (el) { el.textContent = score; el.classList.toggle('text-red-500', score < 0); } }
+            updateScoreElement(id, score) { 
+                const el = document.getElementById(id); 
+                if (el) { 
+                    const oldScore = parseInt(el.textContent);
+                    el.textContent = score; 
+                    el.classList.toggle('text-red-500', score < 0); 
+                    // --- NEW: Vibrate on penalty ---
+                    if (score < 0 && oldScore >= 0) {
+                        this.triggerVibration([70, 40, 70]);
+                    }
+                } 
+            }
             
             updateSuperpowerButtonsUI() {
                 const ids = ['past-lives', 'no-return', 'bomb-bae', 'swap-them'];
