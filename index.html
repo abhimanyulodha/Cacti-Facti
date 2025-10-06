@@ -411,7 +411,7 @@
                 <p>You can use <b>two different superpowers</b> once per game to get out of a tight spot!</p>
                 <ul class="list-disc list-inside space-y-1">
                     <li><b>Past Lives:</b> Undoes your most recent move (placing a pair of Allohas).</li>
-                    <li><b>Bomb Bae:</b> Lets you clear a stuck block (💣) by filling it with a random Alloha.</li>
+                    <li><b>Bomb Bae:</b> Lets you clear any filled block (except Wild and Cursed blocks). Blocks above it will fall down to fill the space.</li>
                     <li><b>No Return:</b> Exchange any Alloha on the grid for a new one of your choice from the symbol set.</li>
                     <li><b>Swap Them:</b> Swap the positions of any two adjacent Allohas. This must be used <b>before</b> you roll the dice.</li>
                 </ul>
@@ -552,7 +552,7 @@
 
     <script>
     (function() {
-        // --- NEW: Helper functions for animations ---
+        // --- Helper functions for animations ---
         function createSparkles(element) {
             const rect = element.getBoundingClientRect();
             const container = document.body;
@@ -581,14 +581,12 @@
             setTimeout(() => floater.remove(), 1200);
         }
 
-        // --- UPDATED: Simplified score display function ---
         function animateScoreUpdate(containerId, newValue, minLength = 1) {
             const container = document.getElementById(containerId);
             if (!container) return;
 
             const oldValue = parseInt(container.textContent || '0');
             if (newValue > oldValue) {
-                // Keep the sparkle effect on score increase
                 if(container.getBoundingClientRect().width > 0) createSparkles(container);
             }
 
@@ -827,16 +825,28 @@
                             }
                         }
                     },
+                    // --- CHANGE: Updated Bomb Bae superpower logic ---
                     bombBae: (r, c, cell) => {
-                        if (this.stuckBlocks.has(`${r},${c}`)) {
-                            this.stuckBlocks.delete(`${r},${c}`);
-                            this.gridData[r][c] = this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)];
-                            this.consumeSuperpower('bombBae');
-                            this.gameStateManager.setState('AWAITING_ROLL');
-                            this.renderControls();
-                        } else {
+                        const targetSymbol = this.gridData[r][c];
+                        // Validate: a filled block that is not a wild card (cursed is handled already)
+                        if (!targetSymbol || targetSymbol === this.SPECIAL_SYMBOLS.WILD) {
                             this.audioPlay('invalid');
+                            cell.classList.add('shake-animation');
+                            setTimeout(() => cell.classList.remove('shake-animation'), 400);
+                            return;
                         }
+
+                        // Apply gravity effect
+                        for (let i = r; i > 0; i--) {
+                            this.gridData[i][c] = this.gridData[i - 1][c];
+                        }
+                        // Top-most cell in the column becomes empty
+                        this.gridData[0][c] = null;
+
+                        // Finalize the move
+                        this.consumeSuperpower('bombBae');
+                        this.gameStateManager.setState('AWAITING_ROLL');
+                        this.renderControls();
                     },
                     noReturn: (r, c, cell) => {
                         if (this.gridData[r][c]) {
@@ -1619,7 +1629,6 @@
 
                     await new Promise(resolve => setTimeout(resolve, 50));
 
-                    // CHANGE: Updated html2canvas call
                     const canvas = await html2canvas(modalContent, {
                         allowTaint: true,
                         useCORS: true,
@@ -1831,7 +1840,8 @@
                 const btns = { pastLives: document.getElementById('past-lives-btn'), bombBae: document.getElementById('bomb-bae-btn'), noReturn: document.getElementById('no-return-btn'), swapThem: document.getElementById('swap-them-btn') };
                 
                 if (btns.pastLives) btns.pastLives.disabled = totalUsed >= 2 || this.usedSuperpowers.has('pastLives') || !this.lastGameState || isMidMove || isPowerActive || !isAwaitingRoll;
-                if (btns.bombBae) btns.bombBae.disabled = totalUsed >= 2 || this.usedSuperpowers.has('bombBae') || this.stuckBlocks.size === 0 || isMidMove || isPowerActive;
+                // Bomb Bae can now be used as long as a block is filled.
+                if (btns.bombBae) btns.bombBae.disabled = totalUsed >= 2 || this.usedSuperpowers.has('bombBae') || this.gridData.flat().every(s => s === null) || isMidMove || isPowerActive;
                 if (btns.noReturn) btns.noReturn.disabled = this.turnCount < 1 || totalUsed >= 2 || this.usedSuperpowers.has('noReturn') || isMidMove || isPowerActive;
                 if (btns.swapThem) btns.swapThem.disabled = this.turnCount < 1 || totalUsed >= 2 || this.usedSuperpowers.has('swapThem') || !isAwaitingRoll || isMidMove || isPowerActive;
                 
