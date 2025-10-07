@@ -400,11 +400,11 @@
                     <div class="grid grid-cols-2 gap-4 text-center">
                         <div>
                             <h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">Total Score</h3>
-                            <div id="total-score" class="text-3xl font-bold" style="color: var(--accent);"></div>
+                            <div id="total-score" class="text-3xl font-bold" style="color: var(--accent);" aria-live="polite"></div>
                         </div>
                         <div>
                             <h3 class="text-xs font-semibold uppercase tracking-wider mb-1" style="color: var(--text-secondary);">High Score</h3>
-                            <div id="high-score" class="text-3xl font-bold" style="color: #FFC107;"></div>
+                            <div id="high-score" class="text-3xl font-bold" style="color: #FFC107;" aria-live="polite"></div>
                         </div>
                     </div>
                     
@@ -413,27 +413,27 @@
                     <div class="grid grid-cols-3 gap-y-3 text-center">
                         <div class="border-r" style="border-color: var(--faint-border);">
                             <h3 class="text-xs font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">Rows</h3>
-                            <div id="rows-total-score" class="text-lg font-bold"></div>
+                            <div id="rows-total-score" class="text-lg font-bold" aria-live="polite"></div>
                         </div>
                         <div class="border-r" style="border-color: var(--faint-border);">
                             <h3 class="text-xs font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">Columns</h3>
-                            <div id="cols-total-score" class="text-lg font-bold"></div>
+                            <div id="cols-total-score" class="text-lg font-bold" aria-live="polite"></div>
                         </div>
                         <div>
                             <h3 class="text-xs font-semibold uppercase tracking-wider" style="color: var(--text-secondary);">Twinning</h3>
-                            <div id="cross-total-score" class="text-lg font-bold" style="color: #FFC107;"></div>
+                            <div id="cross-total-score" class="text-lg font-bold" style="color: #FFC107;" aria-live="polite"></div>
                         </div>
                         <div class="border-r pt-3 border-t" style="border-color: var(--faint-border);">
                             <h3 class="text-xs font-semibold uppercase tracking-wider leading-tight" style="color: var(--text-secondary);">Grid<br>Bonus</h3>
-                            <div id="bonus-grid-score" class="text-lg font-bold" style="color: #FFC107;"></div>
+                            <div id="bonus-grid-score" class="text-lg font-bold" style="color: #FFC107;" aria-live="polite"></div>
                         </div>
                         <div class="border-r pt-3 border-t" style="border-color: var(--faint-border);">
                             <h3 class="text-xs font-semibold uppercase tracking-wider leading-tight" style="color: var(--text-secondary);">Hero<br>Bonus</h3>
-                            <div id="hero-bonus-score" class="text-lg font-bold" style="color: #FFC107;"></div>
+                            <div id="hero-bonus-score" class="text-lg font-bold" style="color: #FFC107;" aria-live="polite"></div>
                         </div>
                         <div class="pt-3 border-t" style="border-color: var(--faint-border);">
                             <h3 class="text-xs font-semibold uppercase tracking-wider leading-tight" style="color: var(--text-secondary);">Empty<br>Block</h3>
-                            <div id="empty-block-penalty" class="text-lg font-bold" style="color: var(--text);"></div>
+                            <div id="empty-block-penalty" class="text-lg font-bold" style="color: var(--text);" aria-live="polite"></div>
                         </div>
                     </div>
                 </div>
@@ -546,7 +546,7 @@
             <button id="close-game-over-btn" aria-label="Close Game Over" class="absolute top-4 right-4 w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
             <h2 class="text-4xl font-bold mb-2" style="font-family: 'Pacifico', cursive; color: var(--accent);">Game Over Alloha!</h2>
             <p id="game-over-reason" class="text-lg mt-2 mb-4" style="color: var(--accent);"></p>
-            <div id="final-score-modal" class="text-7xl font-bold my-8" style="color: var(--accent);"></div>
+            <div id="final-score-modal" class="text-7xl font-bold my-8" style="color: var(--accent);" aria-live="polite"></div>
             <div id="score-breakdown" class="mb-6 p-4 glass-card rounded-xl text-xs" style="display: grid;">
                 <div class="grid grid-cols-2 gap-2">
                     <div class="text-left">Rows: <span id="final-rows-score" class="float-right font-bold">0</span></div>
@@ -557,7 +557,7 @@
                     <div class="text-left col-span-2 border-t pt-2 mt-2">Empty Block: <span id="final-penalty-score" class="float-right font-bold">0</span></div>
                 </div>
             </div>
-            <p>High score: <span id="high-score-modal" class="font-bold" style="color: #FFC107;">0</span></p>
+            <p>High score: <span id="high-score-modal" class="font-bold" style="color: #FFC107;" aria-live="polite">0</span></p>
             <div id="game-over-buttons" class="no-screenshot flex flex-col items-center gap-3 mt-6">
                 <div class="flex w-full items-center gap-3">
                     <button id="play-again-btn" class="flex-1 themed-button text-white font-bold py-3 px-4 rounded-xl text-lg">Play Again</button>
@@ -599,7 +599,8 @@
     </div>
 
     <div id="warning-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
-        <div class="modal-content w-full max-w-sm themed-modal p-8 text-center transform scale-95 -translate-y-4">
+        <div class="modal-content w-full max-w-sm themed-modal p-8 text-center transform scale-95 -translate-y-4 relative">
+            <button id="close-warning-x-btn" aria-label="Close Warning" class="absolute top-4 right-4 w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
             <h2 class="text-2xl font-bold mb-4" style="color: var(--accent);">Action Needed!</h2>
             <p class="mb-6" style="color: var(--text-secondary);">Please place your current Allohas on the board before rolling the dice again.</p>
             <div class="flex justify-center items-center">
@@ -609,7 +610,8 @@
     </div>
 
     <div id="unlock-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
-        <div class="modal-content w-full max-w-sm themed-modal p-8 text-center transform scale-95 -translate-y-4">
+        <div class="modal-content w-full max-w-sm themed-modal p-8 text-center transform scale-95 -translate-y-4 relative">
+            <button id="close-unlock-x-btn" aria-label="Close Unlock Notification" class="absolute top-4 right-4 w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
             <h2 class="text-3xl font-bold mb-2" style="font-family: 'Pacifico', cursive; color: var(--accent);">Edition Unlocked!</h2>
             <p class="text-lg mt-4 mb-6" style="color: var(--text-secondary);">Congratulations, you can now play:</p>
             <p id="unlocked-edition-name" class="text-2xl font-bold mb-6" style="color: var(--text);"></p>
@@ -633,6 +635,21 @@
     <script>
     (function() {
         const DEV_UNLOCK_ALL = false;
+
+        const CONSTANTS = {
+            TOAST_DURATION: 3000,
+            SPARKLE_DURATION: 700,
+            FLOATING_SCORE_DURATION: 1200,
+            SHAKE_ANIMATION_DURATION: 400,
+            DICE_TUMBLE_DURATION: 600,
+            TWINNING_FLASH_DURATION: 1500,
+            MOVE_COMPLETION_DELAY: 300,
+            CURSE_EFFECT_DURATION: 700,
+            GOLDEN_ALLOHA_DELAY: 500,
+            END_GAME_MODAL_DELAY: 500,
+            CONFETTI_DURATION: 4000,
+            VARIANT_SWITCH_DELAY: 250,
+        };
 
         const SUPERPOWERS = {
             PAST_LIVES: 'pastLives',
@@ -667,8 +684,9 @@
             const toast = document.createElement('div');
             toast.className = 'toast-notification';
             toast.innerHTML = message;
+            toast.setAttribute('aria-live', 'assertive');
             document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+            setTimeout(() => toast.remove(), CONSTANTS.TOAST_DURATION);
         }
 
         function getPlayerStats() {
@@ -763,7 +781,7 @@
                 sparkle.style.setProperty('--sparkle-x', `${Math.cos(randomAngle) * randomDist}px`);
                 sparkle.style.setProperty('--sparkle-y', `${Math.sin(randomAngle) * randomDist}px`);
                 container.appendChild(sparkle);
-                setTimeout(() => sparkle.remove(), 700);
+                setTimeout(() => sparkle.remove(), CONSTANTS.SPARKLE_DURATION);
             }
         }
 
@@ -775,7 +793,7 @@
             floater.style.top = `${startRect.top + startRect.height / 2 - 15}px`;
             floater.style.left = `${startRect.left + startRect.width / 2 - 15}px`;
             document.body.appendChild(floater);
-            setTimeout(() => floater.remove(), 1200);
+            setTimeout(() => floater.remove(), CONSTANTS.FLOATING_SCORE_DURATION);
         }
 
         function animateScoreUpdate(containerId, newValue, minLength = 1) {
@@ -1067,6 +1085,639 @@
             is(state) { return this.currentState === state; }
         }
 
+        // --- HELPER CLASSES DEFINED FIRST ---
+        class AudioManager {
+            constructor() {
+                this.unlocked = false;
+                this.context = null;
+                this.sounds = new Map();
+            }
+
+            init() {
+                this._createContext();
+                this._createSounds();
+            }
+
+            _createContext() {
+                try {
+                    if (!this.context) {
+                        this.context = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                } catch (e) {
+                    console.error("AudioContext not supported.", e);
+                }
+            }
+
+            _createSounds() {
+                if (!this.context || this.sounds.size > 0) return;
+                const soundConfigs = {
+                    'pop': [1200, 0.1, 0.05], 'roll': [220, 0.2, 0.2], 'hover': [660, 0.05, 0.1],
+                    'invalid': [150, 0.3, 0.2], 'power-activate': [880, 0.15, 0.2],
+                    'power-use': [1047, 0.2, 0.3], 'chime': [1047, 0.15, 0.2], 'thud': [100, 0.3, 0.1]
+                };
+                for (const key in soundConfigs) {
+                    this.sounds.set(key, () => this._playTone(...soundConfigs[key]));
+                }
+            }
+
+            _playTone(freq, vol, dur) {
+                if (!this.unlocked || !this.context) return;
+                try {
+                    const o = this.context.createOscillator();
+                    const g = this.context.createGain();
+                    o.connect(g);
+                    g.connect(this.context.destination);
+                    o.frequency.value = freq;
+                    g.gain.setValueAtTime(0, this.context.currentTime);
+                    g.gain.linearRampToValueAtTime(vol * 0.1, this.context.currentTime + 0.01);
+                    g.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + dur);
+                    o.start();
+                    o.stop(this.context.currentTime + dur);
+                } catch (e) {
+                    console.error("Error playing tone.", e);
+                }
+            }
+
+            unlock() {
+                if (this.unlocked) return;
+                document.getElementById('audio-unlocker').play().finally(() => {
+                    this.unlocked = true;
+                });
+            }
+
+            play(soundName) {
+                const soundAction = this.sounds.get(soundName);
+                if (soundAction) {
+                    soundAction();
+                }
+            }
+        }
+
+        class Renderer {
+            constructor(game, DOMElements) {
+                this.game = game;
+                this.DOMElements = DOMElements;
+                this.gridCells = [];
+            }
+            
+            async renderGrid() {
+                const fragment = document.createDocumentFragment(); this.DOMElements.game_board.innerHTML = ''; this.gridCells = [];
+                for (let r = 0; r < this.game.GRID_SIZE; r++) {
+                    const row = [];
+                    for (let c = 0; c < this.game.GRID_SIZE; c++) {
+                        const cell = this.createCellElement(r, c); this.updateCell(cell, r, c); this.game.inputHandler.addCellEventListeners(cell);
+                        fragment.appendChild(cell); row.push(cell);
+                    }
+                    this.gridCells.push(row);
+                }
+                this.DOMElements.game_board.appendChild(fragment);
+            }
+
+            createCellElement(r, c) { const cell = document.createElement('div'); cell.dataset.row = r; cell.dataset.col = c; cell.className = this.getCellClasses(r, c); return cell; }
+            getCellClasses(r, c) {
+                let classes = 'grid-cell';
+                if (this.game.config.isTwinningCell(r, c)) classes += ' highlighted';
+                if (this.game.stuckBlocks.has(`${r},${c}`)) classes += ' stuck-cell';
+                if (this.game.heroBlocks.has(`${r},${c}`)) classes += ' hero-block-hint';
+                return classes;
+            }
+
+            updateCell(cell, r, c) {
+                cell.className = this.getCellClasses(r, c);
+                const symbol = this.game.gridData[r][c];
+                
+                cell.innerHTML = ''; 
+                cell.style.setProperty('--hero-symbol', `'${this.game.heroSymbol}'`);
+
+                if (symbol) {
+                    const symbolSpan = document.createElement('span');
+                    symbolSpan.textContent = symbol;
+                    if(this.game.SYMBOL_COLORS[symbol]) {
+                       symbolSpan.className = this.game.SYMBOL_COLORS[symbol];
+                    }
+                    cell.appendChild(symbolSpan);
+                } else {
+                    cell.textContent = this.game.stuckBlocks.has(`${r},${c}`) ? '💣' : '';
+                }
+            }
+
+            updateFullGrid() { for (let r = 0; r < this.game.GRID_SIZE; r++) for (let c = 0; c < this.game.GRID_SIZE; c++) this.updateGridCell(r, c); }
+            updateGridCell(r, c) { if (this.gridCells[r]?.[c]) this.updateCell(this.gridCells[r][c], r, c); }
+
+            renderScorePlaceholders() {
+                this.DOMElements.row_scores_display.innerHTML = ''; 
+                this.DOMElements.col_scores_display.innerHTML = '';
+                for (let i = 0; i < this.game.GRID_SIZE; i++) {
+                    const rowScore = document.createElement('div'); rowScore.id = `row-score-${i}`; rowScore.className = 'grid-cell score-display-cell'; rowScore.textContent = '0'; this.DOMElements.row_scores_display.appendChild(rowScore);
+                    const colScore = document.createElement('div'); colScore.id = `col-score-${i}`; colScore.className = 'grid-cell score-display-cell'; colScore.textContent = '0'; this.DOMElements.col_scores_display.appendChild(colScore);
+                }
+            }
+
+            renderControls() {
+                const inGameContent = this.DOMElements.in_game_content;
+                const preGameContent = this.DOMElements.pre_game_content;
+                
+                if(inGameContent) inGameContent.className = '';
+
+                if (this.game.gameStateManager.is('PRE_GAME')) {
+                    if(preGameContent) preGameContent.style.display = 'block';
+                    if(inGameContent) inGameContent.style.display = 'none';
+                } else {
+                    if(preGameContent) preGameContent.style.display = 'none';
+                    if(inGameContent) inGameContent.style.display = 'block';
+                    this.renderDiceAndPowers();
+                }
+            }
+
+            renderDiceAndPowers() {
+                const container = this.DOMElements.in_game_content;
+                container.className = '';
+                container.innerHTML = '';
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'w-full flex flex-col justify-start gap-3 lg:gap-4';
+                let timerHTML = '';
+                if(this.game.isTimeBurst) {
+                    timerHTML = `<div id="timer-display" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card enhanced-shadow flex items-center justify-center text-2xl lg:text-3xl font-bold" style="color: var(--accent);" aria-live="polite">${this.game.timeLeft}</div>`;
+                }
+
+                wrapper.innerHTML = `<div class="flex justify-center items-center gap-2 lg:gap-4">
+                    <button id="roll-dice-btn" aria-label="Roll Dice" class="w-14 h-14 lg:w-16 lg:h-16 text-4xl lg:text-5xl flex items-center justify-center" style="color: var(--accent);">🎲</button>
+                    <div id="dice-1" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card enhanced-shadow flex items-center justify-center text-3xl lg:text-4xl shimmer-text">?</div>
+                    <div id="dice-2" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card enhanced-shadow flex items-center justify-center text-3xl lg:text-4xl shimmer-text">?</div>
+                    ${timerHTML}
+                </div>
+                <div class="glass-card enhanced-shadow rounded-xl px-3 py-2 text-center"><h2 class="text-sm font-semibold uppercase tracking-wider mb-3 flex items-center justify-center gap-2" style="color: var(--text-secondary);">Alloha Superpowers <span id="sp-charges" class="text-base">✨✨</span></h2><div class="grid grid-cols-4 gap-1 text-center">
+                    <button id="past-lives-btn" class="superpower-btn"><div>Past</div><div>Lives</div><div class="superpower-used-overlay hidden absolute inset-0 text-red-500 text-4xl font-extrabold flex items-center justify-center" style="text-shadow: 0 1px 2px rgba(0,0,0,0.4);">X</div></button>
+                    <button id="no-return-btn" class="superpower-btn"><div>No</div><div>Return</div><div class="superpower-used-overlay hidden absolute inset-0 text-red-500 text-4xl font-extrabold flex items-center justify-center" style="text-shadow: 0 1px 2px rgba(0,0,0,0.4);">X</div></button>
+                    <button id="bomb-bae-btn" class="superpower-btn"><div>Bomb</div><div>Bae</div><div class="superpower-used-overlay hidden absolute inset-0 text-red-500 text-4xl font-extrabold flex items-center justify-center" style="text-shadow: 0 1px 2px rgba(0,0,0,0.4);">X</div></button>
+                    <button id="swap-them-btn" class="superpower-btn"><div>Swap</div><div>Them</div><div class="superpower-used-overlay hidden absolute inset-0 text-red-500 text-4xl font-extrabold flex items-center justify-center" style="text-shadow: 0 1px 2px rgba(0,0,0,0.4);">X</div></button>
+                </div></div>`;
+                
+                container.appendChild(wrapper);
+
+                this.updateControlsState();
+                this.game.inputHandler.attachSuperpowerEventListeners();
+                this.updateSuperpowerButtonsUI();
+                if(this.game.isTimeBurst) this.updateTimerDisplay();
+            }
+
+            updateControlsState() {
+                if (this.game.gameStateManager.is('PRE_GAME')) return;
+                const rollBtn = document.getElementById('roll-dice-btn');
+                if (rollBtn) {
+                    rollBtn.classList.toggle('bob-animation', this.game.gameStateManager.is('AWAITING_ROLL'));
+                }
+                const dice1 = document.getElementById('dice-1'), dice2 = document.getElementById('dice-2');
+                if (!dice1 || !dice2) return;
+                
+                dice1.classList.remove('shimmer-text');
+                dice2.classList.remove('shimmer-text');
+                
+                if (this.game.gameStateManager.is('AWAITING_PLACEMENT') && this.game.currentRoll.length === 2) {
+                    const symbol1 = this.game.currentRoll[0], symbol2 = this.game.currentRoll[1];
+                    const color1 = this.game.SYMBOL_COLORS[symbol1] || 'text-gray-700';
+                    const color2 = this.game.SYMBOL_COLORS[symbol2] || 'text-gray-700';
+
+                    dice1.innerHTML = `<span class="${color1}">${symbol1}</span>`;
+                    dice2.innerHTML = `<span class="${color2}">${symbol2}</span>`;
+                } else {
+                    dice1.textContent = '?';
+                    dice2.textContent = '?';
+                    dice1.classList.add('shimmer-text');
+                    dice2.classList.add('shimmer-text');
+                }
+            }
+
+            updateScoreDisplays(r, c, cross, b, h, p) { 
+                animateScoreUpdate('total-score', r + c + cross + b + h + p, 3); 
+                animateScoreUpdate('rows-total-score', r, 2); 
+                animateScoreUpdate('cols-total-score', c, 2); 
+                animateScoreUpdate('cross-total-score', cross, 2); 
+                animateScoreUpdate('bonus-grid-score', b, 2);
+                animateScoreUpdate('hero-bonus-score', h, 2);
+                animateScoreUpdate('empty-block-penalty', p, 2); 
+            }
+            
+            updateIndividualScores(rS, cS) { 
+                rS.forEach((s, i) => this.updateScoreElement(`row-score-${i}`, s)); 
+                cS.forEach((s, i) => this.updateScoreElement(`col-score-${i}`, s)); 
+            }
+            
+            updateScoreElement(id, score) { 
+                const el = document.getElementById(id); 
+                if (el) { 
+                    const oldScore = parseInt(el.textContent);
+                    el.textContent = score; 
+                    el.classList.toggle('text-red-500', score < 0); 
+                    if (score < 0 && oldScore >= 0) {
+                        this.game.triggerVibration([70, 40, 70]);
+                    }
+                } 
+            }
+            
+            updateSuperpowerButtonsUI() {
+                const ids = {
+                    [SUPERPOWERS.PAST_LIVES]: 'past-lives-btn',
+                    [SUPERPOWERS.NO_RETURN]: 'no-return-btn',
+                    [SUPERPOWERS.BOMB_BAE]: 'bomb-bae-btn',
+                    [SUPERPOWERS.SWAP_THEM]: 'swap-them-btn',
+                };
+                Object.keys(ids).forEach(powerKey => {
+                    const btn = document.getElementById(ids[powerKey]);
+                    if (!btn) return;
+                    const overlay = btn.querySelector('.superpower-used-overlay');
+                    if(this.game.usedSuperpowers.has(powerKey)) {
+                        if(overlay) overlay.classList.remove('hidden');
+                    } else {
+                        if(overlay) overlay.classList.add('hidden');
+                    }
+                });
+
+                const totalUsed = this.game.usedSuperpowers.size, isMidMove = this.game.firstPlacementCell !== null, isPowerActive = this.game.activeSuperpower !== null, isAwaitingRoll = this.game.gameStateManager.is('AWAITING_ROLL');
+                const btns = { 
+                    [SUPERPOWERS.PAST_LIVES]: document.getElementById('past-lives-btn'), 
+                    [SUPERPOWERS.BOMB_BAE]: document.getElementById('bomb-bae-btn'), 
+                    [SUPERPOWERS.NO_RETURN]: document.getElementById('no-return-btn'), 
+                    [SUPERPOWERS.SWAP_THEM]: document.getElementById('swap-them-btn') 
+                };
+                
+                if (btns[SUPERPOWERS.PAST_LIVES]) btns[SUPERPOWERS.PAST_LIVES].disabled = totalUsed >= 2 || this.game.usedSuperpowers.has(SUPERPOWERS.PAST_LIVES) || !this.game.lastGameState || isMidMove || isPowerActive || !isAwaitingRoll;
+                if (btns[SUPERPOWERS.BOMB_BAE]) btns[SUPERPOWERS.BOMB_BAE].disabled = totalUsed >= 2 || this.game.usedSuperpowers.has(SUPERPOWERS.BOMB_BAE) || this.game.gridData.flat().every(s => s === null) || isMidMove || isPowerActive;
+                if (btns[SUPERPOWERS.NO_RETURN]) btns[SUPERPOWERS.NO_RETURN].disabled = this.game.turnCount < 1 || totalUsed >= 2 || this.game.usedSuperpowers.has(SUPERPOWERS.NO_RETURN) || isMidMove || isPowerActive;
+                if (btns[SUPERPOWERS.SWAP_THEM]) btns[SUPERPOWERS.SWAP_THEM].disabled = this.game.turnCount < 1 || totalUsed >= 2 || this.game.usedSuperpowers.has(SUPERPOWERS.SWAP_THEM) || !isAwaitingRoll || isMidMove || isPowerActive;
+                
+                Object.values(btns).forEach(btn => { if(btn) btn.classList.remove('superpower-btn--active')});
+                if (isPowerActive && btns[this.game.activeSuperpower]) {
+                    btns[this.game.activeSuperpower].classList.add('superpower-btn--active');
+                }
+                document.body.style.cursor = this.game.activeSuperpower === SUPERPOWERS.BOMB_BAE ? 'crosshair' : '';
+
+                const spChargesEl = document.getElementById('sp-charges');
+                if (spChargesEl) {
+                    if (totalUsed === 0) {
+                        spChargesEl.innerHTML = '✨✨';
+                    } else if (totalUsed === 1) {
+                        spChargesEl.innerHTML = '✨<span class="opacity-30">✨</span>';
+                    } else {
+                        spChargesEl.innerHTML = '<span class="opacity-30">✨✨</span>';
+                    }
+                }
+            }
+            
+            syncPanelHeights() { setTimeout(() => { if (window.innerWidth < 1024) return; const boardHeight = this.DOMElements.game_board_container?.getBoundingClientRect().height; if (boardHeight) this.DOMElements.scoring_panel.style.height = `${boardHeight}px`; }, 50); }
+            
+            updateProgressBar() {
+                if (!this.DOMElements.progress_bar_fill) return;
+                const percentage = (this.game.turnCount / this.game.MAX_TURNS) * 100;
+                this.DOMElements.progress_bar_fill.style.width = `${percentage}%`;
+            }
+
+            flashTwinningPattern() {
+                const highlightedCells = document.querySelectorAll('.highlighted');
+                if (highlightedCells.length === 0) return;
+
+                highlightedCells.forEach(cell => {
+                    cell.classList.add('twinning-flash-animation');
+                });
+                setTimeout(() => {
+                    highlightedCells.forEach(cell => {
+                        cell.classList.remove('twinning-flash-animation');
+                    });
+                }, CONSTANTS.TWINNING_FLASH_DURATION);
+            }
+
+            showCurseEffect(cellElement) {
+                const board = this.DOMElements.game_board_container;
+                board.classList.add('shake-animation');
+                setTimeout(() => board.classList.remove('shake-animation'), CONSTANTS.SHAKE_ANIMATION_DURATION);
+
+                const overlay = document.createElement('div');
+                overlay.textContent = '☠️';
+                overlay.className = 'curse-overlay';
+                
+                const rect = cellElement.getBoundingClientRect();
+                overlay.style.top = `${rect.top}px`;
+                overlay.style.left = `${rect.left}px`;
+                overlay.style.width = `${rect.width}px`;
+                overlay.style.height = `${rect.height}px`;
+                overlay.style.display = 'flex';
+                overlay.style.alignItems = 'center';
+                overlay.style.justifyContent = 'center';
+
+                document.body.appendChild(overlay);
+                setTimeout(() => overlay.remove(), CONSTANTS.CURSE_EFFECT_DURATION);
+            }
+
+            highlightValidPlacements(r, c) {
+                const adjacent = [ [r-1, c], [r+1, c], [r, c-1], [r, c+1] ];
+                adjacent.forEach(([nr, nc]) => {
+                    if (nr >= 0 && nr < this.game.GRID_SIZE && nc >= 0 && nc < this.game.GRID_SIZE && !this.game.gridData[nr][nc]) {
+                        const cell = this.gridCells[nr][nc];
+                        cell.classList.add('valid-placement');
+                    }
+                });
+            }
+
+            clearPlacementHighlights() {
+                this.gridCells.flat().forEach(cell => {
+                    cell.classList.remove('valid-placement');
+                });
+            }
+
+            renderGoldenAllohaPlacementPrompt(symbol) {
+                const container = this.DOMElements.in_game_content;
+                container.className = 'w-full flex flex-col items-center justify-center h-full text-center p-4';
+                container.innerHTML = '';
+
+                const line1 = document.createElement('h2');
+                line1.className = 'text-xl lg:text-2xl font-semibold';
+                line1.style.color = 'var(--accent)';
+                line1.innerHTML = `You chose <span class="text-5xl align-middle ${this.game.SYMBOL_COLORS[symbol] || 'text-gray-700'}">${symbol}</span>`;
+
+                const line2 = document.createElement('p');
+                line2.className = 'text-base lg:text-lg font-medium mt-2';
+                line2.style.color = 'var(--text-secondary)';
+                line2.textContent = 'Place it on any highlighted Allohome!';
+
+                container.appendChild(line1);
+                container.appendChild(line2);
+            }
+
+            renderEndGamePanel(score) {
+                const container = this.DOMElements.in_game_content;
+                container.className = 'w-full flex flex-col items-center justify-center h-full text-center p-4';
+                container.innerHTML = '';
+
+                const title = document.createElement('h2');
+                title.className = 'text-3xl font-bold';
+                title.style.fontFamily = "'Pacifico', cursive";
+                title.style.color = 'var(--accent)';
+                title.textContent = 'Game Over Alloha!';
+
+                const scoreDisplay = document.createElement('div');
+                scoreDisplay.id = 'end-game-score-display';
+                scoreDisplay.className = 'text-7xl font-bold my-2';
+                scoreDisplay.style.color = 'var(--accent)';
+                
+                container.appendChild(title);
+                container.appendChild(scoreDisplay);
+                animateScoreUpdate('end-game-score-display', score, 3);
+            }
+
+            async renderGoldenAllohaSelector() {
+                const container = this.DOMElements.in_game_content;
+                container.className = '';
+                container.innerHTML = '';
+
+                return new Promise(resolve => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'w-full flex flex-col items-center justify-center h-full gap-4 pt-2';
+                    
+                    const title = document.createElement('h2');
+                    title.className = 'text-base lg:text-lg font-semibold text-center uppercase tracking-wider';
+                    title.style.color = 'var(--accent)';
+                    title.textContent = 'Choose Last Alloha';
+
+                    const selector = document.createElement('div');
+                    selector.className = 'grid grid-cols-3 gap-2 lg:gap-4';
+
+                    this.game.SYMBOLS.forEach(symbol => {
+                        const btn = document.createElement('button');
+                        btn.className = `w-12 h-12 lg:w-14 lg:h-14 rounded-xl text-3xl flex items-center justify-center transition-transform hover:scale-110 active:scale-95`;
+                        const symbolSpan = document.createElement('span');
+                        symbolSpan.className = this.game.SYMBOL_COLORS[symbol] || '';
+                        symbolSpan.textContent = symbol;
+                        btn.appendChild(symbolSpan);
+                        btn.addEventListener('click', () => resolve(symbol));
+                        selector.appendChild(btn);
+                    });
+
+                    wrapper.appendChild(title);
+                    wrapper.appendChild(selector);
+                    container.appendChild(wrapper);
+                });
+            }
+            
+            showSymbolSelectorForExchange(r, c) {
+                 this.game.cellToExchange = {r, c}; this.DOMElements.exchange_options.innerHTML = '';
+                 this.game.SYMBOLS.filter(s => s !== this.game.gridData[r][c]).forEach(symbol => {
+                    const btn = document.createElement('button');
+                    btn.className = `w-20 h-20 text-4xl rounded-lg hover:bg-orange-100/50 flex items-center justify-center`;
+                    const symbolSpan = document.createElement('span');
+                    symbolSpan.className = this.game.SYMBOL_COLORS[symbol] || '';
+                    symbolSpan.textContent = symbol;
+                    btn.appendChild(symbolSpan);
+                    btn.addEventListener('click', () => this.game.handleSymbolExchange(symbol));
+                    this.DOMElements.exchange_options.appendChild(btn);
+                 });
+                 handleModalOpen(this.DOMElements.exchange_modal);
+            }
+            
+            triggerBoardAndFloatAnimations(scoredLines, lastMoveCoords) {
+                if (!scoredLines || !lastMoveCoords) return;
+                const lastMoveSet = new Set(lastMoveCoords.map(c => `${c.r},${c.c}`));
+
+                scoredLines.forEach(line => {
+                    const isNewlyFormed = line.cells.some(cell => lastMoveSet.has(`${cell.r},${cell.c}`));
+                    if (line.score > 0 && isNewlyFormed) {
+                        if (!this.game.vibratedForScoreThisTurn) {
+                            this.game.triggerVibration(40);
+                            this.game.vibratedForScoreThisTurn = true;
+                        }
+                        const sourceCell = this.gridCells[line.cells[Math.floor(line.cells.length / 2)].r][line.cells[Math.floor(line.cells.length / 2)].c];
+                        showFloatingScore(`+${line.score}`, sourceCell);
+                        line.cells.forEach(coord => {
+                            const cellEl = this.gridCells[coord.r][coord.c];
+                            cellEl.classList.add('score-pulse-animation');
+                            cellEl.addEventListener('animationend', () => cellEl.classList.remove('score-pulse-animation'), { once: true });
+                        });
+                    }
+                });
+            }
+            
+            triggerConfetti() {
+                const container = this.DOMElements.effects_container;
+                if (!container) return;
+                const colors = ['#E57373', '#FF8A65', '#FFC107', '#FFF176'];
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti-piece';
+                    confetti.style.left = `${Math.random() * 100}%`;
+                    confetti.style.animation = `confetti-fall ${1.5 + Math.random() * 2}s ${Math.random() * 2}s linear forwards`;
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    container.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), CONSTANTS.CONFETTI_DURATION);
+                }
+            }
+
+            updateTimerDisplay() {
+                const timerEl = document.getElementById('timer-display');
+                if (timerEl) {
+                    timerEl.textContent = this.game.timeLeft;
+                }
+            }
+        }
+
+        class InputHandler {
+            constructor(game) {
+                this.game = game;
+            }
+
+            attachAllListeners() {
+                // Event delegation for dynamically created elements
+                document.getElementById('in-game-content-wrapper').addEventListener('click', (e) => {
+                    if (e.target.closest('#roll-dice-btn')) this.handleRollDice();
+                });
+                document.getElementById('game-board').addEventListener('click', (e) => {
+                    const cell = e.target.closest('[data-row]');
+                    if (cell) this.handleCellClick(cell);
+                });
+                window.addEventListener('resize', this.game.renderer.syncPanelHeights.bind(this.game.renderer));
+            }
+            
+            addCellEventListeners(cell) { 
+                // This method is now only a placeholder if direct binding is needed, 
+                // but we are using event delegation from attachAllListeners.
+            }
+            
+            attachSuperpowerEventListeners() {
+                document.getElementById('past-lives-btn')?.addEventListener('click', () => {
+                    if (document.getElementById('past-lives-btn').disabled) return;
+                    this.game.audioManager.play('power-activate');
+                    this.game.triggerVibration(30);
+
+                    const state = this.game.lastGameState;
+                    this.game.gridData = JSON.parse(state.gridData);
+                    this.game.currentRoll = state.currentRoll;
+                    this.game.firstPlacementCell = state.firstPlacementCell;
+                    this.game.turnCount = state.turnCount;
+                    this.game.stuckBlocks = new Set(state.stuckBlocks);
+                    this.game.gameStateManager.currentState = state.currentState;
+                    this.game.timeLeft = state.timeLeft;
+
+                    this.game.renderer.updateFullGrid();
+                    this.game.renderer.updateControlsState();
+                    this.game.updateAllScores();
+                    this.game.renderer.updateProgressBar();
+                    
+                    this.game.consumeSuperpower(SUPERPOWERS.PAST_LIVES);
+                });
+
+                const powerBtns = { 
+                    [SUPERPOWERS.BOMB_BAE]: 'bomb-bae-btn', 
+                    [SUPERPOWERS.NO_RETURN]: 'no-return-btn', 
+                    [SUPERPOWERS.SWAP_THEM]: 'swap-them-btn' 
+                };
+                for (const [power, id] of Object.entries(powerBtns)) { 
+                    const btn = document.getElementById(id);
+                    if (btn) {
+                        btn.addEventListener('click', () => {
+                            if (btn.disabled) return;
+                            this.game.activeSuperpower = power;
+                            this.game.gameStateManager.setState('SUPERPOWER_ACTIVE');
+                            this.game.audioManager.play('power-activate');
+                            this.game.triggerVibration(30);
+                            this.game.renderer.updateSuperpowerButtonsUI();
+                        });
+                    }
+                }
+            }
+
+            handleCellClick(cell) {
+                const r = parseInt(cell.dataset.row), c = parseInt(cell.dataset.col);
+
+                if (this.game.activeSuperpower) { this.handleSuperpowerCellClick(r, c, cell); return; }
+                if (!this.game.gameStateManager.is('AWAITING_PLACEMENT')) return;
+                if (this.game.firstPlacementCell) { this.handleSecondPlacement(r, c, cell); } else { this.handleFirstPlacement(r, c); }
+            }
+
+            handleFirstPlacement(r, c) { 
+                if (!this.game.gridData[r][c]) { 
+                    this.game.gridData[r][c] = this.game.currentRoll[0]; 
+                    this.game.firstPlacementCell = { r, c }; 
+                    this.game.renderer.updateGridCell(r, c); 
+                    this.game.renderer.highlightValidPlacements(r, c);
+                    this.game.renderer.updateSuperpowerButtonsUI(); 
+                } 
+            }
+
+            handleSecondPlacement(r, c, cell) {
+                const { r: pR, c: pC } = this.game.firstPlacementCell;
+                if (pR === r && pC === c) { 
+                    this.game.gridData[r][c] = null; 
+                    this.game.firstPlacementCell = null; 
+                    this.game.renderer.updateGridCell(r, c); 
+                    this.game.renderer.clearPlacementHighlights();
+                    this.game.renderer.updateSuperpowerButtonsUI(); 
+                    return; 
+                }
+                if ((Math.abs(pR - r) + Math.abs(pC - c) === 1) && !this.game.gridData[r][c]) { 
+                    this.game.renderer.clearPlacementHighlights();
+                    this.game.completeMove(r, c); 
+                }
+                else { 
+                    cell.classList.add('shake-animation'); 
+                    setTimeout(() => cell.classList.remove('shake-animation'), CONSTANTS.SHAKE_ANIMATION_DURATION); 
+                    this.game.audioManager.play('invalid'); 
+                }
+            }
+
+            async handleRollDice() {
+                if (this.game.gameStateManager.is('AWAITING_PLACEMENT')) {
+                    handleModalOpen(this.game.DOMElements.warning_modal);
+                    return;
+                }
+                if (!this.game.gameStateManager.is('AWAITING_ROLL')) return;
+                
+                this.game.triggerVibration(50);
+
+                if (this.game.turnCount >= this.game.MAX_TURNS || !this.game.hasValidMoves()) {
+                    this.game.startGoldenAllohaSequence();
+                    return;
+                }
+
+                this.game.gameStateManager.setState('ANIMATING_ROLL');
+                if (this.game.isTimeBurst && !this.game.timerId) { this.game.startTimer(); }
+
+                const d1 = document.getElementById('dice-1'), d2 = document.getElementById('dice-2');
+                this.game.renderer.updateControlsState();
+                d1.classList.add('dice-tumble');
+                d2.classList.add('dice-tumble');
+
+                const nextTurn = this.game.turnCount + 1; let tempRoll;
+                if (nextTurn === this.game.cursedBlockTurn) { this.game.audioManager.play('thud'); tempRoll = [this.game.SYMBOLS[Math.floor(Math.random() * this.game.SYMBOLS.length)], this.game.SPECIAL_SYMBOLS.CURSED]; }
+                else if (nextTurn === this.game.wildcardTurn) { this.game.audioManager.play('chime'); tempRoll = [this.game.SYMBOLS[Math.floor(Math.random() * this.game.SYMBOLS.length)], this.game.SPECIAL_SYMBOLS.WILD]; }
+                else { this.game.audioManager.play('roll'); tempRoll = [this.game.SYMBOLS[Math.floor(Math.random() * this.game.SYMBOLS.length)], this.game.SYMBOLS[Math.floor(Math.random() * this.game.SYMBOLS.length)]]; }
+                
+                this.game.currentRoll = tempRoll.sort(() => Math.random() - 0.5);
+                
+                await delay(CONSTANTS.DICE_TUMBLE_DURATION);
+                                
+                this.game.gameStateManager.setState('AWAITING_PLACEMENT');
+                this.game.saveStateForUndo(); 
+                this.game.renderer.updateControlsState(); 
+                this.game.renderer.updateSuperpowerButtonsUI();
+            }
+
+            handleSuperpowerCellClick(r, c, cell) {
+                if (this.game.gridData[r][c] === this.game.SPECIAL_SYMBOLS.CURSED) {
+                    this.game.audioManager.play('invalid');
+                    cell.classList.add('shake-animation');
+                    setTimeout(() => cell.classList.remove('shake-animation'), CONSTANTS.SHAKE_ANIMATION_DURATION);
+                    return;
+                }
+
+                const strategy = this.game._superpowerStrategies[this.game.activeSuperpower];
+                if (strategy) {
+                    strategy(r, c, cell);
+                } else {
+                    this.game.audioManager.play('invalid');
+                }
+            }
+        }
+        
+        // --- Game class now defined AFTER its dependencies ---
         class Game {
             constructor(variantConfig, themeConfig, isTimeBurst, allVariantConfigs, savedState = null) {
                 this.config = variantConfig;
@@ -1080,13 +1731,14 @@
                 this.SCORING_RULES = { 7: 20, 6: 12, 5: 8, 4: 5, 3: 3 };
                 this.GRID_SIZE = 7; this.MAX_TURNS = 24; this.CROSS_MULTIPLIER = 2; this.LINE_DEATH_PENALTY = -5; this.CROSS_DEATH_PENALTY = -5; this.MIN_SEQUENCE_LENGTH = 3;
 
-                this.gridCells = [];
                 this.DOMElements = this._getDOMElements();
-                this.audio = { unlocked: false, context: null, sounds: new Map() };
+                this.audioManager = new AudioManager();
+                this.renderer = new Renderer(this, this.DOMElements);
+                this.inputHandler = new InputHandler(this);
                 
                 this._initializeState(savedState);
                 this._setupUI();
-                this._attachEventListeners();
+                this.inputHandler.attachAllListeners();
             }
 
             _initializeState(savedState = null) {
@@ -1140,11 +1792,11 @@
                 const highScoreKey = `cactiFactiHighScore_${this.config.id}_${this.isTimeBurst ? 'timeburst' : 'classic'}`;
                 this.highScore = parseInt(localStorage.getItem(highScoreKey)) || 0;
                 
-                this.audioInit();
+                this.audioManager.init();
 
                 this._superpowerStrategies = {
                     [SUPERPOWERS.SWAP_THEM]: (r, c, cell) => {
-                        if (!this.gridData[r][c] || this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) { this.audioPlay('invalid'); return; }
+                        if (!this.gridData[r][c] || this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) { this.audioManager.play('invalid'); return; }
                         if (!this.swapFirstCell) {
                             this.swapFirstCell = { r, c };
                             cell.classList.add('pulse-animation');
@@ -1153,16 +1805,16 @@
                             if (r1 === r && c1 === c) { this.swapFirstCell = null; cell.classList.remove('pulse-animation'); return; }
                             if (Math.abs(r1 - r) + Math.abs(c1 - c) === 1) {
                                 [this.gridData[r1][c1], this.gridData[r][c]] = [this.gridData[r][c], this.gridData[r1][c1]];
-                                this.gridCells[r1][c1].classList.remove('pulse-animation');
+                                this.renderer.gridCells[r1][c1].classList.remove('pulse-animation');
                                 this.swapFirstCell = null;
                                 this.consumeSuperpower(SUPERPOWERS.SWAP_THEM);
                                 this.gameStateManager.setState('AWAITING_ROLL');
-                                this.renderControls();
+                                this.renderer.renderControls();
                             } else {
-                                this.audioPlay('invalid');
+                                this.audioManager.play('invalid');
                                 cell.classList.add('shake-animation');
-                                setTimeout(() => cell.classList.remove('shake-animation'), 400);
-                                this.gridCells[r1][c1].classList.remove('pulse-animation');
+                                setTimeout(() => cell.classList.remove('shake-animation'), CONSTANTS.SHAKE_ANIMATION_DURATION);
+                                this.renderer.gridCells[r1][c1].classList.remove('pulse-animation');
                                 this.swapFirstCell = null;
                             }
                         }
@@ -1170,9 +1822,9 @@
                     [SUPERPOWERS.BOMB_BAE]: (r, c, cell) => {
                         const targetSymbol = this.gridData[r][c];
                         if (!targetSymbol || targetSymbol === this.SPECIAL_SYMBOLS.WILD) {
-                            this.audioPlay('invalid');
+                            this.audioManager.play('invalid');
                             cell.classList.add('shake-animation');
-                            setTimeout(() => cell.classList.remove('shake-animation'), 400);
+                            setTimeout(() => cell.classList.remove('shake-animation'), CONSTANTS.SHAKE_ANIMATION_DURATION);
                             return;
                         }
 
@@ -1184,13 +1836,13 @@
 
                         this.consumeSuperpower(SUPERPOWERS.BOMB_BAE);
                         this.gameStateManager.setState('AWAITING_ROLL');
-                        this.renderControls();
+                        this.renderer.renderControls();
                     },
                     [SUPERPOWERS.NO_RETURN]: (r, c, cell) => {
                         if (this.gridData[r][c]) {
-                            this.showSymbolSelectorForExchange(r, c);
+                            this.renderer.showSymbolSelectorForExchange(r, c);
                         } else {
-                            this.audioPlay('invalid');
+                            this.audioManager.play('invalid');
                         }
                     }
                 };
@@ -1203,16 +1855,16 @@
                     if (el) el.classList.remove('is-open');
                 });
                 
-                this.renderGrid().then(() => {
+                this.renderer.renderGrid().then(() => {
                     if (!this.lastGameState && this.turnCount === 0) {
-                        this.flashTwinningPattern();
+                        this.renderer.flashTwinningPattern();
                     }
                 });
-                this.renderScorePlaceholders();
-                this.renderControls();
+                this.renderer.renderScorePlaceholders();
+                this.renderer.renderControls();
                 this.updateAllScores();
-                this.updateProgressBar();
-                this.syncPanelHeights();
+                this.renderer.updateProgressBar();
+                this.renderer.syncPanelHeights();
             }
 
             _getDOMElements() {
@@ -1338,14 +1990,7 @@
                 };
             }
 
-            audioInit() { this.audioCreateContext(); this.audioCreateSounds(); }
-            audioCreateContext() { try { if (!this.audio.context) this.audio.context = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
-            audioCreateSounds() { if (!this.audio.context || this.audio.sounds.size > 0) return; const s = { 'pop': [1200,.1,.05], 'roll': [220,.2,.2], 'hover': [660,.05,.1], 'invalid': [150,.3,.2], 'power-activate': [880,.15,.2], 'power-use': [1047,.2,.3], 'chime': [1047, .15, .2], 'thud': [100, .3, .1] }; for (const k in s) { this.audio.sounds.set(k, ()=>this.audioPlayTone(...s[k])); } }
-            audioPlayTone(freq, vol, dur) { if (!this.audio.unlocked || !this.audio.context) return; try { const o = this.audio.context.createOscillator(), g = this.audio.context.createGain(); o.connect(g); g.connect(this.audio.context.destination); o.frequency.value = freq; g.gain.setValueAtTime(0, this.audio.context.currentTime); g.gain.linearRampToValueAtTime(vol*.1, this.audio.context.currentTime+.01); g.gain.exponentialRampToValueAtTime(.001, this.audio.context.currentTime+dur); o.start(); o.stop(this.audio.context.currentTime+dur); } catch (e) {} }
-            audioUnlock() { if (this.audio.unlocked) return; document.getElementById('audio-unlocker').play().finally(() => { this.audio.unlocked = true; }); }
-            audioPlay(soundName) { this.audio.sounds.get(soundName)?.(); }
             triggerVibration(patternOrDuration = 10) { if (navigator.vibrate) { navigator.vibrate(patternOrDuration); } }
-
 
             startTimer() {
                 if (this.timerId || this.gameStateManager.is('GAME_OVER')) return;
@@ -1359,14 +2004,14 @@
                     savePlayerStats(stats);
                 }
 
-                this.updateTimerDisplay();
+                this.renderer.updateTimerDisplay();
                 this.timerId = setInterval(() => {
                     if (this.gameStateManager.is('GAME_OVER')) {
                         this.stopTimer();
                         return;
                     }
                     this.timeLeft--;
-                    this.updateTimerDisplay();
+                    this.renderer.updateTimerDisplay();
                     if (this.timeLeft <= 0) {
                         this.endGame("Time's up!");
                     }
@@ -1377,13 +2022,6 @@
                 if (this.timerId) {
                     clearInterval(this.timerId);
                     this.timerId = null;
-                }
-            }
-
-            updateTimerDisplay() {
-                const timerEl = document.getElementById('timer-display');
-                if (timerEl) {
-                    timerEl.textContent = this.timeLeft;
                 }
             }
 
@@ -1488,250 +2126,8 @@
                 }
                 return points;
             }
-            createCellElement(r, c) { const cell = document.createElement('div'); cell.dataset.row = r; cell.dataset.col = c; cell.className = this.getCellClasses(r, c); return cell; }
-            getCellClasses(r, c) {
-                let classes = 'grid-cell';
-                if (this.config.isTwinningCell(r, c)) classes += ' highlighted';
-                if (this.stuckBlocks.has(`${r},${c}`)) classes += ' stuck-cell';
-                if (this.heroBlocks.has(`${r},${c}`)) classes += ' hero-block-hint';
-                return classes;
-            }
-            updateCell(cell, r, c) {
-                cell.className = this.getCellClasses(r, c);
-                const symbol = this.gridData[r][c];
-                
-                cell.innerHTML = ''; 
-                cell.style.setProperty('--hero-symbol', `'${this.heroSymbol}'`);
-
-                if (symbol) {
-                    const symbolSpan = document.createElement('span');
-                    symbolSpan.textContent = symbol;
-                    if(this.SYMBOL_COLORS[symbol]) {
-                       symbolSpan.className = this.SYMBOL_COLORS[symbol];
-                    }
-                    cell.appendChild(symbolSpan);
-                } else {
-                    cell.textContent = this.stuckBlocks.has(`${r},${c}`) ? '💣' : '';
-                }
-            }
-            addCellEventListeners(cell) { cell.addEventListener('click', this.handleCellClick.bind(this)); }
-            syncPanelHeights() { setTimeout(() => { if (window.innerWidth < 1024) return; const boardHeight = this.DOMElements.game_board_container?.getBoundingClientRect().height; if (boardHeight) this.DOMElements.scoring_panel.style.height = `${boardHeight}px`; }, 50); }
             
-            updateProgressBar() {
-                if (!this.DOMElements.progress_bar_fill) return;
-                const percentage = (this.turnCount / this.MAX_TURNS) * 100;
-                this.DOMElements.progress_bar_fill.style.width = `${percentage}%`;
-            }
-
-            flashTwinningPattern() {
-                const highlightedCells = document.querySelectorAll('.highlighted');
-                if (highlightedCells.length === 0) return;
-
-                highlightedCells.forEach(cell => {
-                    cell.classList.add('twinning-flash-animation');
-                });
-                setTimeout(() => {
-                    highlightedCells.forEach(cell => {
-                        cell.classList.remove('twinning-flash-animation');
-                    });
-                }, 1500);
-            }
-
-            async renderGrid() {
-                const fragment = document.createDocumentFragment(); this.DOMElements.game_board.innerHTML = ''; this.gridCells = [];
-                for (let r = 0; r < this.GRID_SIZE; r++) {
-                    const row = [];
-                    for (let c = 0; c < this.GRID_SIZE; c++) {
-                        const cell = this.createCellElement(r, c); this.updateCell(cell, r, c); this.addCellEventListeners(cell);
-                        fragment.appendChild(cell); row.push(cell);
-                    }
-                    this.gridCells.push(row);
-                }
-                this.DOMElements.game_board.appendChild(fragment);
-            }
-            updateFullGrid() { for (let r = 0; r < this.GRID_SIZE; r++) for (let c = 0; c < this.GRID_SIZE; c++) this.updateGridCell(r, c); }
-            updateGridCell(r, c) { if (this.gridCells[r]?.[c]) this.updateCell(this.gridCells[r][c], r, c); }
-            
-            renderScorePlaceholders() {
-                this.DOMElements.row_scores_display.innerHTML = ''; 
-                this.DOMElements.col_scores_display.innerHTML = '';
-                for (let i = 0; i < this.GRID_SIZE; i++) {
-                    const rowScore = document.createElement('div'); rowScore.id = `row-score-${i}`; rowScore.className = 'grid-cell score-display-cell'; rowScore.textContent = '0'; this.DOMElements.row_scores_display.appendChild(rowScore);
-                    const colScore = document.createElement('div'); colScore.id = `col-score-${i}`; colScore.className = 'grid-cell score-display-cell'; colScore.textContent = '0'; this.DOMElements.col_scores_display.appendChild(colScore);
-                }
-            }
-            renderControls() {
-                const inGameContent = this.DOMElements.in_game_content;
-                const preGameContent = this.DOMElements.pre_game_content;
-                
-                if(inGameContent) inGameContent.className = '';
-
-                if (this.gameStateManager.is('PRE_GAME')) {
-                    if(preGameContent) preGameContent.style.display = 'block';
-                    if(inGameContent) inGameContent.style.display = 'none';
-                } else {
-                    if(preGameContent) preGameContent.style.display = 'none';
-                    if(inGameContent) inGameContent.style.display = 'block';
-                    this.renderDiceAndPowers();
-                }
-            }
-            renderDiceAndPowers() {
-                const container = this.DOMElements.in_game_content;
-                container.className = '';
-                container.innerHTML = '';
-
-                const wrapper = document.createElement('div');
-                wrapper.className = 'w-full flex flex-col justify-start gap-3 lg:gap-4';
-                let timerHTML = '';
-                if(this.isTimeBurst) {
-                    timerHTML = `<div id="timer-display" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card enhanced-shadow flex items-center justify-center text-2xl lg:text-3xl font-bold" style="color: var(--accent);">${this.timeLeft}</div>`;
-                }
-
-                wrapper.innerHTML = `<div class="flex justify-center items-center gap-2 lg:gap-4">
-                    <button id="roll-dice-btn" aria-label="Roll Dice" class="w-14 h-14 lg:w-16 lg:h-16 text-4xl lg:text-5xl flex items-center justify-center" style="color: var(--accent);">🎲</button>
-                    <div id="dice-1" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card enhanced-shadow flex items-center justify-center text-3xl lg:text-4xl shimmer-text">?</div>
-                    <div id="dice-2" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card enhanced-shadow flex items-center justify-center text-3xl lg:text-4xl shimmer-text">?</div>
-                    ${timerHTML}
-                </div>
-                <div class="glass-card enhanced-shadow rounded-xl px-3 py-2 text-center"><h2 class="text-sm font-semibold uppercase tracking-wider mb-3 flex items-center justify-center gap-2" style="color: var(--text-secondary);">Alloha Superpowers <span id="sp-charges" class="text-base">✨✨</span></h2><div class="grid grid-cols-4 gap-1 text-center">
-                    <button id="past-lives-btn" class="superpower-btn"><div>Past</div><div>Lives</div><div class="superpower-used-overlay hidden absolute inset-0 text-red-500 text-4xl font-extrabold flex items-center justify-center" style="text-shadow: 0 1px 2px rgba(0,0,0,0.4);">X</div></button>
-                    <button id="no-return-btn" class="superpower-btn"><div>No</div><div>Return</div><div class="superpower-used-overlay hidden absolute inset-0 text-red-500 text-4xl font-extrabold flex items-center justify-center" style="text-shadow: 0 1px 2px rgba(0,0,0,0.4);">X</div></button>
-                    <button id="bomb-bae-btn" class="superpower-btn"><div>Bomb</div><div>Bae</div><div class="superpower-used-overlay hidden absolute inset-0 text-red-500 text-4xl font-extrabold flex items-center justify-center" style="text-shadow: 0 1px 2px rgba(0,0,0,0.4);">X</div></button>
-                    <button id="swap-them-btn" class="superpower-btn"><div>Swap</div><div>Them</div><div class="superpower-used-overlay hidden absolute inset-0 text-red-500 text-4xl font-extrabold flex items-center justify-center" style="text-shadow: 0 1px 2px rgba(0,0,0,0.4);">X</div></button>
-                </div></div>`;
-                
-                container.appendChild(wrapper);
-
-                const rollBtn = wrapper.querySelector('#roll-dice-btn');
-                if(rollBtn) rollBtn.addEventListener('click', this.handleRollDice.bind(this));
-                
-                this.updateControlsState();
-                this._attachSuperpowerEventListeners(); 
-                this.updateSuperpowerButtonsUI();
-                if(this.isTimeBurst) this.updateTimerDisplay();
-            }
-            updateControlsState() {
-                if (this.gameStateManager.is('PRE_GAME')) return;
-                const rollBtn = document.getElementById('roll-dice-btn');
-                if (rollBtn) {
-                    rollBtn.classList.toggle('bob-animation', this.gameStateManager.is('AWAITING_ROLL'));
-                }
-                const dice1 = document.getElementById('dice-1'), dice2 = document.getElementById('dice-2');
-                if (!dice1 || !dice2) return;
-                
-                dice1.classList.remove('shimmer-text');
-                dice2.classList.remove('shimmer-text');
-                
-                if (this.gameStateManager.is('AWAITING_PLACEMENT') && this.currentRoll.length === 2) {
-                    const symbol1 = this.currentRoll[0], symbol2 = this.currentRoll[1];
-                    const color1 = this.SYMBOL_COLORS[symbol1] || 'text-gray-700';
-                    const color2 = this.SYMBOL_COLORS[symbol2] || 'text-gray-700';
-
-                    dice1.innerHTML = `<span class="${color1}">${symbol1}</span>`;
-                    dice2.innerHTML = `<span class="${color2}">${symbol2}</span>`;
-                } else {
-                    dice1.textContent = '?';
-                    dice2.textContent = '?';
-                    dice1.classList.add('shimmer-text');
-                    dice2.classList.add('shimmer-text');
-                }
-            }
-            async handleRollDice() {
-                if (this.gameStateManager.is('AWAITING_PLACEMENT')) {
-                    handleModalOpen(this.DOMElements.warning_modal);
-                    return;
-                }
-                if (!this.gameStateManager.is('AWAITING_ROLL')) return;
-                
-                this.triggerVibration(50);
-
-                if (this.turnCount >= this.MAX_TURNS || !this.hasValidMoves()) {
-                    this.startGoldenAllohaSequence();
-                    return;
-                }
-
-                this.gameStateManager.setState('ANIMATING_ROLL');
-                if (this.isTimeBurst && !this.timerId) { this.startTimer(); }
-
-                const d1 = document.getElementById('dice-1'), d2 = document.getElementById('dice-2');
-                this.updateControlsState();
-                d1.classList.add('dice-tumble');
-                d2.classList.add('dice-tumble');
-
-                const nextTurn = this.turnCount + 1; let tempRoll;
-                if (nextTurn === this.cursedBlockTurn) { this.audioPlay('thud'); tempRoll = [this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)], this.SPECIAL_SYMBOLS.CURSED]; }
-                else if (nextTurn === this.wildcardTurn) { this.audioPlay('chime'); tempRoll = [this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)], this.SPECIAL_SYMBOLS.WILD]; }
-                else { this.audioPlay('roll'); tempRoll = [this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)], this.SYMBOLS[Math.floor(Math.random() * this.SYMBOLS.length)]]; }
-                
-                this.currentRoll = tempRoll.sort(() => Math.random() - 0.5);
-                
-                await delay(600);
-                                
-                this.gameStateManager.setState('AWAITING_PLACEMENT');
-                this.saveStateForUndo(); 
-                this.updateControlsState(); 
-                this.updateSuperpowerButtonsUI();
-            }
-            handleCellClick(e) {
-                const cell = e.target.closest('[data-row]'); if (!cell) return;
-                const r = parseInt(cell.dataset.row), c = parseInt(cell.dataset.col);
-
-                if (this.activeSuperpower) { this.handleSuperpowerCellClick(r, c, cell); return; }
-                if (!this.gameStateManager.is('AWAITING_PLACEMENT')) return;
-                if (this.firstPlacementCell) { this.handleSecondPlacement(r, c, cell); } else { this.handleFirstPlacement(r, c); }
-            }
-            handleFirstPlacement(r, c) { 
-                if (!this.gridData[r][c]) { 
-                    this.gridData[r][c] = this.currentRoll[0]; 
-                    this.firstPlacementCell = { r, c }; 
-                    this.updateGridCell(r, c); 
-                    this.highlightValidPlacements(r, c);
-                    this.updateSuperpowerButtonsUI(); 
-                } 
-            }
-            handleSecondPlacement(r, c, cell) {
-                const { r: pR, c: pC } = this.firstPlacementCell;
-                if (pR === r && pC === c) { 
-                    this.gridData[r][c] = null; 
-                    this.firstPlacementCell = null; 
-                    this.updateGridCell(r, c); 
-                    this.clearPlacementHighlights();
-                    this.updateSuperpowerButtonsUI(); 
-                    return; 
-                }
-                if ((Math.abs(pR - r) + Math.abs(pC - c) === 1) && !this.gridData[r][c]) { 
-                    this.clearPlacementHighlights();
-                    this.completeMove(r, c); 
-                }
-                else { 
-                    cell.classList.add('shake-animation'); 
-                    setTimeout(() => cell.classList.remove('shake-animation'), 400); 
-                    this.audioPlay('invalid'); 
-                }
-            }
             saveStateForUndo() { this.lastGameState = this.getState(); }
-
-            showCurseEffect(cellElement) {
-                const board = this.DOMElements.game_board_container;
-                board.classList.add('shake-animation');
-                setTimeout(() => board.classList.remove('shake-animation'), 400);
-
-                const overlay = document.createElement('div');
-                overlay.textContent = '☠️';
-                overlay.className = 'curse-overlay';
-                
-                const rect = cellElement.getBoundingClientRect();
-                overlay.style.top = `${rect.top}px`;
-                overlay.style.left = `${rect.left}px`;
-                overlay.style.width = `${rect.width}px`;
-                overlay.style.height = `${rect.height}px`;
-                overlay.style.display = 'flex';
-                overlay.style.alignItems = 'center';
-                overlay.style.justifyContent = 'center';
-
-                document.body.appendChild(overlay);
-                setTimeout(() => overlay.remove(), 700);
-            }
             
             async completeMove(r, c) {
                 this.gameStateManager.setState('PROCESSING_TURN');
@@ -1740,25 +2136,25 @@
                 this.lastMoveCoords = [{r,c}, firstCellCoords];
                 this.firstPlacementCell = null;
                 this.turnCount++;
-                this.updateProgressBar();
-                this.updateGridCell(r, c);
-                this.audioPlay('pop');
+                this.renderer.updateProgressBar();
+                this.renderer.updateGridCell(r, c);
+                this.audioManager.play('pop');
                 this.triggerVibration(20);
 
                 this.vibratedForScoreThisTurn = false;
 
                 const placedSymbols = [this.gridData[r][c], this.gridData[firstCellCoords.r][firstCellCoords.c]];
                 if (placedSymbols.includes(this.SPECIAL_SYMBOLS.WILD)) {
-                    createSparkles(this.gridCells[r][c]);
-                    createSparkles(this.gridCells[firstCellCoords.r][firstCellCoords.c]);
+                    createSparkles(this.renderer.gridCells[r][c]);
+                    createSparkles(this.renderer.gridCells[firstCellCoords.r][firstCellCoords.c]);
                 }
                 if (placedSymbols.includes(this.SPECIAL_SYMBOLS.CURSED)) {
-                    const cursedCell = this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED ? this.gridCells[r][c] : this.gridCells[firstCellCoords.r][firstCellCoords.c];
-                    this.showCurseEffect(cursedCell);
+                    const cursedCell = this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED ? this.renderer.gridCells[r][c] : this.renderer.gridCells[firstCellCoords.r][firstCellCoords.c];
+                    this.renderer.showCurseEffect(cursedCell);
                     this.triggerVibration([100, 50, 100]);
                 }
                 
-                await delay(300);
+                await delay(CONSTANTS.MOVE_COMPLETION_DELAY);
                 this.processTurnEnd();
             }
 
@@ -1767,101 +2163,11 @@
                 this.updateAllScores(); 
                 if (this.turnCount >= this.MAX_TURNS || !this.hasValidMoves()) {
                     this.gameStateManager.setState('AWAITING_ROLL');
-                    this.renderControls();
+                    this.renderer.renderControls();
                     return;
                 }
                 this.gameStateManager.setState('AWAITING_ROLL');
-                this.renderControls();
-            }
-
-            highlightValidPlacements(r, c) {
-                const adjacent = [ [r-1, c], [r+1, c], [r, c-1], [r, c+1] ];
-                adjacent.forEach(([nr, nc]) => {
-                    if (nr >= 0 && nr < this.GRID_SIZE && nc >= 0 && nc < this.GRID_SIZE && !this.gridData[nr][nc]) {
-                        const cell = this.gridCells[nr][nc];
-                        cell.classList.add('valid-placement');
-                    }
-                });
-            }
-
-            clearPlacementHighlights() {
-                this.gridCells.flat().forEach(cell => {
-                    cell.classList.remove('valid-placement');
-                });
-            }
-
-            renderGoldenAllohaPlacementPrompt(symbol) {
-                const container = this.DOMElements.in_game_content;
-                container.className = 'w-full flex flex-col items-center justify-center h-full text-center p-4';
-                container.innerHTML = '';
-
-                const line1 = document.createElement('h2');
-                line1.className = 'text-xl lg:text-2xl font-semibold';
-                line1.style.color = 'var(--accent)';
-                line1.innerHTML = `You chose <span class="text-5xl align-middle ${this.SYMBOL_COLORS[symbol] || 'text-gray-700'}">${symbol}</span>`;
-
-                const line2 = document.createElement('p');
-                line2.className = 'text-base lg:text-lg font-medium mt-2';
-                line2.style.color = 'var(--text-secondary)';
-                line2.textContent = 'Place it on any highlighted Allohome!';
-
-                container.appendChild(line1);
-                container.appendChild(line2);
-            }
-
-            renderEndGamePanel(score) {
-                const container = this.DOMElements.in_game_content;
-                container.className = 'w-full flex flex-col items-center justify-center h-full text-center p-4';
-                container.innerHTML = '';
-
-                const title = document.createElement('h2');
-                title.className = 'text-3xl font-bold';
-                title.style.fontFamily = "'Pacifico', cursive";
-                title.style.color = 'var(--accent)';
-                title.textContent = 'Game Over Alloha!';
-
-                const scoreDisplay = document.createElement('div');
-                scoreDisplay.id = 'end-game-score-display';
-                scoreDisplay.className = 'text-7xl font-bold my-2';
-                scoreDisplay.style.color = 'var(--accent)';
-                
-                container.appendChild(title);
-                container.appendChild(scoreDisplay);
-                animateScoreUpdate('end-game-score-display', score, 3);
-            }
-
-            async renderGoldenAllohaSelector() {
-                const container = this.DOMElements.in_game_content;
-                container.className = '';
-                container.innerHTML = '';
-
-                return new Promise(resolve => {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'w-full flex flex-col items-center justify-center h-full gap-4 pt-2';
-                    
-                    const title = document.createElement('h2');
-                    title.className = 'text-base lg:text-lg font-semibold text-center uppercase tracking-wider';
-                    title.style.color = 'var(--accent)';
-                    title.textContent = 'Choose Last Alloha';
-
-                    const selector = document.createElement('div');
-                    selector.className = 'grid grid-cols-3 gap-2 lg:gap-4';
-
-                    this.SYMBOLS.forEach(symbol => {
-                        const btn = document.createElement('button');
-                        btn.className = `w-12 h-12 lg:w-14 lg:h-14 rounded-xl text-3xl flex items-center justify-center transition-transform hover:scale-110 active:scale-95`;
-                        const symbolSpan = document.createElement('span');
-                        symbolSpan.className = this.SYMBOL_COLORS[symbol] || '';
-                        symbolSpan.textContent = symbol;
-                        btn.appendChild(symbolSpan);
-                        btn.addEventListener('click', () => resolve(symbol));
-                        selector.appendChild(btn);
-                    });
-
-                    wrapper.appendChild(title);
-                    wrapper.appendChild(selector);
-                    container.appendChild(wrapper);
-                });
+                this.renderer.renderControls();
             }
             
             async waitForCellClick(validCells) {
@@ -1903,39 +2209,39 @@
                     return;
                 }
                 
-                const chosenSymbol = await this.renderGoldenAllohaSelector();
-                this.renderGoldenAllohaPlacementPrompt(chosenSymbol);
+                const chosenSymbol = await this.renderer.renderGoldenAllohaSelector();
+                this.renderer.renderGoldenAllohaPlacementPrompt(chosenSymbol);
                 
                 emptyCells.forEach(({ r, c }) => {
-                    if (this.gridCells[r] && this.gridCells[r][c]) {
-                        this.gridCells[r][c].classList.add('golden-placement-option');
+                    if (this.renderer.gridCells[r] && this.renderer.gridCells[r][c]) {
+                        this.renderer.gridCells[r][c].classList.add('golden-placement-option');
                     }
                 });
                 
                 const targetCell = await this.waitForCellClick(emptyCells);
                 
                 emptyCells.forEach(({ r, c }) => {
-                    if (this.gridCells[r] && this.gridCells[r][c]) {
-                        this.gridCells[r][c].classList.remove('golden-placement-option');
+                    if (this.renderer.gridCells[r] && this.renderer.gridCells[r][c]) {
+                        this.renderer.gridCells[r][c].classList.remove('golden-placement-option');
                     }
                 });
 
                 this.gridData[targetCell.r][targetCell.c] = chosenSymbol;
-                this.updateGridCell(targetCell.r, targetCell.c);
-                createSparkles(this.gridCells[targetCell.r][targetCell.c]);
-                this.audioPlay('chime');
+                this.renderer.updateGridCell(targetCell.r, targetCell.c);
+                createSparkles(this.renderer.gridCells[targetCell.r][targetCell.c]);
+                this.audioManager.play('chime');
                 this.triggerVibration(50);
 
                 emptyCells.forEach(({ r, c }) => {
                     if (r !== targetCell.r || c !== targetCell.c) {
                         this.stuckBlocks.add(`${r},${c}`);
-                        this.updateGridCell(r, c);
+                        this.renderer.updateGridCell(r, c);
                     }
                 });
 
-                if (emptyCells.length > 1) this.audioPlay('thud');
+                if (emptyCells.length > 1) this.audioManager.play('thud');
 
-                await delay(500); 
+                await delay(CONSTANTS.GOLDEN_ALLOHA_DELAY); 
 
                 this.endGame("The grid is complete!");
             }
@@ -1994,7 +2300,7 @@
                     finalScore = 0;
                 }
 
-                this.renderEndGamePanel(finalScore);
+                this.renderer.renderEndGamePanel(finalScore);
 
                 if (this.scores.penalty < 0) {
                     this.triggerVibration([150, 50, 70]);
@@ -2005,7 +2311,7 @@
                 if (finalScore > currentHighScore) {
                     localStorage.setItem(highScoreKey, finalScore);
                     this.highScore = finalScore;
-                    this.triggerConfetti();
+                    this.renderer.triggerConfetti();
                 }
 
                 this.DOMElements.game_over_reason.textContent = reason;
@@ -2022,19 +2328,8 @@
 
                 setTimeout(() => {
                     handleModalOpen(this.DOMElements.game_over_modal);
-                    const shareBtn = document.getElementById('share-score-btn');
-                    const changeEditionBtn = document.getElementById('change-edition-btn-modal');
-                    
-                    if (shareBtn) {
-                        shareBtn.addEventListener('click', () => this.handleShareScore(finalScore, this.highScore));
-                    }
-                    if (changeEditionBtn) {
-                        changeEditionBtn.addEventListener('click', () => {
-                            handleModalClose(this.DOMElements.game_over_modal);
-                            document.getElementById('select-edition-btn').click();
-                        });
-                    }
-                }, 500);
+                    // Event listeners for buttons inside this modal are now handled globally by gameManager
+                }, CONSTANTS.END_GAME_MODAL_DELAY);
             }
 
             async handleShareScore(score, highScore) {
@@ -2090,34 +2385,19 @@
                 }
             }
 
-            triggerConfetti() {
-                const container = this.DOMElements.effects_container;
-                if (!container) return;
-                const colors = ['#E57373', '#FF8A65', '#FFC107', '#FFF176'];
-                for (let i = 0; i < 50; i++) {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti-piece';
-                    confetti.style.left = `${Math.random() * 100}%`;
-                    confetti.style.animation = `confetti-fall ${1.5 + Math.random() * 2}s ${Math.random() * 2}s linear forwards`;
-                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    container.appendChild(confetti);
-                    setTimeout(() => confetti.remove(), 4000);
-                }
-            }
-
             hasValidMoves() { for (let r = 0; r < this.GRID_SIZE; r++) for (let c = 0; c < this.GRID_SIZE; c++) if (!this.gridData[r][c]) { const n = [[-1, 0], [1, 0], [0, -1], [0, 1]]; for (const [dr, dc] of n) { const nr = r + dr, nc = c + dc; if (nr >= 0 && nr < this.GRID_SIZE && nc >= 0 && nc < this.GRID_SIZE && !this.gridData[nr][nc]) return true; } } return false; }
-            detectStuckBlocks() { this.stuckBlocks.clear(); for (let r = 0; r < this.GRID_SIZE; r++) for (let c = 0; c < this.GRID_SIZE; c++) if (!this.gridData[r][c]) { const n = [[-1, 0], [1, 0], [0, -1], [0, 1]]; if (n.every(([dr, dc]) => { const nr = r + dr, nc = c + dc; return nr < 0 || nr >= this.GRID_SIZE || nc < 0 || nc >= this.GRID_SIZE || this.gridData[nr][nc] })) this.stuckBlocks.add(`${r},${c}`); } this.updateFullGrid(); }
+            detectStuckBlocks() { this.stuckBlocks.clear(); for (let r = 0; r < this.GRID_SIZE; r++) for (let c = 0; c < this.GRID_SIZE; c++) if (!this.gridData[r][c]) { const n = [[-1, 0], [1, 0], [0, -1], [0, 1]]; if (n.every(([dr, dc]) => { const nr = r + dr, nc = c + dc; return nr < 0 || nr >= this.GRID_SIZE || nc < 0 || nc >= this.GRID_SIZE || this.gridData[nr][nc] })) this.stuckBlocks.add(`${r},${c}`); } this.renderer.updateFullGrid(); }
             updateAllScores() {
                 const rS = this.calculateRowScores(), cS = this.calculateColumnScores(), crS = this.calculateCrossScore(), bS = this.calculateBonusGrids(), hS = this.calculateHeroBonus();
                 
-                this.triggerBoardAndFloatAnimations(rS.lines, this.lastMoveCoords);
-                this.triggerBoardAndFloatAnimations(cS.lines, this.lastMoveCoords);
+                this.renderer.triggerBoardAndFloatAnimations(rS.lines, this.lastMoveCoords);
+                this.renderer.triggerBoardAndFloatAnimations(cS.lines, this.lastMoveCoords);
                 
                 this.scores = { rows: rS.total, cols: cS.total, cross: crS, bonus: bS, hero: hS, penalty: -this.stuckBlocks.size };
                 this.currentTotalScore = rS.total + cS.total + crS + bS + hS - this.stuckBlocks.size;
 
-                this.updateScoreDisplays(this.scores.rows, this.scores.cols, this.scores.cross, this.scores.bonus, this.scores.hero, this.scores.penalty);
-                this.updateIndividualScores(rS.individual, cS.individual);
+                this.renderer.updateScoreDisplays(this.scores.rows, this.scores.cols, this.scores.cross, this.scores.bonus, this.scores.hero, this.scores.penalty);
+                this.renderer.updateIndividualScores(rS.individual, cS.individual);
             }
 
             calculateHeroBonus() {
@@ -2127,8 +2407,8 @@
                         if (this.heroBlocks.has(`${coord.r},${coord.c}`) && this.gridData[coord.r][coord.c] === this.heroSymbol) {
                             heroScore += 2;
                             this.heroBlocks.delete(`${coord.r},${coord.c}`);
-                            showFloatingScore('+2', this.gridCells[coord.r][coord.c]);
-                            createSparkles(this.gridCells[coord.r][coord.c]);
+                            showFloatingScore('+2', this.renderer.gridCells[coord.r][coord.c]);
+                            createSparkles(this.renderer.gridCells[coord.r][coord.c]);
                         }
                     });
                 }
@@ -2155,28 +2435,6 @@
                     allScoredLines.push(...result.lines);
                 }
                 return { total, individual, lines: allScoredLines };
-            }
-
-            triggerBoardAndFloatAnimations(scoredLines, lastMoveCoords) {
-                if (!scoredLines || !lastMoveCoords) return;
-                const lastMoveSet = new Set(lastMoveCoords.map(c => `${c.r},${c.c}`));
-
-                scoredLines.forEach(line => {
-                    const isNewlyFormed = line.cells.some(cell => lastMoveSet.has(`${cell.r},${cell.c}`));
-                    if (line.score > 0 && isNewlyFormed) {
-                        if (!this.vibratedForScoreThisTurn) {
-                            this.triggerVibration(40);
-                            this.vibratedForScoreThisTurn = true;
-                        }
-                        const sourceCell = this.gridCells[line.cells[Math.floor(line.cells.length / 2)].r][line.cells[Math.floor(line.cells.length / 2)].c];
-                        showFloatingScore(`+${line.score}`, sourceCell);
-                        line.cells.forEach(coord => {
-                            const cellEl = this.gridCells[coord.r][coord.c];
-                            cellEl.classList.add('score-pulse-animation');
-                            cellEl.addEventListener('animationend', () => cellEl.classList.remove('score-pulse-animation'), { once: true });
-                        });
-                    }
-                });
             }
 
             calculateCrossScore() {
@@ -2217,178 +2475,18 @@
 
                 return bonusScore;
             }
-
-            updateScoreDisplays(r, c, cross, b, h, p) { 
-                animateScoreUpdate('total-score', r + c + cross + b + h + p, 3); 
-                animateScoreUpdate('rows-total-score', r, 2); 
-                animateScoreUpdate('cols-total-score', c, 2); 
-                animateScoreUpdate('cross-total-score', cross, 2); 
-                animateScoreUpdate('bonus-grid-score', b, 2);
-                animateScoreUpdate('hero-bonus-score', h, 2);
-                animateScoreUpdate('empty-block-penalty', p, 2); 
-            }
             
-            updateIndividualScores(rS, cS) { 
-                rS.forEach((s, i) => this.updateScoreElement(`row-score-${i}`, s)); 
-                cS.forEach((s, i) => this.updateScoreElement(`col-score-${i}`, s)); 
-            }
-            updateScoreElement(id, score) { 
-                const el = document.getElementById(id); 
-                if (el) { 
-                    const oldScore = parseInt(el.textContent);
-                    el.textContent = score; 
-                    el.classList.toggle('text-red-500', score < 0); 
-                    if (score < 0 && oldScore >= 0) {
-                        this.triggerVibration([70, 40, 70]);
-                    }
-                } 
-            }
-            
-            updateSuperpowerButtonsUI() {
-                const ids = {
-                    [SUPERPOWERS.PAST_LIVES]: 'past-lives-btn',
-                    [SUPERPOWERS.NO_RETURN]: 'no-return-btn',
-                    [SUPERPOWERS.BOMB_BAE]: 'bomb-bae-btn',
-                    [SUPERPOWERS.SWAP_THEM]: 'swap-them-btn',
-                };
-                Object.keys(ids).forEach(powerKey => {
-                    const btn = document.getElementById(ids[powerKey]);
-                    if (!btn) return;
-                    const overlay = btn.querySelector('.superpower-used-overlay');
-                    if(this.usedSuperpowers.has(powerKey)) {
-                        if(overlay) overlay.classList.remove('hidden');
-                    } else {
-                        if(overlay) overlay.classList.add('hidden');
-                    }
-                });
-
-                const totalUsed = this.usedSuperpowers.size, isMidMove = this.firstPlacementCell !== null, isPowerActive = this.activeSuperpower !== null, isAwaitingRoll = this.gameStateManager.is('AWAITING_ROLL');
-                const btns = { 
-                    [SUPERPOWERS.PAST_LIVES]: document.getElementById('past-lives-btn'), 
-                    [SUPERPOWERS.BOMB_BAE]: document.getElementById('bomb-bae-btn'), 
-                    [SUPERPOWERS.NO_RETURN]: document.getElementById('no-return-btn'), 
-                    [SUPERPOWERS.SWAP_THEM]: document.getElementById('swap-them-btn') 
-                };
-                
-                if (btns[SUPERPOWERS.PAST_LIVES]) btns[SUPERPOWERS.PAST_LIVES].disabled = totalUsed >= 2 || this.usedSuperpowers.has(SUPERPOWERS.PAST_LIVES) || !this.lastGameState || isMidMove || isPowerActive || !isAwaitingRoll;
-                if (btns[SUPERPOWERS.BOMB_BAE]) btns[SUPERPOWERS.BOMB_BAE].disabled = totalUsed >= 2 || this.usedSuperpowers.has(SUPERPOWERS.BOMB_BAE) || this.gridData.flat().every(s => s === null) || isMidMove || isPowerActive;
-                if (btns[SUPERPOWERS.NO_RETURN]) btns[SUPERPOWERS.NO_RETURN].disabled = this.turnCount < 1 || totalUsed >= 2 || this.usedSuperpowers.has(SUPERPOWERS.NO_RETURN) || isMidMove || isPowerActive;
-                if (btns[SUPERPOWERS.SWAP_THEM]) btns[SUPERPOWERS.SWAP_THEM].disabled = this.turnCount < 1 || totalUsed >= 2 || this.usedSuperpowers.has(SUPERPOWERS.SWAP_THEM) || !isAwaitingRoll || isMidMove || isPowerActive;
-                
-                Object.values(btns).forEach(btn => { if(btn) btn.classList.remove('superpower-btn--active')});
-                if (isPowerActive && btns[this.activeSuperpower]) {
-                    btns[this.activeSuperpower].classList.add('superpower-btn--active');
-                }
-                document.body.style.cursor = this.activeSuperpower === SUPERPOWERS.BOMB_BAE ? 'crosshair' : '';
-
-                const spChargesEl = document.getElementById('sp-charges');
-                if (spChargesEl) {
-                    if (totalUsed === 0) {
-                        spChargesEl.innerHTML = '✨✨';
-                    } else if (totalUsed === 1) {
-                        spChargesEl.innerHTML = '✨<span class="opacity-30">✨</span>';
-                    } else {
-                        spChargesEl.innerHTML = '<span class="opacity-30">✨✨</span>';
-                    }
-                }
-            }
-            
-            handleSuperpowerCellClick(r, c, cell) {
-                if (this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) {
-                    this.audioPlay('invalid');
-                    cell.classList.add('shake-animation');
-                    setTimeout(() => cell.classList.remove('shake-animation'), 400);
-                    return;
-                }
-
-                const strategy = this._superpowerStrategies[this.activeSuperpower];
-                if (strategy) {
-                    strategy(r, c, cell);
-                } else {
-                    this.audioPlay('invalid');
-                }
-            }
-
-            showSymbolSelectorForExchange(r, c) {
-                 this.cellToExchange = {r, c}; this.DOMElements.exchange_options.innerHTML = '';
-                 this.SYMBOLS.filter(s => s !== this.gridData[r][c]).forEach(symbol => {
-                    const btn = document.createElement('button');
-                    btn.className = `w-20 h-20 text-4xl rounded-lg hover:bg-orange-100/50 flex items-center justify-center`;
-                    const symbolSpan = document.createElement('span');
-                    symbolSpan.className = this.SYMBOL_COLORS[symbol] || '';
-                    symbolSpan.textContent = symbol;
-                    btn.appendChild(symbolSpan);
-                    btn.addEventListener('click', () => this.handleSymbolExchange(symbol));
-                    this.DOMElements.exchange_options.appendChild(btn);
-                 });
-                 handleModalOpen(this.DOMElements.exchange_modal);
-            }
             handleSymbolExchange(newSymbol) {
                 if (!this.cellToExchange) return;
                 const {r, c} = this.cellToExchange; this.gridData[r][c] = newSymbol;
                 handleModalClose(this.DOMElements.exchange_modal);
                 this.cellToExchange = null;
-                this.consumeSuperpower(SUPERPOWERS.NO_RETURN); this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls();
+                this.consumeSuperpower(SUPERPOWERS.NO_RETURN); this.gameStateManager.setState('AWAITING_ROLL'); this.renderer.renderControls();
             }
             consumeSuperpower(powerName) {
                 this.triggerVibration(30);
-                this.audioPlay('power-use'); this.usedSuperpowers.add(powerName); this.activeSuperpower = null;
-                this.updateFullGrid(); this.updateAllScores(); this.updateSuperpowerButtonsUI();
-            }
-            _attachSuperpowerEventListeners() {
-                document.getElementById('past-lives-btn')?.addEventListener('click', () => {
-                    if (document.getElementById('past-lives-btn').disabled) return;
-                    this.audioPlay('power-activate');
-                    this.triggerVibration(30);
-
-                    const state = this.lastGameState;
-                    this.gridData = JSON.parse(state.gridData);
-                    this.currentRoll = state.currentRoll;
-                    this.firstPlacementCell = state.firstPlacementCell;
-                    this.turnCount = state.turnCount;
-                    this.stuckBlocks = new Set(state.stuckBlocks);
-                    this.gameStateManager.currentState = state.currentState;
-                    this.timeLeft = state.timeLeft;
-
-                    this.updateFullGrid();
-                    this.updateControlsState();
-                    this.updateAllScores();
-                    this.updateProgressBar();
-                    
-                    this.consumeSuperpower(SUPERPOWERS.PAST_LIVES);
-                });
-                const powerBtns = { 
-                    [SUPERPOWERS.BOMB_BAE]: 'bomb-bae-btn', 
-                    [SUPERPOWERS.NO_RETURN]: 'no-return-btn', 
-                    [SUPERPOWERS.SWAP_THEM]: 'swap-them-btn' 
-                };
-                for (const [power, id] of Object.entries(powerBtns)) { 
-                    const btn = document.getElementById(id);
-                    if (btn) {
-                        btn.addEventListener('click', () => {
-                            if (btn.disabled) return;
-                            this.activeSuperpower = power;
-                            this.gameStateManager.setState('SUPERPOWER_ACTIVE');
-                            this.audioPlay('power-activate');
-                            this.triggerVibration(30);
-                            this.updateSuperpowerButtonsUI();
-                        });
-                    }
-                }
-            }
-            _attachEventListeners() {
-                this.DOMElements.close_rules_btn.addEventListener('click', () => { handleModalClose(this.DOMElements.rules_modal); });
-                this.DOMElements.close_game_over_btn.addEventListener('click', () => { handleModalClose(this.DOMElements.game_over_modal); });
-                this.DOMElements.play_again_btn.addEventListener('click', () => { handleModalClose(this.DOMElements.game_over_modal); gameManager.resetCurrentVariant(); });
-                this.DOMElements.close_warning_btn.addEventListener('click', () => { handleModalClose(this.DOMElements.warning_modal); });
-                this.DOMElements.close_unlock_btn.addEventListener('click', () => { handleModalClose(this.DOMElements.unlock_modal); });
-                this.DOMElements.close_tutorial_btn.addEventListener('click', () => this.completeTutorial());
-                this.DOMElements.tutorial_next_btn.addEventListener('click', () => {
-                    this.tutorialStep++;
-                    this.showTutorialStep();
-                });
-                
-                window.addEventListener('resize', this.syncPanelHeights.bind(this));
+                this.audioManager.play('power-use'); this.usedSuperpowers.add(powerName); this.activeSuperpower = null;
+                this.renderer.updateFullGrid(); this.updateAllScores(); this.renderer.updateSuperpowerButtonsUI();
             }
         }
         
@@ -2490,7 +2588,7 @@
                     this.currentGameInstance = new Game(variantConfig, themeConfig, isTimeBurst, variantConfigs, savedState);
                                         
                     gameContainer.style.opacity = '1';
-                }, 250);
+                }, CONSTANTS.VARIANT_SWITCH_DELAY);
             },
             
             resetCurrentVariant() {
@@ -2526,65 +2624,90 @@
             },
 
             setupGlobalEventListeners() {
-                const editionModal = document.getElementById('edition-select-modal');
-                const confirmModal = document.getElementById('confirm-restart-modal');
-                const badgesModal = document.getElementById('badges-modal');
                 const toggleSwitch = document.getElementById('mode-toggle-switch');
-                const classicText = document.getElementById('classic-text');
-                const timeBurstText = document.getElementById('time-burst-text');
 
+                // Centralized Modal Close Button Logic
+                const modalClosers = [
+                    ['close-rules-btn', 'rules-modal'],
+                    ['close-edition-select-btn', 'edition-select-modal'],
+                    ['close-game-over-btn', 'game-over-modal'],
+                    ['close-tutorial-btn', 'tutorial-modal'],
+                    ['close-warning-btn', 'warning-modal'],
+                    ['close-warning-x-btn', 'warning-modal'],
+                    ['close-unlock-btn', 'unlock-modal'],
+                    ['close-unlock-x-btn', 'unlock-modal'],
+                    ['close-badges-btn', 'badges-modal'],
+                ];
+
+                modalClosers.forEach(([buttonId, modalId]) => {
+                    const button = document.getElementById(buttonId);
+                    const modal = document.getElementById(modalId);
+                    if (button && modal) {
+                        button.addEventListener('click', () => handleModalClose(modal));
+                    }
+                });
+
+                // Other Global Listeners
                 document.getElementById('select-edition-btn').addEventListener('click', () => {
                     const isTimeBurst = this.currentGameInstance.isTimeBurst;
                     this.activeMode = isTimeBurst ? 'timeburst' : 'classic';
                     
                     if(isTimeBurst) {
                         toggleSwitch.classList.add('time-burst-active');
-                        timeBurstText.style.color = 'var(--accent)';
-                        classicText.style.color = 'var(--text-secondary)';
+                        document.getElementById('time-burst-text').style.color = 'var(--accent)';
+                        document.getElementById('classic-text').style.color = 'var(--text-secondary)';
                     } else {
                         toggleSwitch.classList.remove('time-burst-active');
-                        classicText.style.color = 'var(--text)';
-                        timeBurstText.style.color = 'var(--text-secondary)';
+                        document.getElementById('classic-text').style.color = 'var(--text)';
+                        document.getElementById('time-burst-text').style.color = 'var(--text-secondary)';
                     }
 
                     const currentEditionId = this.currentGameInstance.config.id;
-                    const editionButtons = document.querySelectorAll('#edition-options button');
-                    editionButtons.forEach(btn => {
+                    document.querySelectorAll('#edition-options button').forEach(btn => {
                         btn.classList.remove('edition-selected');
                         if (btn.dataset.editionId === currentEditionId) {
                             btn.classList.add('edition-selected');
                         }
                     });
 
-                    handleModalOpen(editionModal);
+                    handleModalOpen(document.getElementById('edition-select-modal'));
+                });
+                
+                document.getElementById('play-again-btn').addEventListener('click', () => { 
+                    handleModalClose(document.getElementById('game-over-modal'));
+                    this.resetCurrentVariant();
+                });
+
+                document.getElementById('change-edition-btn-modal').addEventListener('click', () => {
+                    handleModalClose(document.getElementById('game-over-modal'));
+                    document.getElementById('select-edition-btn').click();
+                });
+
+                document.getElementById('share-score-btn').addEventListener('click', () => {
+                    const game = this.currentGameInstance;
+                    game.handleShareScore(game.currentTotalScore, game.highScore);
                 });
 
                 document.getElementById('badges-btn').addEventListener('click', () => {
                     renderBadgesGrid();
-                    handleModalOpen(badgesModal);
-                });
-
-                document.getElementById('close-badges-btn').addEventListener('click', () => {
-                    handleModalClose(badgesModal);
+                    handleModalOpen(document.getElementById('badges-modal'));
                 });
 
                 document.getElementById('share-badges-btn').addEventListener('click', handleShareBadges);
-
+                
                 toggleSwitch.addEventListener('click', () => {
                     toggleSwitch.classList.toggle('time-burst-active');
                     this.activeMode = toggleSwitch.classList.contains('time-burst-active') ? 'timeburst' : 'classic';
                     if (this.activeMode === 'timeburst') {
-                        timeBurstText.style.color = 'var(--accent)';
-                        classicText.style.color = 'var(--text-secondary)';
+                        document.getElementById('time-burst-text').style.color = 'var(--accent)';
+                        document.getElementById('classic-text').style.color = 'var(--text-secondary)';
                     } else {
-                        classicText.style.color = 'var(--text)';
-                        timeBurstText.style.color = 'var(--text-secondary)';
+                        document.getElementById('classic-text').style.color = 'var(--text)';
+                        document.getElementById('time-burst-text').style.color = 'var(--text-secondary)';
                     }
                 });
                 
-                document.getElementById('close-edition-select-btn').addEventListener('click', () => { handleModalClose(editionModal); });
-
-                document.getElementById('rules-btn').addEventListener('click', () => { handleModalOpen(this.currentGameInstance.DOMElements.rules_modal); });
+                document.getElementById('rules-btn').addEventListener('click', () => { handleModalOpen(document.getElementById('rules-modal')); });
 
                 document.getElementById('new-game-btn').addEventListener('click', () => {
                     const game = this.currentGameInstance;
@@ -2592,11 +2715,9 @@
                         this.resetCurrentVariant();
                         return;
                     }
-                    const isGameInProgress = game && game.turnCount > 0;
-                    
-                    if (isGameInProgress) {
+                    if (game && game.turnCount > 0) {
                         this.pendingAction = () => this.resetCurrentVariant();
-                        handleModalOpen(confirmModal);
+                        handleModalOpen(document.getElementById('confirm-restart-modal'));
                     } else {
                         this.resetCurrentVariant();
                     }
@@ -2604,7 +2725,7 @@
 
                 document.getElementById('confirm-cancel-btn').addEventListener('click', () => {
                     this.pendingAction = null;
-                    handleModalClose(confirmModal);
+                    handleModalClose(document.getElementById('confirm-restart-modal'));
                 });
                 
                 document.getElementById('confirm-restart-btn').addEventListener('click', () => {
@@ -2612,7 +2733,7 @@
                         this.pendingAction();
                     }
                     this.pendingAction = null;
-                    handleModalClose(confirmModal);
+                    handleModalClose(document.getElementById('confirm-restart-modal'));
                 });
 
                 document.addEventListener('keydown', (e) => {
@@ -2622,11 +2743,11 @@
                     if (e.key === 'Escape') {
                         if (game.activeSuperpower) {
                              if (game.activeSuperpower === SUPERPOWERS.SWAP_THEM && game.swapFirstCell) {
-                                game.gridCells[game.swapFirstCell.r][game.swapFirstCell.c].classList.remove('pulse-animation');
+                                game.renderer.gridCells[game.swapFirstCell.r][game.swapFirstCell.c].classList.remove('pulse-animation');
                                 game.swapFirstCell = null;
                             }
                             game.activeSuperpower = null;
-                            game.updateSuperpowerButtonsUI();
+                            game.renderer.updateSuperpowerButtonsUI();
                             game.gameStateManager.setState(game.firstPlacementCell ? 'AWAITING_PLACEMENT' : 'AWAITING_ROLL');
                         } else {
                            ['rules-modal', 'game-over-modal', 'exchange-modal', 'edition-select-modal', 'confirm-restart-modal', 'tutorial-modal', 'warning-modal', 'unlock-modal', 'badges-modal'].forEach(id => {
