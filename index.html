@@ -2404,36 +2404,28 @@
                 this.populateEditionModal();
                 this.setupGlobalEventListeners();
                 this.switchVariant('plain_jean', false);
-            }, // <-- Comma is essential here
+            },
 
             populateEditionModal() {
                 const container = document.getElementById('edition-options');
-                if (!container) {
-                    console.error("Could not find the 'edition-options' container.");
-                    return;
-                }
+                if (!container) return;
                 container.innerHTML = '';
-                console.log("--- Starting populateEditionModal ---");
 
                 // Get player stats to see what's unlocked
                 const stats = getPlayerStats();
                 const unlockedEditions = stats.unlockedEditions || {};
-                console.log("Unlocked Editions from stats:", unlockedEditions);
 
                 // The first edition is always unlocked
                 const isEditionUnlocked = (id) => id === 'plain_jean' || unlockedEditions[id] || DEV_UNLOCK_ALL;
 
                 Object.values(variantConfigs).forEach(config => {
-                    console.log(`Processing edition: ${config.name} (id: ${config.id})`);
                     const button = document.createElement('button');
                     const unlocked = isEditionUnlocked(config.id);
-                    console.log(`Is '${config.name}' unlocked?`, unlocked);
 
                     button.className = 'w-full text-left p-3 rounded-lg font-semibold flex justify-between items-center transition-colors';
                     button.dataset.editionId = config.id;
                     
                     if (unlocked) {
-                        console.log(` -> Rendering as UNLOCKED`);
                         button.innerHTML = `<span>${config.name}</span>`;
                         button.classList.add('hover:bg-gray-200/50');
                         button.onclick = () => {
@@ -2457,12 +2449,10 @@
                         const gameToPlay = Object.keys(unlockProgression).find(key => unlockProgression[key] && unlockProgression[key].unlocks === config.id);
                         const gameNameToPlay = variantConfigs[gameToPlay]?.name || '';
 
-                        // Simplified HTML structure to fix the layout bug
                         button.innerHTML = `
-                            <div>
+                            <div class="flex flex-col">
                                 <span>${config.name}</span>
-                                <br>
-                                <span class="unlock-hint">${scoreNeeded ? `Score ${scoreNeeded} in ${gameNameToPlay} to unlock` : ''}</span>
+                                <span class="text-xs font-normal opacity-70">Score ${scoreNeeded} in ${gameNameToPlay} to unlock</span>
                             </div>
                             <span class="text-xl">🔒</span>`;
                         button.disabled = true;
@@ -2470,7 +2460,6 @@
                     }
                     container.appendChild(button);
                 });
-                console.log("--- Finished populateEditionModal ---");
             },
 
             switchVariant(variantId, isTimeBurst, isNewGame = false) {
