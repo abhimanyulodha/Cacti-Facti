@@ -285,7 +285,6 @@
             font-size: 0.7rem;
             font-weight: 500;
             color: var(--text-secondary);
-            opacity: 0.9;
             margin-top: -2px;
         }
         
@@ -634,6 +633,13 @@
     <script>
     (function() {
         const DEV_UNLOCK_ALL = false;
+
+        const SUPERPOWERS = {
+            PAST_LIVES: 'pastLives',
+            BOMB_BAE: 'bombBae',
+            NO_RETURN: 'noReturn',
+            SWAP_THEM: 'swapThem',
+        };
         
         function delay(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
@@ -666,20 +672,37 @@
         }
 
         function getPlayerStats() {
-            const stats = localStorage.getItem('allohaPlayerStats');
-            return stats ? JSON.parse(stats) : {
-                gamesPlayed: 0,
-                timeBurstGamesPlayed: 0,
-                timeBurstWins: 0,
-                classicWins: 0,
-                playedEditions: {},
-                unlockedEditions: {},
-                unlockedBadges: {}
-            };
+            try {
+                const stats = localStorage.getItem('allohaPlayerStats');
+                return stats ? JSON.parse(stats) : {
+                    gamesPlayed: 0,
+                    timeBurstGamesPlayed: 0,
+                    timeBurstWins: 0,
+                    classicWins: 0,
+                    playedEditions: {},
+                    unlockedEditions: {},
+                    unlockedBadges: {}
+                };
+            } catch (e) {
+                console.error("Could not access localStorage. Progress will not be saved.", e);
+                return {
+                    gamesPlayed: 0,
+                    timeBurstGamesPlayed: 0,
+                    timeBurstWins: 0,
+                    classicWins: 0,
+                    playedEditions: {},
+                    unlockedEditions: {},
+                    unlockedBadges: {}
+                };
+            }
         }
 
         function savePlayerStats(stats) {
-            localStorage.setItem('allohaPlayerStats', JSON.stringify(stats));
+            try {
+                localStorage.setItem('allohaPlayerStats', JSON.stringify(stats));
+            } catch (e) {
+                console.error("Could not save to localStorage.", e);
+            }
         }
 
         function unlockBadge(badgeId, statsObj = null) {
@@ -826,26 +849,26 @@
         }
 
         const themeConfigs = {
-            pastel_pals: { name: "Pastel Pals", symbols: ['🐰', '🐶', '🐯', '🐼', '🦄', '🐸'], palette: { bg: 'linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%)', card: 'rgba(255, 255, 255, 0.88)', text: '#4A148C', text_secondary: '#7B1FA2', accent: '#8E24AA', accent_gradient: 'linear-gradient(135deg, #8E24AA 0%, #AB47BC 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #BA68C8 0%, #CE93D8 100%)', highlighted_bg: 'rgba(142, 36, 170, 0.15)', highlighted_border: 'rgba(142, 36, 170, 0.3)', grid_cell_bg: '#F9F6FB', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🐰':'text-pink-400', '🐶':'text-amber-600', '🐯':'text-orange-500', '🐼':'text-gray-700', '🦄':'text-purple-500', '🐸':'text-green-500' } },
-            green_grocer: { name: "Green Grocer", symbols: ['🥑', '🥦', '🧄', '🌽', '🫑', '🌶️'], palette: { bg: 'linear-gradient(135deg, #F1F8E9 0%, #DCEDC8 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#33691E', text_secondary: '#689F38', accent: '#8BC34A', accent_gradient: 'linear-gradient(135deg, #8BC34A 0%, #9CCC65 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #AED581 0%, #C5E1A5 100%)', highlighted_bg: 'rgba(139, 195, 74, 0.15)', highlighted_border: 'rgba(139, 195, 74, 0.3)', grid_cell_bg: '#FCFFF5', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🥑':'text-green-800', '🥦':'text-green-600', '🧄':'text-gray-500', '🌽':'text-yellow-500', '🫑':'text-green-700', '🌶️':'text-red-600' } },
-            bug_life: { name: "Bug's Life", symbols: ['🦋', '🐝', '🪲', '🐛', '🐞', '🪰'], palette: { bg: 'linear-gradient(135deg, #E0F2F1 0%, #B2DFDB 100%)', card: 'rgba(255, 255, 255, 0.85)', text: '#004D40', text_secondary: '#00796B', accent: '#009688', accent_gradient: 'linear-gradient(135deg, #009688 0%, #26A69A 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #4DB6AC 0%, #80CBC4 100%)', highlighted_bg: 'rgba(0, 150, 136, 0.15)', highlighted_border: 'rgba(0, 150, 136, 0.3)', grid_cell_bg: '#F5FCFB', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🦋':'text-blue-500', '🐝':'text-yellow-500', '🪲':'text-amber-800', '🐛':'text-lime-600', '🐞':'text-red-600', '🪰':'text-gray-700' } },
-            hats_off: { name: "Hats Off", symbols: ['🪖', '🎩', '🧢', '👒', '⛑️', '👑'], palette: { bg: 'linear-gradient(135deg, #A1887F 0%, #795548 100%)', card: 'rgba(255, 255, 255, 0.85)', text: '#3E2723', text_secondary: '#5D4037', accent: '#FFD700', accent_light: '#6D4C41', accent_gradient: 'linear-gradient(135deg, #FFD700 0%, #FFC107 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #5D4037 0%, #4E342E 100%)', highlighted_bg: 'rgba(255, 215, 0, 0.45)', highlighted_border: 'rgba(255, 215, 0, 0.6)', grid_cell_bg: '#EFEBE9', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🪖':'text-green-800', '🎩':'text-gray-800', '🧢':'text-blue-600', '👒':'text-pink-400', '⛑️':'text-red-600', '👑':'text-yellow-500' } },
-            golden_bakery: { name: "Golden Bakery", symbols: ['🍞', '🥯', '🥐', '🧇', '🍪', '🥞'], palette: { bg: 'linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#8D6E63', text_secondary: '#A1887F', accent: '#AF8260', accent_gradient: 'linear-gradient(135deg, #AF8260 0%, #C19A7B 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #D4B298 0%, #E6C9B4 100%)', highlighted_bg: 'rgba(175, 130, 96, 0.15)', highlighted_border: 'rgba(175, 130, 96, 0.3)', grid_cell_bg: '#FFFBF2', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🍞':'text-amber-800', '🥯':'text-amber-700', '🥐':'text-orange-600', '🧇':'text-yellow-700', '🍪':'text-amber-900', '🥞':'text-amber-600' } },
-             sporty_vibes: { name: "Sporty Vibes", symbols: ['🏀', '⚽️', '🥎', '🏉', '🏐', '🏈'], palette: { bg: 'linear-gradient(135deg, #4CAF50 0%, #388E3C 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#1B5E20', text_secondary: '#2E7D32', accent: '#FF9800', accent_gradient: 'linear-gradient(135deg, #FF9800 0%, #FFA726 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #FFB74D 0%, #FFCC80 100%)', highlighted_bg: 'rgba(255, 152, 0, 0.45)', highlighted_border: 'rgba(255, 152, 0, 0.6)', grid_cell_bg: '#F1F8E9', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🏀':'text-orange-600', '⚽️':'text-black', '🥎':'text-lime-400', '🏉':'text-amber-800', '🏐':'text-blue-500', '🏈':'text-amber-900' } },
-            school_of_magic: { name: "School of Magic", symbols: ['🧙‍♀️', '🦉', '📜', '🏆', '🏟️', '🔮'], palette: { bg: 'linear-gradient(135deg, #4E342E 0%, #212121 100%)', card: 'rgba(78, 52, 46, 0.75)', text: '#FFECB3', text_secondary: '#D7CCC8', accent: '#D32F2F', accent_gradient: 'linear-gradient(135deg, #D32F2F 0%, #FFC107 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #EF5350 0%, #FFD54F 100%)', highlighted_bg: 'rgba(211, 47, 47, 0.15)', highlighted_border: 'rgba(211, 47, 47, 0.3)', grid_cell_bg: '#6D4C41', toggle_bg_inactive: 'rgba(255,255,255,0.2)', }, symbolColors: { '🧙‍♀️':'text-purple-300', '🦉':'text-gray-300', '📜':'text-yellow-200', '🏆':'text-yellow-400', '🏟️':'text-gray-400', '🔮':'text-purple-400' } },
-            emoji_fun: { name: "Emoji Fun", symbols: ['😍', '😎', '🤩', '😂', '🥵', '🤯'], palette: { bg: 'linear-gradient(135deg, #FFF9C4 0%, #FFF176 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#4E342E', text_secondary: '#795548', accent: '#42A5F5', accent_gradient: 'linear-gradient(135deg, #42A5F5 0%, #64B5F6 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #90CAF9 0%, #BBDEFB 100%)', highlighted_bg: 'rgba(66, 165, 245, 0.15)', highlighted_border: 'rgba(66, 165, 245, 0.3)', grid_cell_bg: '#FFFDE7', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '😍':'text-red-500', '😎':'text-black', '🤩':'text-yellow-600', '😂':'text-blue-500', '🥵':'text-orange-500', '🤯':'text-purple-500' } },
-            deep_ocean: { name: "Deep Ocean", symbols: ['🐡', '🦑', '🦀', '🐙', '🐳', '🐠'], palette: { bg: 'linear-gradient(135deg, #1A237E 0%, #0D47A1 100%)', card: 'rgba(26, 35, 126, 0.7)', text: '#E3F2FD', text_secondary: '#90CAF9', accent: '#42A5F5', accent_gradient: 'linear-gradient(135deg, #42A5F5 0%, #64B5F6 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #90CAF9 0%, #BBDEFB 100%)', highlighted_bg: 'rgba(66, 165, 245, 0.2)', highlighted_border: 'rgba(66, 165, 245, 0.4)', grid_cell_bg: '#1976D2', toggle_bg_inactive: 'rgba(255,255,255,0.2)', }, symbolColors: { '🐡':'text-yellow-300', '🦑':'text-pink-300', '🦀':'text-red-400', '🐙':'text-purple-300', '🐳':'text-blue-300', '🐠':'text-orange-300' } },
-            road_block_theme: { name: "Road Block", symbols: ['🚑', '🚌', '🚗', '🚎', '🚜', '✈️'], palette: { bg: 'linear-gradient(135deg, #B0BEC5 0%, #78909C 100%)', card: 'rgba(255, 255, 255, 0.8)', text: '#263238', text_secondary: '#455A64', accent: '#FFC107', accent_gradient: 'linear-gradient(135deg, #FFCA28 0%, #FFD54F 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #FFE082 0%, #FFEE58 100%)', highlighted_bg: 'rgba(255, 193, 7, 0.15)', highlighted_border: 'rgba(255, 193, 7, 0.3)', grid_cell_bg: '#ECEFF1', toggle_bg_inactive: 'rgba(0,0,0,0.2)', }, symbolColors: { '🚑':'text-red-500', '🚌':'text-yellow-500', '🚗':'text-blue-500', '🚎':'text-green-500', '🚜':'text-orange-500', '✈️':'text-gray-400' } },
-            the_post_office: { name: "The Post Office", symbols: ['📦', '📮', '🗂️', '🗳️', '🗄️', '📬'], palette: { bg: 'linear-gradient(135deg, #EFEBE9 0%, #D7CCC8 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#3E2723', text_secondary: '#6D4C41', accent: '#D32F2F', accent_gradient: 'linear-gradient(135deg, #D32F2F 0%, #E53935 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #EF5350 0%, #E57373 100%)', highlighted_bg: 'rgba(211, 47, 47, 0.1)', highlighted_border: 'rgba(211, 47, 47, 0.25)', grid_cell_bg: '#F8F5F3', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '📦':'text-amber-800', '📮':'text-red-600', '🗂️':'text-gray-500', '🗳️':'text-blue-700', '🗄️':'text-gray-600', '📬':'text-red-700' } },
-            tutti_frutti: { name: "Tutti Frutti", symbols: ['🍓', '🫐', '🍉', '🥝', '🥭', '🍋'], palette: { bg: 'linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#4E342E', text_secondary: '#6D4C41', accent: '#EC407A', accent_gradient: 'linear-gradient(135deg, #EC407A 0%, #F06292 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #F48FB1 0%, #F8BBD0 100%)', highlighted_bg: 'rgba(236, 64, 122, 0.1)', highlighted_border: 'rgba(236, 64, 122, 0.25)', grid_cell_bg: '#FFFFFF', toggle_bg_inactive: '#F0F0F0', }, symbolColors: { '🍓':'text-red-500', '🫐':'text-blue-600', '🍉':'text-green-600', '🥝':'text-lime-700', '🥭':'text-orange-500', '🍋':'text-yellow-500' } },
-            zedi_zodi: { name: "Zodiac Night", symbols: ['♋', '♒', '♎', '♐', '♌', '♉'], palette: { bg: 'linear-gradient(135deg, #0f0c29 0%, #302b63 100%)', card: 'rgba(48, 43, 99, 0.75)', text: '#FFFFFF', text_secondary: '#A9B4D1', accent: '#FFD700', accent_gradient: 'linear-gradient(135deg, #FFD700 0%, #FFA000 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #FFECB3 0%, #FFD54F 100%)', highlighted_bg: 'rgba(255, 215, 0, 0.15)', highlighted_border: 'rgba(255, 215, 0, 0.3)', grid_cell_bg: '#6A6E89', toggle_bg_inactive: 'rgba(255,255,255,0.2)', }, symbolColors: { '♋':'text-gray-300', '♒':'text-blue-300', '♎':'text-pink-300', '♐':'text-orange-300', '♌':'text-yellow-300', '♉':'text-green-300' } },
-            desert_oasis: { name: "Desert Oasis", symbols: ['🌵', '🪨', '☀️', '🐍', '⛺', '🌴'], palette: { bg: 'linear-gradient(135deg, #FFECB3 0%, #FFD54F 100%)', card: 'rgba(255, 255, 255, 0.85)', text: '#5D4037', text_secondary: '#6D4C41', accent: '#00897B', accent_gradient: 'linear-gradient(135deg, #00897B 0%, #26A69A 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #4DB6AC 0%, #80CBC4 100%)', highlighted_bg: 'rgba(0, 137, 123, 0.15)', highlighted_border: 'rgba(0, 137, 123, 0.3)', grid_cell_bg: '#FFFBF2', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🌵':'text-green-700', '🪨':'text-gray-600', '☀️':'text-yellow-600', '🐍':'text-emerald-800', '⛺':'text-orange-700', '🌴':'text-lime-800' } },
-            morning_aviary: { name: "Morning Aviary", symbols: ['🐔', '🐦', '🐥', '🐣', '🐝', '🐧'], palette: { bg: 'linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#0D47A1', text_secondary: '#1976D2', accent: '#FFA000', accent_gradient: 'linear-gradient(135deg, #FFA000 0%, #FFB300 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #FFC107 0%, #FF8F00 100%)', highlighted_bg: 'rgba(255, 160, 0, 0.15)', highlighted_border: 'rgba(255, 160, 0, 0.3)', grid_cell_bg: '#F7FBFF', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🐔':'text-red-600', '🐦':'text-blue-500', '🐥':'text-yellow-500', '🐣':'text-yellow-400', '🐝':'text-yellow-600', '🐧':'text-gray-800' } },
-            creepy_crawlies: { name: "Creepy Crawlies", symbols: ['🐍', '🦎', '🦂', '🐭', '🥚', '🐁'], palette: { bg: 'linear-gradient(135deg, #37474F 0%, #212121 100%)', card: 'rgba(38, 50, 56, 0.8)', text: '#CFD8DC', text_secondary: '#90A4AE', accent: '#7E57C2', accent_gradient: 'linear-gradient(135deg, #7E57C2 0%, #9575CD 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #B39DDB 0%, #D1C4E9 100%)', highlighted_bg: 'rgba(126, 87, 194, 0.15)', highlighted_border: 'rgba(126, 87, 194, 0.3)', grid_cell_bg: '#546E7A', toggle_bg_inactive: 'rgba(255,255,255,0.2)', }, symbolColors: { '🐍':'text-green-400', '🦎':'text-lime-400', '🦂':'text-red-400', '🐭':'text-gray-300', '🥚':'text-gray-200', '🐁':'text-gray-100' } },
-            ancient_secrets: { name: "Ancient Secrets", symbols: ['🔍', '🧩', '🀄', '🔑', '🧭', '👁️'], palette: { bg: 'linear-gradient(135deg, #5D4037 0%, #3E2723 100%)', card: 'rgba(62, 39, 35, 0.75)', text: '#D7CCC8', text_secondary: '#D7CCC8', accent: '#FFCA28', accent_gradient: 'linear-gradient(135deg, #FFC107 0%, #FF8F00 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #FFA000 0%, #FF6F00 100%)', highlighted_bg: 'rgba(255, 202, 40, 0.15)', highlighted_border: 'rgba(255, 202, 40, 0.3)', grid_cell_bg: '#795548', toggle_bg_inactive: 'rgba(255,255,255,0.2)', }, symbolColors: { '🔍':'text-blue-300', '🧩':'text-orange-300', '🀄':'text-red-300', '🔑':'text-yellow-300', '🧭':'text-gray-300', '👁️':'text-cyan-300' } },
-            cosmic_drift: { name: "Cosmic Drift", symbols: ['🌍', '🚀', '🪐', '🌗', '💫', '🛰️'], palette: { bg: 'linear-gradient(135deg, #1A237E 0%, #0D123B 100%)', card: 'rgba(48, 59, 128, 0.7)', text: '#E8EAF6', text_secondary: '#9FA8DA', accent: '#536DFE', accent_gradient: 'linear-gradient(135deg, #536DFE 0%, #7C4DFF 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #7C4DFF 0%, #B388FF 100%)', highlighted_bg: 'rgba(83, 109, 254, 0.2)', highlighted_border: 'rgba(83, 109, 254, 0.4)', grid_cell_bg: '#5C6BC0', toggle_bg_inactive: 'rgba(255,255,255,0.2)', }, symbolColors: { '🌍':'text-blue-300', '🚀':'text-gray-200', '🪐':'text-amber-300', '🌗':'text-gray-100', '💫':'text-yellow-300', '🛰️':'text-blue-200' } },
-            petal_meadow: { name: "Petal Meadow", symbols: ['🌸', '🌺', '🌷', '🪷', '🪻', '🌻'], palette: { bg: 'linear-gradient(135deg, #E6EE9C 0%, #C5E1A5 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#2E7D32', text_secondary: '#558B2F', accent: '#D81B60', accent_gradient: 'linear-gradient(135deg, #D81B60 0%, #E91E63 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #F06292 0%, #F48FB1 100%)', highlighted_bg: 'rgba(216, 27, 96, 0.1)', highlighted_border: 'rgba(216, 27, 96, 0.25)', grid_cell_bg: '#F8FFF0', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🌸':'text-pink-400', '🌺':'text-red-500', '🌷':'text-orange-500', '🪷':'text-pink-500', '🪻':'text-purple-500', '🌻':'text-yellow-500' } },
-            monster_mash: { name: "Monster Mash", symbols: ['👹', '🐲', '👻', '👽', '🎃', '😈'], palette: { bg: 'linear-gradient(135deg, #432874 0%, #18142a 100%)', card: 'rgba(40, 30, 60, 0.8)', text: '#E0D6FF', text_secondary: '#BCA9F0', accent: '#FF7900', accent_gradient: 'linear-gradient(135deg, #FF7900 0%, #FF983D 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #FFB47A 0%, #FFD0B1 100%)', highlighted_bg: 'rgba(255, 121, 0, 0.15)', highlighted_border: 'rgba(255, 121, 0, 0.3)', grid_cell_bg: '#4A3F71', toggle_bg_inactive: 'rgba(255,255,255,0.2)', }, symbolColors: { '👹':'text-red-400', '🐲':'text-green-400', '👻':'text-gray-200', '👽':'text-lime-300', '🎃':'text-orange-400', '😈':'text-purple-400' } }
+            pastel_pals: { name: "Pastel Pals", symbols: ['🐰', '🐶', '🐯', '🐼', '🦄', '🐸'], palette: { bg: 'linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%)', card: 'rgba(255, 255, 255, 0.88)', text: '#4A148C', text_secondary: '#7B1FA2', accent: '#8E24AA', 'accent-light': '#F3E5F5', accent_gradient: 'linear-gradient(135deg, #8E24AA 0%, #AB47BC 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #BA68C8 0%, #CE93D8 100%)', highlighted_bg: 'rgba(142, 36, 170, 0.15)', highlighted_border: 'rgba(142, 36, 170, 0.3)', grid_cell_bg: '#F9F6FB', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🐰':'text-pink-400', '🐶':'text-amber-600', '🐯':'text-orange-500', '🐼':'text-gray-700', '🦄':'text-purple-500', '🐸':'text-green-500' } },
+            green_grocer: { name: "Green Grocer", symbols: ['🥑', '🥦', '🧄', '🌽', '🫑', '🌶️'], palette: { bg: 'linear-gradient(135deg, #F1F8E9 0%, #DCEDC8 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#33691E', text_secondary: '#689F38', accent: '#8BC34A', 'accent-light': '#F1F8E9', accent_gradient: 'linear-gradient(135deg, #8BC34A 0%, #9CCC65 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #AED581 0%, #C5E1A5 100%)', highlighted_bg: 'rgba(139, 195, 74, 0.15)', highlighted_border: 'rgba(139, 195, 74, 0.3)', grid_cell_bg: '#FCFFF5', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🥑':'text-green-800', '🥦':'text-green-600', '🧄':'text-gray-500', '🌽':'text-yellow-500', '🫑':'text-green-700', '🌶️':'text-red-600' } },
+            bug_life: { name: "Bug's Life", symbols: ['🦋', '🐝', '🪲', '🐛', '🐞', '🪰'], palette: { bg: 'linear-gradient(135deg, #E0F2F1 0%, #B2DFDB 100%)', card: 'rgba(255, 255, 255, 0.85)', text: '#004D40', text_secondary: '#00796B', accent: '#009688', 'accent-light': '#E0F2F1', accent_gradient: 'linear-gradient(135deg, #009688 0%, #26A69A 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #4DB6AC 0%, #80CBC4 100%)', highlighted_bg: 'rgba(0, 150, 136, 0.15)', highlighted_border: 'rgba(0, 150, 136, 0.3)', grid_cell_bg: '#F5FCFB', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🦋':'text-blue-500', '🐝':'text-yellow-500', '🪲':'text-amber-800', '🐛':'text-lime-600', '🐞':'text-red-600', '🪰':'text-gray-700' } },
+            hats_off: { name: "Hats Off", symbols: ['🪖', '🎩', '🧢', '👒', '⛑️', '👑'], palette: { bg: 'linear-gradient(135deg, #A1887F 0%, #795548 100%)', card: 'rgba(255, 255, 255, 0.85)', text: '#3E2723', text_secondary: '#5D4037', accent: '#FFD700', 'accent-light': '#6D4C41', accent_gradient: 'linear-gradient(135deg, #FFD700 0%, #FFC107 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #5D4037 0%, #4E342E 100%)', highlighted_bg: 'rgba(255, 215, 0, 0.45)', highlighted_border: 'rgba(255, 215, 0, 0.6)', grid_cell_bg: '#EFEBE9', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🪖':'text-green-800', '🎩':'text-gray-800', '🧢':'text-blue-600', '👒':'text-pink-400', '⛑️':'text-red-600', '👑':'text-yellow-500' } },
+            golden_bakery: { name: "Golden Bakery", symbols: ['🍞', '🥯', '🥐', '🧇', '🍪', '🥞'], palette: { bg: 'linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#8D6E63', text_secondary: '#A1887F', accent: '#AF8260', 'accent-light': '#FFF8E1', accent_gradient: 'linear-gradient(135deg, #AF8260 0%, #C19A7B 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #D4B298 0%, #E6C9B4 100%)', highlighted_bg: 'rgba(175, 130, 96, 0.15)', highlighted_border: 'rgba(175, 130, 96, 0.3)', grid_cell_bg: '#FFFBF2', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🍞':'text-amber-800', '🥯':'text-amber-700', '🥐':'text-orange-600', '🧇':'text-yellow-700', '🍪':'text-amber-900', '🥞':'text-amber-600' } },
+             sporty_vibes: { name: "Sporty Vibes", symbols: ['🏀', '⚽️', '🥎', '🏉', '🏐', '🏈'], palette: { bg: 'linear-gradient(135deg, #4CAF50 0%, #388E3C 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#1B5E20', text_secondary: '#2E7D32', accent: '#FF9800', 'accent-light': '#C8E6C9', accent_gradient: 'linear-gradient(135deg, #FF9800 0%, #FFA726 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #FFB74D 0%, #FFCC80 100%)', highlighted_bg: 'rgba(255, 152, 0, 0.45)', highlighted_border: 'rgba(255, 152, 0, 0.6)', grid_cell_bg: '#F1F8E9', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🏀':'text-orange-600', '⚽️':'text-black', '🥎':'text-lime-400', '🏉':'text-amber-800', '🏐':'text-blue-500', '🏈':'text-amber-900' } },
+            school_of_magic: { name: "School of Magic", symbols: ['🧙‍♀️', '🦉', '📜', '🏆', '🏟️', '🔮'], palette: { bg: 'linear-gradient(135deg, #4E342E 0%, #212121 100%)', card: 'rgba(78, 52, 46, 0.75)', text: '#FFECB3', text_secondary: '#D7CCC8', accent: '#D32F2F', 'accent-light': '#5D4037', accent_gradient: 'linear-gradient(135deg, #D32F2F 0%, #FFC107 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #EF5350 0%, #FFD54F 100%)', highlighted_bg: 'rgba(211, 47, 47, 0.15)', highlighted_border: 'rgba(211, 47, 47, 0.3)', grid_cell_bg: '#6D4C41', toggle_bg_inactive: 'rgba(255,255,255,0.2)', }, symbolColors: { '🧙‍♀️':'text-purple-300', '🦉':'text-gray-300', '📜':'text-yellow-200', '🏆':'text-yellow-400', '🏟️':'text-gray-400', '🔮':'text-purple-400' } },
+            emoji_fun: { name: "Emoji Fun", symbols: ['😍', '😎', '🤩', '😂', '🥵', '🤯'], palette: { bg: 'linear-gradient(135deg, #FFF9C4 0%, #FFF176 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#4E342E', text_secondary: '#795548', accent: '#42A5F5', 'accent-light': '#E3F2FD', accent_gradient: 'linear-gradient(135deg, #42A5F5 0%, #64B5F6 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #90CAF9 0%, #BBDEFB 100%)', highlighted_bg: 'rgba(66, 165, 245, 0.15)', highlighted_border: 'rgba(66, 165, 245, 0.3)', grid_cell_bg: '#FFFDE7', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '😍':'text-red-500', '😎':'text-black', '🤩':'text-yellow-600', '😂':'text-blue-500', '🥵':'text-orange-500', '🤯':'text-purple-500' } },
+            deep_ocean: { name: "Deep Ocean", symbols: ['🐡', '🦑', '🦀', '🐙', '🐳', '🐠'], palette: { bg: 'linear-gradient(135deg, #1A237E 0%, #0D47A1 100%)', card: 'rgba(26, 35, 126, 0.7)', text: '#E3F2FD', text_secondary: '#90CAF9', accent: '#42A5F5', 'accent-light': '#1A237E', accent_gradient: 'linear-gradient(135deg, #42A5F5 0%, #64B5F6 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #90CAF9 0%, #BBDEFB 100%)', highlighted_bg: 'rgba(66, 165, 245, 0.2)', highlighted_border: 'rgba(66, 165, 245, 0.4)', grid_cell_bg: '#1976D2', toggle_bg_inactive: 'rgba(255,255,255,0.2)', }, symbolColors: { '🐡':'text-yellow-300', '🦑':'text-pink-300', '🦀':'text-red-400', '🐙':'text-purple-300', '🐳':'text-blue-300', '🐠':'text-orange-300' } },
+            road_block_theme: { name: "Road Block", symbols: ['🚑', '🚌', '🚗', '🚎', '🚜', '✈️'], palette: { bg: 'linear-gradient(135deg, #B0BEC5 0%, #78909C 100%)', card: 'rgba(255, 255, 255, 0.8)', text: '#263238', text_secondary: '#455A64', accent: '#FFC107', 'accent-light': '#CFD8DC', accent_gradient: 'linear-gradient(135deg, #FFCA28 0%, #FFD54F 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #FFE082 0%, #FFEE58 100%)', highlighted_bg: 'rgba(255, 193, 7, 0.15)', highlighted_border: 'rgba(255, 193, 7, 0.3)', grid_cell_bg: '#ECEFF1', toggle_bg_inactive: 'rgba(0,0,0,0.2)', }, symbolColors: { '🚑':'text-red-500', '🚌':'text-yellow-500', '🚗':'text-blue-500', '🚎':'text-green-500', '🚜':'text-orange-500', '✈️':'text-gray-400' } },
+            the_post_office: { name: "The Post Office", symbols: ['📦', '📮', '🗂️', '🗳️', '🗄️', '📬'], palette: { bg: 'linear-gradient(135deg, #EFEBE9 0%, #D7CCC8 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#3E2723', text_secondary: '#6D4C41', accent: '#D32F2F', 'accent-light': '#FFCDD2', accent_gradient: 'linear-gradient(135deg, #D32F2F 0%, #E53935 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #EF5350 0%, #E57373 100%)', highlighted_bg: 'rgba(211, 47, 47, 0.1)', highlighted_border: 'rgba(211, 47, 47, 0.25)', grid_cell_bg: '#F8F5F3', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '📦':'text-amber-800', '📮':'text-red-600', '🗂️':'text-gray-500', '🗳️':'text-blue-700', '🗄️':'text-gray-600', '📬':'text-red-700' } },
+            tutti_frutti: { name: "Tutti Frutti", symbols: ['🍓', '🫐', '🍉', '🥝', '🥭', '🍋'], palette: { bg: 'linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#4E342E', text_secondary: '#6D4C41', accent: '#EC407A', 'accent-light': '#FCE4EC', accent_gradient: 'linear-gradient(135deg, #EC407A 0%, #F06292 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #F48FB1 0%, #F8BBD0 100%)', highlighted_bg: 'rgba(236, 64, 122, 0.1)', highlighted_border: 'rgba(236, 64, 122, 0.25)', grid_cell_bg: '#FFFFFF', toggle_bg_inactive: '#F0F0F0', }, symbolColors: { '🍓':'text-red-500', '🫐':'text-blue-600', '🍉':'text-green-600', '🥝':'text-lime-700', '🥭':'text-orange-500', '🍋':'text-yellow-500' } },
+            zedi_zodi: { name: "Zodiac Night", symbols: ['♋', '♒', '♎', '♐', '♌', '♉'], palette: { bg: 'linear-gradient(135deg, #0f0c29 0%, #302b63 100%)', card: 'rgba(48, 43, 99, 0.75)', text: '#FFFFFF', text_secondary: '#A9B4D1', accent: '#FFD700', 'accent-light': '#4A428A', accent_gradient: 'linear-gradient(135deg, #FFD700 0%, #FFA000 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #FFECB3 0%, #FFD54F 100%)', highlighted_bg: 'rgba(255, 215, 0, 0.15)', highlighted_border: 'rgba(255, 215, 0, 0.3)', grid_cell_bg: '#6A6E89', toggle_bg_inactive: 'rgba(255,255,255,0.2)', }, symbolColors: { '♋':'text-gray-300', '♒':'text-blue-300', '♎':'text-pink-300', '♐':'text-orange-300', '♌':'text-yellow-300', '♉':'text-green-300' } },
+            desert_oasis: { name: "Desert Oasis", symbols: ['🌵', '🪨', '☀️', '🐍', '⛺', '🌴'], palette: { bg: 'linear-gradient(135deg, #FFECB3 0%, #FFD54F 100%)', card: 'rgba(255, 255, 255, 0.85)', text: '#5D4037', text_secondary: '#6D4C41', accent: '#00897B', 'accent-light': '#B2DFDB', accent_gradient: 'linear-gradient(135deg, #00897B 0%, #26A69A 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #4DB6AC 0%, #80CBC4 100%)', highlighted_bg: 'rgba(0, 137, 123, 0.15)', highlighted_border: 'rgba(0, 137, 123, 0.3)', grid_cell_bg: '#FFFBF2', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🌵':'text-green-700', '🪨':'text-gray-600', '☀️':'text-yellow-600', '🐍':'text-emerald-800', '⛺':'text-orange-700', '🌴':'text-lime-800' } },
+            morning_aviary: { name: "Morning Aviary", symbols: ['🐔', '🐦', '🐥', '🐣', '🐝', '🐧'], palette: { bg: 'linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#0D47A1', text_secondary: '#1976D2', accent: '#FFA000', 'accent-light': '#FFECB3', accent_gradient: 'linear-gradient(135deg, #FFA000 0%, #FFB300 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #FFC107 0%, #FF8F00 100%)', highlighted_bg: 'rgba(255, 160, 0, 0.15)', highlighted_border: 'rgba(255, 160, 0, 0.3)', grid_cell_bg: '#F7FBFF', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🐔':'text-red-600', '🐦':'text-blue-500', '🐥':'text-yellow-500', '🐣':'text-yellow-400', '🐝':'text-yellow-600', '🐧':'text-gray-800' } },
+            creepy_crawlies: { name: "Creepy Crawlies", symbols: ['🐍', '🦎', '🦂', '🐭', '🥚', '🐁'], palette: { bg: 'linear-gradient(135deg, #37474F 0%, #212121 100%)', card: 'rgba(38, 50, 56, 0.8)', text: '#CFD8DC', text_secondary: '#90A4AE', accent: '#7E57C2', 'accent-light': '#512DA8', accent_gradient: 'linear-gradient(135deg, #7E57C2 0%, #9575CD 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #B39DDB 0%, #D1C4E9 100%)', highlighted_bg: 'rgba(126, 87, 194, 0.15)', highlighted_border: 'rgba(126, 87, 194, 0.3)', grid_cell_bg: '#546E7A', toggle_bg_inactive: 'rgba(255,255,255,0.2)', }, symbolColors: { '🐍':'text-green-400', '🦎':'text-lime-400', '🦂':'text-red-400', '🐭':'text-gray-300', '🥚':'text-gray-200', '🐁':'text-gray-100' } },
+            ancient_secrets: { name: "Ancient Secrets", symbols: ['🔍', '🧩', '🀄', '🔑', '🧭', '👁️'], palette: { bg: 'linear-gradient(135deg, #5D4037 0%, #3E2723 100%)', card: 'rgba(62, 39, 35, 0.75)', text: '#D7CCC8', text_secondary: '#D7CCC8', accent: '#FFCA28', 'accent-light': '#4E342E', accent_gradient: 'linear-gradient(135deg, #FFC107 0%, #FF8F00 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #FFA000 0%, #FF6F00 100%)', highlighted_bg: 'rgba(255, 202, 40, 0.15)', highlighted_border: 'rgba(255, 202, 40, 0.3)', grid_cell_bg: '#795548', toggle_bg_inactive: 'rgba(255,255,255,0.2)', }, symbolColors: { '🔍':'text-blue-300', '🧩':'text-orange-300', '🀄':'text-red-300', '🔑':'text-yellow-300', '🧭':'text-gray-300', '👁️':'text-cyan-300' } },
+            cosmic_drift: { name: "Cosmic Drift", symbols: ['🌍', '🚀', '🪐', '🌗', '💫', '🛰️'], palette: { bg: 'linear-gradient(135deg, #1A237E 0%, #0D123B 100%)', card: 'rgba(48, 59, 128, 0.7)', text: '#E8EAF6', text_secondary: '#9FA8DA', accent: '#536DFE', 'accent-light': '#1A237E', accent_gradient: 'linear-gradient(135deg, #536DFE 0%, #7C4DFF 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #7C4DFF 0%, #B388FF 100%)', highlighted_bg: 'rgba(83, 109, 254, 0.2)', highlighted_border: 'rgba(83, 109, 254, 0.4)', grid_cell_bg: '#5C6BC0', toggle_bg_inactive: 'rgba(255,255,255,0.2)', }, symbolColors: { '🌍':'text-blue-300', '🚀':'text-gray-200', '🪐':'text-amber-300', '🌗':'text-gray-100', '💫':'text-yellow-300', '🛰️':'text-blue-200' } },
+            petal_meadow: { name: "Petal Meadow", symbols: ['🌸', '🌺', '🌷', '🪷', '🪻', '🌻'], palette: { bg: 'linear-gradient(135deg, #E6EE9C 0%, #C5E1A5 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#2E7D32', text_secondary: '#558B2F', accent: '#D81B60', 'accent-light': '#F8BBD0', accent_gradient: 'linear-gradient(135deg, #D81B60 0%, #E91E63 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #F06292 0%, #F48FB1 100%)', highlighted_bg: 'rgba(216, 27, 96, 0.1)', highlighted_border: 'rgba(216, 27, 96, 0.25)', grid_cell_bg: '#F8FFF0', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🌸':'text-pink-400', '🌺':'text-red-500', '🌷':'text-orange-500', '🪷':'text-pink-500', '🪻':'text-purple-500', '🌻':'text-yellow-500' } },
+            monster_mash: { name: "Monster Mash", symbols: ['👹', '🐲', '👻', '👽', '🎃', '😈'], palette: { bg: 'linear-gradient(135deg, #432874 0%, #18142a 100%)', card: 'rgba(40, 30, 60, 0.8)', text: '#E0D6FF', text_secondary: '#BCA9F0', accent: '#FF7900', 'accent-light': '#6A1B9A', accent_gradient: 'linear-gradient(135deg, #FF7900 0%, #FF983D 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #FFB47A 0%, #FFD0B1 100%)', highlighted_bg: 'rgba(255, 121, 0, 0.15)', highlighted_border: 'rgba(255, 121, 0, 0.3)', grid_cell_bg: '#4A3F71', toggle_bg_inactive: 'rgba(255,255,255,0.2)', }, symbolColors: { '👹':'text-red-400', '🐲':'text-green-400', '👻':'text-gray-200', '👽':'text-lime-300', '🎃':'text-orange-400', '😈':'text-purple-400' } }
         };
 
         const unlockProgression = {
@@ -962,6 +985,60 @@
             });
         }
         
+        // --- Focus Trap for Modals ---
+        let modalFocusTrapListener = null;
+        let previouslyFocusedElement = null;
+
+        function handleModalOpen(modalEl) {
+            if (!modalEl) return;
+            previouslyFocusedElement = document.activeElement;
+            modalEl.classList.add('is-open');
+            document.body.classList.add('modal-open');
+
+            const focusableElements = modalEl.querySelectorAll(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
+            const firstFocusable = focusableElements[0];
+            const lastFocusable = focusableElements[focusableElements.length - 1];
+
+            if (firstFocusable) {
+                firstFocusable.focus();
+            }
+
+            modalFocusTrapListener = (e) => {
+                if (e.key !== 'Tab') return;
+                
+                if (e.shiftKey) { // Shift + Tab
+                    if (document.activeElement === firstFocusable) {
+                        lastFocusable.focus();
+                        e.preventDefault();
+                    }
+                } else { // Tab
+                    if (document.activeElement === lastFocusable) {
+                        firstFocusable.focus();
+                        e.preventDefault();
+                    }
+                }
+            };
+            modalEl.addEventListener('keydown', modalFocusTrapListener);
+        }
+
+        function handleModalClose(modalEl) {
+            if (!modalEl) return;
+            modalEl.classList.remove('is-open');
+            document.body.classList.remove('modal-open');
+            
+            if (modalFocusTrapListener) {
+                modalEl.removeEventListener('keydown', modalFocusTrapListener);
+                modalFocusTrapListener = null;
+            }
+            if (previouslyFocusedElement) {
+                previouslyFocusedElement.focus();
+                previouslyFocusedElement = null;
+            }
+        }
+
+
         class GameState {
             constructor() {
                 this.states = {
@@ -1066,7 +1143,7 @@
                 this.audioInit();
 
                 this._superpowerStrategies = {
-                    swapThem: (r, c, cell) => {
+                    [SUPERPOWERS.SWAP_THEM]: (r, c, cell) => {
                         if (!this.gridData[r][c] || this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) { this.audioPlay('invalid'); return; }
                         if (!this.swapFirstCell) {
                             this.swapFirstCell = { r, c };
@@ -1078,7 +1155,7 @@
                                 [this.gridData[r1][c1], this.gridData[r][c]] = [this.gridData[r][c], this.gridData[r1][c1]];
                                 this.gridCells[r1][c1].classList.remove('pulse-animation');
                                 this.swapFirstCell = null;
-                                this.consumeSuperpower('swapThem');
+                                this.consumeSuperpower(SUPERPOWERS.SWAP_THEM);
                                 this.gameStateManager.setState('AWAITING_ROLL');
                                 this.renderControls();
                             } else {
@@ -1090,7 +1167,7 @@
                             }
                         }
                     },
-                    bombBae: (r, c, cell) => {
+                    [SUPERPOWERS.BOMB_BAE]: (r, c, cell) => {
                         const targetSymbol = this.gridData[r][c];
                         if (!targetSymbol || targetSymbol === this.SPECIAL_SYMBOLS.WILD) {
                             this.audioPlay('invalid');
@@ -1105,11 +1182,11 @@
                         }
                         this.gridData[0][c] = null;
 
-                        this.consumeSuperpower('bombBae');
+                        this.consumeSuperpower(SUPERPOWERS.BOMB_BAE);
                         this.gameStateManager.setState('AWAITING_ROLL');
                         this.renderControls();
                     },
-                    noReturn: (r, c, cell) => {
+                    [SUPERPOWERS.NO_RETURN]: (r, c, cell) => {
                         if (this.gridData[r][c]) {
                             this.showSymbolSelectorForExchange(r, c);
                         } else {
@@ -1231,15 +1308,13 @@
                 
                 nextBtn.textContent = this.tutorialStep === 3 ? "Start Playing" : "Next";
                 
-                modal.classList.add('is-open');
-                document.body.classList.add('modal-open');
+                handleModalOpen(modal);
             }
 
             completeTutorial() {
                 this.tutorialMode = false;
                 localStorage.setItem('allohaTutorialCompleted', 'true');
-                this.DOMElements.tutorial_modal.classList.remove('is-open');
-                document.body.classList.remove('modal-open');
+                handleModalClose(this.DOMElements.tutorial_modal);
             }
 
             getState() {
@@ -1563,8 +1638,7 @@
             }
             async handleRollDice() {
                 if (this.gameStateManager.is('AWAITING_PLACEMENT')) {
-                    this.DOMElements.warning_modal.classList.add('is-open');
-                    document.body.classList.add('modal-open');
+                    handleModalOpen(this.DOMElements.warning_modal);
                     return;
                 }
                 if (!this.gameStateManager.is('AWAITING_ROLL')) return;
@@ -1947,8 +2021,7 @@
                 this.DOMElements.final_penalty_score.textContent = formatNegative(this.scores.penalty);
 
                 setTimeout(() => {
-                    this.DOMElements.game_over_modal.classList.add('is-open');
-                    document.body.classList.add('modal-open');
+                    handleModalOpen(this.DOMElements.game_over_modal);
                     const shareBtn = document.getElementById('share-score-btn');
                     const changeEditionBtn = document.getElementById('change-edition-btn-modal');
                     
@@ -1957,8 +2030,7 @@
                     }
                     if (changeEditionBtn) {
                         changeEditionBtn.addEventListener('click', () => {
-                            this.DOMElements.game_over_modal.classList.remove('is-open');
-                            document.body.classList.remove('modal-open');
+                            handleModalClose(this.DOMElements.game_over_modal);
                             document.getElementById('select-edition-btn').click();
                         });
                     }
@@ -2173,13 +2245,17 @@
             }
             
             updateSuperpowerButtonsUI() {
-                const ids = ['past-lives', 'no-return', 'bomb-bae', 'swap-them'];
-                ids.forEach(id => {
-                    const btn = document.getElementById(`${id}-btn`);
+                const ids = {
+                    [SUPERPOWERS.PAST_LIVES]: 'past-lives-btn',
+                    [SUPERPOWERS.NO_RETURN]: 'no-return-btn',
+                    [SUPERPOWERS.BOMB_BAE]: 'bomb-bae-btn',
+                    [SUPERPOWERS.SWAP_THEM]: 'swap-them-btn',
+                };
+                Object.keys(ids).forEach(powerKey => {
+                    const btn = document.getElementById(ids[powerKey]);
                     if (!btn) return;
                     const overlay = btn.querySelector('.superpower-used-overlay');
-                    const camelCaseKey = id.replace(/-./g, char => char.toUpperCase()[1]);
-                    if(this.usedSuperpowers.has(camelCaseKey)) {
+                    if(this.usedSuperpowers.has(powerKey)) {
                         if(overlay) overlay.classList.remove('hidden');
                     } else {
                         if(overlay) overlay.classList.add('hidden');
@@ -2187,18 +2263,23 @@
                 });
 
                 const totalUsed = this.usedSuperpowers.size, isMidMove = this.firstPlacementCell !== null, isPowerActive = this.activeSuperpower !== null, isAwaitingRoll = this.gameStateManager.is('AWAITING_ROLL');
-                const btns = { pastLives: document.getElementById('past-lives-btn'), bombBae: document.getElementById('bomb-bae-btn'), noReturn: document.getElementById('no-return-btn'), swapThem: document.getElementById('swap-them-btn') };
+                const btns = { 
+                    [SUPERPOWERS.PAST_LIVES]: document.getElementById('past-lives-btn'), 
+                    [SUPERPOWERS.BOMB_BAE]: document.getElementById('bomb-bae-btn'), 
+                    [SUPERPOWERS.NO_RETURN]: document.getElementById('no-return-btn'), 
+                    [SUPERPOWERS.SWAP_THEM]: document.getElementById('swap-them-btn') 
+                };
                 
-                if (btns.pastLives) btns.pastLives.disabled = totalUsed >= 2 || this.usedSuperpowers.has('pastLives') || !this.lastGameState || isMidMove || isPowerActive || !isAwaitingRoll;
-                if (btns.bombBae) btns.bombBae.disabled = totalUsed >= 2 || this.usedSuperpowers.has('bombBae') || this.gridData.flat().every(s => s === null) || isMidMove || isPowerActive;
-                if (btns.noReturn) btns.noReturn.disabled = this.turnCount < 1 || totalUsed >= 2 || this.usedSuperpowers.has('noReturn') || isMidMove || isPowerActive;
-                if (btns.swapThem) btns.swapThem.disabled = this.turnCount < 1 || totalUsed >= 2 || this.usedSuperpowers.has('swapThem') || !isAwaitingRoll || isMidMove || isPowerActive;
+                if (btns[SUPERPOWERS.PAST_LIVES]) btns[SUPERPOWERS.PAST_LIVES].disabled = totalUsed >= 2 || this.usedSuperpowers.has(SUPERPOWERS.PAST_LIVES) || !this.lastGameState || isMidMove || isPowerActive || !isAwaitingRoll;
+                if (btns[SUPERPOWERS.BOMB_BAE]) btns[SUPERPOWERS.BOMB_BAE].disabled = totalUsed >= 2 || this.usedSuperpowers.has(SUPERPOWERS.BOMB_BAE) || this.gridData.flat().every(s => s === null) || isMidMove || isPowerActive;
+                if (btns[SUPERPOWERS.NO_RETURN]) btns[SUPERPOWERS.NO_RETURN].disabled = this.turnCount < 1 || totalUsed >= 2 || this.usedSuperpowers.has(SUPERPOWERS.NO_RETURN) || isMidMove || isPowerActive;
+                if (btns[SUPERPOWERS.SWAP_THEM]) btns[SUPERPOWERS.SWAP_THEM].disabled = this.turnCount < 1 || totalUsed >= 2 || this.usedSuperpowers.has(SUPERPOWERS.SWAP_THEM) || !isAwaitingRoll || isMidMove || isPowerActive;
                 
                 Object.values(btns).forEach(btn => { if(btn) btn.classList.remove('superpower-btn--active')});
                 if (isPowerActive && btns[this.activeSuperpower]) {
                     btns[this.activeSuperpower].classList.add('superpower-btn--active');
                 }
-                document.body.classList.toggle('cursor-target', this.activeSuperpower === 'bombBae');
+                document.body.style.cursor = this.activeSuperpower === SUPERPOWERS.BOMB_BAE ? 'crosshair' : '';
 
                 const spChargesEl = document.getElementById('sp-charges');
                 if (spChargesEl) {
@@ -2240,16 +2321,14 @@
                     btn.addEventListener('click', () => this.handleSymbolExchange(symbol));
                     this.DOMElements.exchange_options.appendChild(btn);
                  });
-                 this.DOMElements.exchange_modal.classList.add('is-open');
-                 document.body.classList.add('modal-open');
+                 handleModalOpen(this.DOMElements.exchange_modal);
             }
             handleSymbolExchange(newSymbol) {
                 if (!this.cellToExchange) return;
                 const {r, c} = this.cellToExchange; this.gridData[r][c] = newSymbol;
-                this.DOMElements.exchange_modal.classList.remove('is-open'); 
-                document.body.classList.remove('modal-open');
+                handleModalClose(this.DOMElements.exchange_modal);
                 this.cellToExchange = null;
-                this.consumeSuperpower('noReturn'); this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls();
+                this.consumeSuperpower(SUPERPOWERS.NO_RETURN); this.gameStateManager.setState('AWAITING_ROLL'); this.renderControls();
             }
             consumeSuperpower(powerName) {
                 this.triggerVibration(30);
@@ -2276,9 +2355,13 @@
                     this.updateAllScores();
                     this.updateProgressBar();
                     
-                    this.consumeSuperpower('pastLives');
+                    this.consumeSuperpower(SUPERPOWERS.PAST_LIVES);
                 });
-                const powerBtns = { bombBae: 'bomb-bae-btn', noReturn: 'no-return-btn', swapThem: 'swap-them-btn' };
+                const powerBtns = { 
+                    [SUPERPOWERS.BOMB_BAE]: 'bomb-bae-btn', 
+                    [SUPERPOWERS.NO_RETURN]: 'no-return-btn', 
+                    [SUPERPOWERS.SWAP_THEM]: 'swap-them-btn' 
+                };
                 for (const [power, id] of Object.entries(powerBtns)) { 
                     const btn = document.getElementById(id);
                     if (btn) {
@@ -2294,11 +2377,11 @@
                 }
             }
             _attachEventListeners() {
-                this.DOMElements.close_rules_btn.addEventListener('click', () => { this.DOMElements.rules_modal.classList.remove('is-open'); document.body.classList.remove('modal-open'); });
-                this.DOMElements.close_game_over_btn.addEventListener('click', () => { this.DOMElements.game_over_modal.classList.remove('is-open'); document.body.classList.remove('modal-open'); });
-                this.DOMElements.play_again_btn.addEventListener('click', () => { this.DOMElements.game_over_modal.classList.remove('is-open'); document.body.classList.remove('modal-open'); gameManager.resetCurrentVariant(); });
-                this.DOMElements.close_warning_btn.addEventListener('click', () => { this.DOMElements.warning_modal.classList.remove('is-open'); document.body.classList.remove('modal-open'); });
-                this.DOMElements.close_unlock_btn.addEventListener('click', () => { this.DOMElements.unlock_modal.classList.remove('is-open'); document.body.classList.remove('modal-open'); });
+                this.DOMElements.close_rules_btn.addEventListener('click', () => { handleModalClose(this.DOMElements.rules_modal); });
+                this.DOMElements.close_game_over_btn.addEventListener('click', () => { handleModalClose(this.DOMElements.game_over_modal); });
+                this.DOMElements.play_again_btn.addEventListener('click', () => { handleModalClose(this.DOMElements.game_over_modal); gameManager.resetCurrentVariant(); });
+                this.DOMElements.close_warning_btn.addEventListener('click', () => { handleModalClose(this.DOMElements.warning_modal); });
+                this.DOMElements.close_unlock_btn.addEventListener('click', () => { handleModalClose(this.DOMElements.unlock_modal); });
                 this.DOMElements.close_tutorial_btn.addEventListener('click', () => this.completeTutorial());
                 this.DOMElements.tutorial_next_btn.addEventListener('click', () => {
                     this.tutorialStep++;
@@ -2321,42 +2404,48 @@
                 this.populateEditionModal();
                 this.setupGlobalEventListeners();
                 this.switchVariant('plain_jean', false);
-            },
+            }, // <-- Comma is essential here
 
             populateEditionModal() {
                 const container = document.getElementById('edition-options');
-                if (!container) return;
+                if (!container) {
+                    console.error("Could not find the 'edition-options' container.");
+                    return;
+                }
                 container.innerHTML = '';
+                console.log("--- Starting populateEditionModal ---");
 
                 // Get player stats to see what's unlocked
                 const stats = getPlayerStats();
                 const unlockedEditions = stats.unlockedEditions || {};
+                console.log("Unlocked Editions from stats:", unlockedEditions);
 
                 // The first edition is always unlocked
                 const isEditionUnlocked = (id) => id === 'plain_jean' || unlockedEditions[id] || DEV_UNLOCK_ALL;
 
                 Object.values(variantConfigs).forEach(config => {
+                    console.log(`Processing edition: ${config.name} (id: ${config.id})`);
                     const button = document.createElement('button');
                     const unlocked = isEditionUnlocked(config.id);
+                    console.log(`Is '${config.name}' unlocked?`, unlocked);
 
                     button.className = 'w-full text-left p-3 rounded-lg font-semibold flex justify-between items-center transition-colors';
                     button.dataset.editionId = config.id;
                     
                     if (unlocked) {
+                        console.log(` -> Rendering as UNLOCKED`);
                         button.innerHTML = `<span>${config.name}</span>`;
                         button.classList.add('hover:bg-gray-200/50');
                         button.onclick = () => {
                             const game = this.currentGameInstance;
                             const isGameInProgress = game && game.turnCount > 0 && !game.gameStateManager.is('GAME_OVER');
                             
-                            document.getElementById('edition-select-modal').classList.remove('is-open');
-                            document.body.classList.remove('modal-open');
+                            handleModalClose(document.getElementById('edition-select-modal'));
                             const isTimeBurst = this.activeMode === 'timeburst';
 
                             if (isGameInProgress && config.id !== this.activeVariantId) {
                                 this.pendingAction = () => this.switchVariant(config.id, isTimeBurst, true);
-                                document.getElementById('confirm-restart-modal').classList.add('is-open');
-                                document.body.classList.add('modal-open');
+                                handleModalOpen(document.getElementById('confirm-restart-modal'));
                             } else {
                                 this.switchVariant(config.id, isTimeBurst);
                             }
@@ -2368,10 +2457,12 @@
                         const gameToPlay = Object.keys(unlockProgression).find(key => unlockProgression[key] && unlockProgression[key].unlocks === config.id);
                         const gameNameToPlay = variantConfigs[gameToPlay]?.name || '';
 
+                        // Simplified HTML structure to fix the layout bug
                         button.innerHTML = `
-                            <div class="flex flex-col">
+                            <div>
                                 <span>${config.name}</span>
-                                <span class="text-xs font-normal opacity-70">Score ${scoreNeeded} in ${gameNameToPlay} to unlock</span>
+                                <br>
+                                <span class="unlock-hint">${scoreNeeded ? `Score ${scoreNeeded} in ${gameNameToPlay} to unlock` : ''}</span>
                             </div>
                             <span class="text-xl">🔒</span>`;
                         button.disabled = true;
@@ -2379,6 +2470,7 @@
                     }
                     container.appendChild(button);
                 });
+                console.log("--- Finished populateEditionModal ---");
             },
 
             switchVariant(variantId, isTimeBurst, isNewGame = false) {
@@ -2432,16 +2524,13 @@
                 savePlayerStats(stats);
 
                 const unlockedEditionName = variantConfigs[editionId]?.name || 'a new edition';
-                const unlockModal = document.getElementById('unlock-modal');
                 const unlockedEditionNameEl = document.getElementById('unlocked-edition-name');
                 
                 if (unlockedEditionNameEl) {
                     unlockedEditionNameEl.textContent = unlockedEditionName;
                 }
-                if (unlockModal) {
-                    unlockModal.classList.add('is-open');
-                    document.body.classList.add('modal-open');
-                }
+
+                handleModalOpen(document.getElementById('unlock-modal'));
                 
                 // Refresh the modal content to show the newly unlocked game
                 this.populateEditionModal();
@@ -2450,6 +2539,7 @@
             setupGlobalEventListeners() {
                 const editionModal = document.getElementById('edition-select-modal');
                 const confirmModal = document.getElementById('confirm-restart-modal');
+                const badgesModal = document.getElementById('badges-modal');
                 const toggleSwitch = document.getElementById('mode-toggle-switch');
                 const classicText = document.getElementById('classic-text');
                 const timeBurstText = document.getElementById('time-burst-text');
@@ -2477,19 +2567,16 @@
                         }
                     });
 
-                    editionModal.classList.add('is-open');
-                    document.body.classList.add('modal-open');
+                    handleModalOpen(editionModal);
                 });
 
                 document.getElementById('badges-btn').addEventListener('click', () => {
                     renderBadgesGrid();
-                    document.getElementById('badges-modal').classList.add('is-open');
-                    document.body.classList.add('modal-open');
+                    handleModalOpen(badgesModal);
                 });
 
                 document.getElementById('close-badges-btn').addEventListener('click', () => {
-                    document.getElementById('badges-modal').classList.remove('is-open');
-                    document.body.classList.remove('modal-open');
+                    handleModalClose(badgesModal);
                 });
 
                 document.getElementById('share-badges-btn').addEventListener('click', handleShareBadges);
@@ -2506,9 +2593,9 @@
                     }
                 });
                 
-                document.getElementById('close-edition-select-btn').addEventListener('click', () => { editionModal.classList.remove('is-open'); document.body.classList.remove('modal-open'); });
+                document.getElementById('close-edition-select-btn').addEventListener('click', () => { handleModalClose(editionModal); });
 
-                document.getElementById('rules-btn').addEventListener('click', () => { this.currentGameInstance.DOMElements.rules_modal.classList.add('is-open'); document.body.classList.add('modal-open'); });
+                document.getElementById('rules-btn').addEventListener('click', () => { handleModalOpen(this.currentGameInstance.DOMElements.rules_modal); });
 
                 document.getElementById('new-game-btn').addEventListener('click', () => {
                     const game = this.currentGameInstance;
@@ -2520,8 +2607,7 @@
                     
                     if (isGameInProgress) {
                         this.pendingAction = () => this.resetCurrentVariant();
-                        confirmModal.classList.add('is-open');
-                        document.body.classList.add('modal-open');
+                        handleModalOpen(confirmModal);
                     } else {
                         this.resetCurrentVariant();
                     }
@@ -2529,8 +2615,7 @@
 
                 document.getElementById('confirm-cancel-btn').addEventListener('click', () => {
                     this.pendingAction = null;
-                    confirmModal.classList.remove('is-open');
-                    document.body.classList.remove('modal-open');
+                    handleModalClose(confirmModal);
                 });
                 
                 document.getElementById('confirm-restart-btn').addEventListener('click', () => {
@@ -2538,8 +2623,7 @@
                         this.pendingAction();
                     }
                     this.pendingAction = null;
-                    confirmModal.classList.remove('is-open');
-                    document.body.classList.remove('modal-open');
+                    handleModalClose(confirmModal);
                 });
 
                 document.addEventListener('keydown', (e) => {
@@ -2548,7 +2632,7 @@
 
                     if (e.key === 'Escape') {
                         if (game.activeSuperpower) {
-                             if (game.activeSuperpower === 'swapThem' && game.swapFirstCell) {
+                             if (game.activeSuperpower === SUPERPOWERS.SWAP_THEM && game.swapFirstCell) {
                                 game.gridCells[game.swapFirstCell.r][game.swapFirstCell.c].classList.remove('pulse-animation');
                                 game.swapFirstCell = null;
                             }
@@ -2556,11 +2640,10 @@
                             game.updateSuperpowerButtonsUI();
                             game.gameStateManager.setState(game.firstPlacementCell ? 'AWAITING_PLACEMENT' : 'AWAITING_ROLL');
                         } else {
-                           ['rules-modal', 'game-over-modal', 'exchange-modal', 'edition-select-modal', 'confirm-restart-modal', 'tutorial-modal', 'warning-modal', 'unlock-modal'].forEach(id => {
+                           ['rules-modal', 'game-over-modal', 'exchange-modal', 'edition-select-modal', 'confirm-restart-modal', 'tutorial-modal', 'warning-modal', 'unlock-modal', 'badges-modal'].forEach(id => {
                                 const modal = document.getElementById(id);
                                 if (modal?.classList.contains('is-open')) {
-                                   modal.classList.remove('is-open');
-                                   document.body.classList.remove('modal-open');
+                                   handleModalClose(modal);
                                 }
                            });
                         }
