@@ -308,9 +308,8 @@
             font-size: 0.75rem;
             font-weight: 600;
             margin-top: 0.5rem;
-            /* FIX 2: Added styles for Badge Share image */
-            text-align: center;
             min-height: 2.25rem;
+            text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -543,35 +542,41 @@
     </div>
 
     <div id="game-over-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
-        <div class="modal-content w-full max-w-md text-center themed-modal p-8 transform scale-95 -translate-y-4 relative">
+        <div class="modal-content w-full max-w-md text-center themed-modal p-8 transform scale-95 -translate-y-4 relative flex flex-col">
             <button id="close-game-over-btn" aria-label="Close Game Over" class="absolute top-4 right-4 w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
-            <h2 class="text-4xl font-bold mb-2" style="font-family: 'Pacifico', cursive; color: var(--accent);">Game Over Alloha!</h2>
-            <p id="game-over-reason" class="text-lg mt-2 mb-4" style="color: var(--accent);"></p>
-            <div id="final-score-modal" class="text-7xl font-bold my-8" style="color: var(--accent);"></div>
-            <div id="score-breakdown" class="mb-6 p-4 glass-card rounded-xl text-xs" style="display: grid;">
-                <div class="grid grid-cols-2 gap-2">
-                    <div class="text-left">Rows: <span id="final-rows-score" class="float-right font-bold">0</span></div>
-                    <div class="text-left">Columns: <span id="final-cols-score" class="float-right font-bold">0</span></div>
-                    <div class="text-left">Twinning: <span id="final-cross-score" class="float-right font-bold">0</span></div>
-                    <div class="text-left">Bonus Grids: <span id="final-bonus-score" class="float-right font-bold">0</span></div>
-                    <div class="text-left">Hero Bonus: <span id="final-hero-score" class="float-right font-bold">0</span></div>
-                    <div class="text-left col-span-2 border-t pt-2 mt-2">Empty Block: <span id="final-penalty-score" class="float-right font-bold">0</span></div>
-                </div>
+            <div>
+                <h2 class="text-4xl font-bold mb-2" style="font-family: 'Pacifico', cursive; color: var(--accent);">Game Over Alloha!</h2>
+                <p id="game-over-reason" class="text-lg mt-2 mb-4" style="color: var(--accent);"></p>
             </div>
-            <p>High score: <span id="high-score-modal" class="font-bold" style="color: #FFC107;">0</span></p>
-            <div id="game-over-buttons" class="no-screenshot flex flex-col items-center gap-3 mt-6">
-                <div class="flex w-full items-center gap-3">
-                    <button id="play-again-btn" class="flex-1 themed-button text-white font-bold py-3 px-4 rounded-xl text-lg">Play Again</button>
-                    <button id="share-score-btn" class="flex-1 themed-button text-white font-bold py-3 px-4 rounded-xl text-lg flex items-center justify-center gap-2" style="background: var(--accent-gradient-shaded);">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
-                        </svg>
-                        <span>Share Now</span>
+            <div class="flex-grow flex items-center justify-center">
+                <div id="final-score-modal" class="text-7xl font-bold" style="color: var(--accent);"></div>
+            </div>
+            <div>
+                <div id="score-breakdown" class="mb-6 p-4 glass-card rounded-xl text-xs" style="display: grid;">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="text-left">Rows: <span id="final-rows-score" class="float-right font-bold">0</span></div>
+                        <div class="text-left">Columns: <span id="final-cols-score" class="float-right font-bold">0</span></div>
+                        <div class="text-left">Twinning: <span id="final-cross-score" class="float-right font-bold">0</span></div>
+                        <div class="text-left">Bonus Grids: <span id="final-bonus-score" class="float-right font-bold">0</span></div>
+                        <div class="text-left">Hero Bonus: <span id="final-hero-score" class="float-right font-bold">0</span></div>
+                        <div class="text-left col-span-2 border-t pt-2 mt-2">Empty Block: <span id="final-penalty-score" class="float-right font-bold">0</span></div>
+                    </div>
+                </div>
+                <p>High score: <span id="high-score-modal" class="font-bold" style="color: #FFC107;">0</span></p>
+                <div id="game-over-buttons" class="no-screenshot flex flex-col items-center gap-3 mt-6">
+                    <div class="flex w-full items-center gap-3">
+                        <button id="play-again-btn" class="flex-1 themed-button text-white font-bold py-3 px-4 rounded-xl text-lg">Play Again</button>
+                        <button id="share-score-btn" class="flex-1 themed-button text-white font-bold py-3 px-4 rounded-xl text-lg flex items-center justify-center gap-2" style="background: var(--accent-gradient-shaded);">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+                            </svg>
+                            <span>Share Now</span>
+                        </button>
+                    </div>
+                    <button id="change-edition-btn-modal" class="no-screenshot themed-button w-full py-2.5 px-4 text-sm font-semibold rounded-lg mt-2" style="color: var(--accent); background-color: var(--accent-light);">
+                        Choose a different Game Edition
                     </button>
                 </div>
-                <button id="change-edition-btn-modal" class="no-screenshot themed-button w-full py-2.5 px-4 text-sm font-semibold rounded-lg mt-2" style="color: var(--accent); background-color: var(--accent-light);">
-                    Choose a different Game Edition
-                </button>
             </div>
         </div>
     </div>
@@ -621,12 +626,11 @@
     <div id="badges-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
         <div class="modal-content w-full max-w-md text-center themed-modal p-6 transform scale-95 -translate-y-4">
             <button id="close-badges-btn" aria-label="Close Badges" class="no-screenshot absolute top-4 right-4 w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
-            <h2 class="text-4xl font-bold mb-1" style="font-family: 'Pacifico', cursive; color: var(--accent);">Alloha Badges</h2>
-            <p class="text-lg mb-4" style="color: var(--accent);">Collect All The Badges!</p>
+            <h2 class="text-3xl font-bold mb-4" style="font-family: 'Pacifico', cursive; color: var(--accent);">Alloha Badges Collection</h2>
             <p id="badge-info-text" class="text-sm min-h-10 flex items-center justify-center" style="color: var(--text-secondary);">Click a badge to see how to unlock it.</p>
             <div id="badges-grid" class="grid grid-cols-3 gap-4 lg:gap-6">
                 </div>
-            <button id="share-badges-btn" class="no-screenshot themed-button w-full py-2.5 px-4 text-sm font-semibold rounded-lg mt-6" style="background: var(--accent-gradient-shaded); color: white;">
+            <button id="share-badges-btn" class="no-screenshot themed-button w-full py-2.5 px-4 text-sm font-semibold rounded-lg mt-6" style="background: var(--accent-gradient); color: white;">
                 Share Badges
             </button>
         </div>
@@ -683,14 +687,11 @@
             localStorage.setItem('allohaPlayerStats', JSON.stringify(stats));
         }
 
-        function unlockBadge(badgeId, statsObj = null) {
-            let stats = statsObj || getPlayerStats();
+        function unlockBadge(badgeId, statsObj) {
+            let stats = statsObj;
             if (!stats.unlockedBadges[badgeId]) {
                 const badge = badgeConfigs[badgeId];
                 stats.unlockedBadges[badgeId] = { unlockedAt: new Date().toISOString() };
-                if (!statsObj) { // Only save if we had to fetch the stats ourselves
-                    savePlayerStats(stats);
-                }
                 showToast(`<span>${badge.emoji}</span> Badge Unlocked: ${badge.name}`);
             }
         }
@@ -874,95 +875,6 @@
           'monster':         null // The last game, unlocks nothing
         };
 
-        function generateCrossScoreSegments(isTwinningCell) {
-            const segments = [];
-            const GRID_SIZE = 7;
-            const MIN_SEQUENCE_LENGTH = 3;
-
-            // Helper to find contiguous segments in an array of indices
-            function findContiguousSegments(indices) {
-                if (indices.length === 0) return [];
-                indices.sort((a, b) => a - b);
-                const result = [];
-                let currentSegment = [indices[0]];
-                for (let i = 1; i < indices.length; i++) {
-                    if (indices[i] === indices[i - 1] + 1) {
-                        currentSegment.push(indices[i]);
-                    } else {
-                        result.push(currentSegment);
-                        currentSegment = [indices[i]];
-                    }
-                }
-                result.push(currentSegment);
-                return result;
-            }
-
-            // Check rows
-            for (let r = 0; r < GRID_SIZE; r++) {
-                const highlightedCols = [];
-                for (let c = 0; c < GRID_SIZE; c++) {
-                    if (isTwinningCell(r, c)) {
-                        highlightedCols.push(c);
-                    }
-                }
-                const colSegments = findContiguousSegments(highlightedCols);
-                colSegments.forEach(seg => {
-                    if (seg.length >= MIN_SEQUENCE_LENGTH) {
-                        segments.push({ type: 'row', index: r, start: seg[0], end: seg[seg.length - 1] });
-                    }
-                });
-            }
-
-            // Check columns
-            for (let c = 0; c < GRID_SIZE; c++) {
-                const highlightedRows = [];
-                for (let r = 0; r < GRID_SIZE; r++) {
-                    if (isTwinningCell(r, c)) {
-                        highlightedRows.push(r);
-                    }
-                }
-                const rowSegments = findContiguousSegments(highlightedRows);
-                rowSegments.forEach(seg => {
-                    if (seg.length >= MIN_SEQUENCE_LENGTH) {
-                        segments.push({ type: 'col', index: c, start: seg[0], end: seg[seg.length - 1] });
-                    }
-                });
-            }
-            return segments;
-        }
-
-        const variantConfigs = {
-            'plain_jean': { id: 'plain_jean', name: 'Plain Jean', themeId: 'pastel_pals', timeLimit: 100, isTwinningCell: (r, c) => false, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'one_won': { id: 'one_won', name: 'One Won', themeId: 'green_grocer', timeLimit: 100, isTwinningCell: (r, c) => c === 3, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'plus_minus': { id: 'plus_minus', name: 'Plus Minus', themeId: 'bug_life', timeLimit: 100, isTwinningCell: (r, c) => r === 3 || c === 3, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'hat_trick': { id: 'hat_trick', name: 'Hat Trick', themeId: 'hats_off', timeLimit: 100, isTwinningCell: (r, c) => r === 0 || r === 6 || c === 0, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'sugar_cube': { id: 'sugar_cube', name: 'Sugar Cube', themeId: 'golden_bakery', timeLimit: 100, isTwinningCell: (r, c) => r === 0 || r === 6 || c === 0 || c === 6, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'spoil_sport': { id: 'spoil_sport', name: 'Spoil Sport', themeId: 'sporty_vibes', timeLimit: 100, isTwinningCell: (r, c) => r === 0 || r === 3 || c === 0 || c === 6, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'marry_harry': { id: 'marry_harry', name: 'Marry Harry', themeId: 'school_of_magic', timeLimit: 100, isTwinningCell: (r, c) => c === 1 || c === 5 || (r === 3 && c >= 1 && c <= 5), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'cosy_emoji': { id: 'cosy_emoji', name: 'Cosy Emoji', themeId: 'emoji_fun', timeLimit: 100, isTwinningCell: (r, c) => r === 0 || r === 3 || r === 6 || c === 0, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'wonder_wander': { id: 'wonder_wander', name: 'Wonder Wander', themeId: 'deep_ocean', timeLimit: 120, isTwinningCell: (r, c) => r === 6 || [0, 3, 6].includes(c), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'road_block': { id: 'road_block', name: 'Road Block', themeId: 'road_block_theme', timeLimit: 120, isTwinningCell: (r, c) => [0, 2, 4, 6].includes(c), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'box_vox': { id: 'box_vox', name: 'Box Vox', themeId: 'the_post_office', timeLimit: 120, isTwinningCell: (r, c) => [0, 3, 6].includes(r) || [0, 3, 6].includes(c), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'hash_hush': { id: 'hash_hush', name: 'Hash Hush', themeId: 'tutti_frutti', timeLimit: 120, isTwinningCell: (r, c) => [2, 4].includes(r) || [2, 4].includes(c), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'zedi_zodi': { id: 'zedi_zodi', name: 'Zedi Zodi', themeId: 'zedi_zodi', timeLimit: 120, isTwinningCell: (r, c) => r === 0 || r === 6 || r + c === 6, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'core': { id: 'core', name: 'Cacti Facti Edition', themeId: 'desert_oasis', timeLimit: 150, isTwinningCell: (r, c) => (r === 3 && c >= 3 && c <= 5) || (r === 5 && c >= 1 && c <= 3) || (c === 1 && r >= 1 && r <= 5) || (c === 3) || (c === 5 && r >= 0 && r <= 3), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'eight_and_watch': { id: 'eight_and_watch', name: 'Eight and Watch', themeId: 'morning_aviary', timeLimit: 150, isTwinningCell: (r, c) => (r === 0 && c >= 3) || (r === 3) || (r === 6 && c <= 3) || (c === 0 && r >= 3) || (c === 3) || (c === 6 && r <= 3), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'fake_snake': { id: 'fake_snake', name: 'Fake Snake', themeId: 'creepy_crawlies', timeLimit: 150, isTwinningCell: (r, c) => (r === 0 && c >= 4) || (r === 2 && c >= 2 && c <= 4) || (r === 4 && c <= 2) || (c === 0 && r >= 4) || (c === 2 && r >= 2 && r <= 4) || (c === 4 && r <= 2), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'rune_dune': { id: 'rune_dune', name: 'Rune Dune', themeId: 'ancient_secrets', timeLimit: 150, isTwinningCell: (r, c) => (r === 2 && c >= 1 && c <= 5) || (r === 4 && c >= 1 && c <= 5) || (c === 1 && (r <= 2 || r >= 4)) || (c === 3) || (c === 5 && (r <= 2 || r >= 4)), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'space_race': { id: 'space_race', name: 'Space Race', themeId: 'cosmic_drift', timeLimit: 180, isTwinningCell: (r, c) => (r === 2 && c >= 2 && c <= 4) || (r === 3 && (c <= 2 || c >= 4)) || (r === 4 && c >= 2 && c <= 4) || (c === 2 && r >= 2 && r <= 4) || (c === 3 && (r <= 2 || r >= 4)) || (c === 4 && r >= 2 && r <= 4), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'flower_power': { id: 'flower_power', name: 'Flower Power', themeId: 'petal_meadow', timeLimit: 180, isTwinningCell: (r, c) => (r === 0 && c >= 2 && c <= 4) || (r === 2 && c >= 2 && c <= 4) || r === 4 || (c === 1 && r >= 3 && r <= 5) || (c === 2 && r <= 2) || (c === 3 && r >= 2) || (c === 4 && r <= 2) || (c === 5 && r >= 3 && r <= 5), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
-            'monster': { id: 'monster', name: 'Monster Monster', themeId: 'monster_mash', timeLimit: 180, isTwinningCell: (r, c) => (r === 0 && c <= 2) || (r === 2 && c <= 4) || (r === 3 && c >= 4) || (r === 4 && c >= 2 && c <= 4) || (r === 6 && c <= 3) || (c === 0 && r <= 2) || (c === 2 && r <= 4) || (c === 3 && r >= 4) || (c === 4 && r >= 2 && r <= 4), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } }
-        };
-
-        function applyTheme(themeId) {
-            const root = document.documentElement;
-            const theme = themeConfigs[themeId] || themeConfigs.pastel_pals;
-            Object.keys(theme.palette).forEach(key => {
-                const cssVar = `--${key.replace(/_/g, '-')}`;
-                root.style.setProperty(cssVar, theme.palette[key]);
-            });
-        }
-        
         class GameState {
             constructor() {
                 this.states = {
@@ -1361,7 +1273,7 @@
                 return true;
             }
 
-            checkGridBadges(stats) {
+            checkGridBadges() {
                 let found3x3 = false;
                 let found4x4 = false;
 
@@ -1391,8 +1303,8 @@
                         }
                     }
                 }
-                if (found4x4) unlockBadge('fineSquare', stats);
-                if (found3x3) unlockBadge('fineNine', stats);
+                if (found4x4) unlockBadge('fineSquare');
+                if (found3x3) unlockBadge('fineNine');
             }
 
             calculateBonusGrids() {
@@ -1889,7 +1801,7 @@
                 if (Object.keys(stats.playedEditions).length === Object.keys(this.allVariantConfigs).length) unlockBadge('collector', stats);
                 if (stats.classicWins > 0 && stats.timeBurstWins > 0) unlockBadge('allRounder', stats);
                 
-                this.checkGridBadges(stats);
+                this.checkGridBadges();
                 savePlayerStats(stats);
             }
 
@@ -2128,7 +2040,7 @@
                     return 0;
                 };
 
-                (this.config.getCrossScoreSegments() || []).forEach(seg => {
+                this.config.getCrossScoreSegments().forEach(seg => {
                     const segmentSymbols = [];
                     for (let i = seg.start; i <= seg.end; i++) {
                         segmentSymbols.push(seg.type === 'row' ? this.gridData[seg.index][i] : this.gridData[i][seg.index]);
@@ -2407,7 +2319,7 @@
                         delete this.gameStates[gameStateKey];
                     }
 
-                    this.currentGameInstance = new Game(variantConfig, themeConfig, isTimeBurst, variantConfigs, savedState);
+                    this.currentGameInstance = new Game(variantConfig, themeConfig, isTimeBurst, allVariantConfigs, savedState);
                                         
                     gameContainer.style.opacity = '1';
                 }, 250);
@@ -2582,3 +2494,4 @@
     </script>
 </body>
 </html>
+This is the latest code but I am facing new issue. Please help
