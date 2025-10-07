@@ -797,7 +797,7 @@
                 if (!blob) throw new Error("Canvas to Blob conversion failed.");
                 
                 const file = new File([blob], 'alloha-badges.png', { type: 'image/png' });
-                const shareText = `🏆 Check out my badge collection in Alloha! 🏆\n\nPlay now: https://abhimanyulodha.github.io/alloha/`;
+                const shareText = `🏆 Check out my Badge Collection in Alloha! 🏆\n\nPlay now: https://abhimanyulodha.github.io/alloha/`;
     
                 if (navigator.share && navigator.canShare({ files: [file] })) {
                     await navigator.share({
