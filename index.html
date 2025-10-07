@@ -2647,6 +2647,13 @@
                     }
                 });
 
+                document.getElementById('tutorial-next-btn').addEventListener('click', () => {
+                    if (gameManager.currentGameInstance) {
+                        gameManager.currentGameInstance.tutorialStep++;
+                        gameManager.currentGameInstance.showTutorialStep();
+                    }
+                });
+
                 // Other Global Listeners
                 document.getElementById('select-edition-btn').addEventListener('click', () => {
                     const isTimeBurst = this.currentGameInstance.isTimeBurst;
