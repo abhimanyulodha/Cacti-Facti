@@ -81,7 +81,7 @@
         }
         .themed-modal { border-radius: 20px; background: var(--card); box-shadow: var(--shadow-strong); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); }
         
-        #new-game-btn, #confirm-restart-btn, #play-again-btn, #close-warning-btn { background: var(--accent-gradient); }
+        #new-game-btn, #confirm-restart-btn, #play-again-btn, #close-warning-btn, #close-unlock-btn { background: var(--accent-gradient); }
         #select-edition-btn { background: var(--accent-gradient-shaded); }
 
         .progress-bar-container { position: relative; overflow: hidden; background: var(--accent-light); border-radius: 9999px; }
@@ -280,6 +280,64 @@
         #total-score, #high-score, #final-score-modal, #high-score-modal {
             line-height: 1.2;
         }
+
+        .unlock-hint {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            opacity: 0.9;
+            margin-top: -2px;
+        }
+        
+        .badge-item {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .badge-item:hover {
+            transform: scale(1.1);
+        }
+        .badge-item.locked {
+            filter: grayscale(100%);
+            opacity: 0.5;
+        }
+        .badge-item .badge-emoji {
+            font-size: clamp(2.5rem, 10vw, 3.5rem);
+            line-height: 1;
+        }
+        .badge-item .badge-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            /* FIX 2: Added styles for Badge Share image */
+            text-align: center;
+            min-height: 2.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translate(-50%, -150%);
+            background: var(--card);
+            color: var(--text);
+            padding: 12px 24px;
+            border-radius: 9999px;
+            box-shadow: var(--shadow-strong);
+            z-index: 1001;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slide-in-out 3s ease-in-out forwards;
+        }
+        @keyframes slide-in-out {
+            0% { transform: translate(-50%, -150%); }
+            15% { transform: translate(-50%, 0); }
+            85% { transform: translate(-50%, 0); }
+            100% { transform: translate(-50%, -150%); }
+        }
     </style>
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-62DV4PDJ4X"></script>
@@ -327,8 +385,9 @@
 
                 <div class="glass-card enhanced-shadow rounded-2xl p-4">
                     <div class="flex justify-center items-center gap-3">
-                        <button id="rules-btn" class="flex-1 py-2 px-4 themed-button text-sm" style="color: var(--accent); background: var(--accent-light);">How to Play</button>
-                        <button id="new-game-btn" class="flex-1 py-2 px-4 themed-button text-white text-sm">New Game</button>
+                        <button id="rules-btn" class="py-2 px-3 themed-button text-xs whitespace-nowrap" style="color: var(--accent); background: var(--accent-light);">Help</button>
+                        <button id="new-game-btn" class="py-2 px-3 themed-button text-white text-xs whitespace-nowrap">New Game</button>
+                        <button id="badges-btn" class="py-2 px-3 themed-button text-xs whitespace-nowrap" style="color: var(--accent); background: var(--accent-light);">Badges</button>
                     </div>
                     <div class="text-center mt-3">
                         <button id="select-edition-btn" class="w-full py-2 px-4 themed-button text-white text-sm flex items-center justify-center gap-2">
@@ -401,7 +460,7 @@
                 <ol class="list-decimal list-inside space-y-1">
                     <li><b>Roll the Dice:</b> Click the '🎲' button to get your two Allohas for the turn.</li>
                     <li><b>Place Your Pair:</b> Place both Allohas in any two empty, adjacent (but not diagonal) squares on the grid.</li>
-                    <li><b>Explore Editions:</b> Use the "Select Game Edition" button to discover different versions of the game, each with a unique theme and a special "Twinning" scoring pattern!</li>
+                    <li><b>Explore Editions:</b> Use the "Select Game Edition" button to discover different versions of the game. Achieve score goals to unlock new editions, each with a unique theme and "Twinning" scoring pattern!</li>
                 </ol>
 
                 <h3 class="font-bold text-lg" style="color: var(--accent);">👑 The Hero Symbol</h3>
@@ -488,7 +547,7 @@
             <button id="close-game-over-btn" aria-label="Close Game Over" class="absolute top-4 right-4 w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
             <h2 class="text-4xl font-bold mb-2" style="font-family: 'Pacifico', cursive; color: var(--accent);">Game Over Alloha!</h2>
             <p id="game-over-reason" class="text-lg mt-2 mb-4" style="color: var(--accent);"></p>
-            <div id="final-score-modal" class="text-7xl font-bold my-4" style="color: var(--accent);"></div>
+            <div id="final-score-modal" class="text-7xl font-bold my-8" style="color: var(--accent);"></div>
             <div id="score-breakdown" class="mb-6 p-4 glass-card rounded-xl text-xs" style="display: grid;">
                 <div class="grid grid-cols-2 gap-2">
                     <div class="text-left">Rows: <span id="final-rows-score" class="float-right font-bold">0</span></div>
@@ -550,9 +609,125 @@
         </div>
     </div>
 
+    <div id="unlock-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
+        <div class="modal-content w-full max-w-sm themed-modal p-8 text-center transform scale-95 -translate-y-4">
+            <h2 class="text-3xl font-bold mb-2" style="font-family: 'Pacifico', cursive; color: var(--accent);">Edition Unlocked!</h2>
+            <p class="text-lg mt-4 mb-6" style="color: var(--text-secondary);">Congratulations, you can now play:</p>
+            <p id="unlocked-edition-name" class="text-2xl font-bold mb-6" style="color: var(--text);"></p>
+            <button id="close-unlock-btn" class="py-2 px-8 themed-button text-white text-sm">Awesome!</button>
+        </div>
+    </div>
+    
+    <div id="badges-modal" class="modal fixed inset-0 bg-black/60 flex items-center justify-center p-4 opacity-0 invisible z-50 backdrop-blur-sm">
+        <div class="modal-content w-full max-w-md text-center themed-modal p-6 transform scale-95 -translate-y-4">
+            <button id="close-badges-btn" aria-label="Close Badges" class="no-screenshot absolute top-4 right-4 w-10 h-10 rounded-full text-xl flex items-center justify-center font-bold">×</button>
+            <h2 class="text-4xl font-bold mb-1" style="font-family: 'Pacifico', cursive; color: var(--accent);">Alloha Badges</h2>
+            <p class="text-lg mb-4" style="color: var(--accent);">Collect All The Badges!</p>
+            <p id="badge-info-text" class="text-sm min-h-10 flex items-center justify-center" style="color: var(--text-secondary);">Click a badge to see how to unlock it.</p>
+            <div id="badges-grid" class="grid grid-cols-3 gap-4 lg:gap-6">
+                </div>
+            <button id="share-badges-btn" class="no-screenshot themed-button w-full py-2.5 px-4 text-sm font-semibold rounded-lg mt-6" style="background: var(--accent-gradient-shaded); color: white;">
+                Share Badges
+            </button>
+        </div>
+    </div>
+
     <script>
     (function() {
-        // --- Helper functions for animations ---
+        const DEV_UNLOCK_ALL = false;
+        
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        const badgeConfigs = {
+            baby: { name: 'Baby', emoji: '👶', description: 'Complete your first game of Alloha.' },
+            enthusiast: { name: 'Enthusiast', emoji: '🎮', description: 'Play 10 games in any mode.' },
+            veteran: { name: 'Veteran', emoji: '🎖️', description: 'Play 50 games in any mode.' },
+            timeTraveller: { name: 'Time Traveller', emoji: '⏱️', description: 'Complete your first game in Time Burst mode.' },
+            masterOfTime: { name: 'Master of Time', emoji: '⏳', description: 'Win 10 games in Time Burst mode.' },
+            centuryClub: { name: 'Century Club', emoji: '🏆', description: 'Score over 100 points in a single game.' },
+            perfectionist: { name: 'Perfectionist', emoji: '🎯', description: 'Create a line of 7 identical Allohas.' },
+            gridMaster: { name: 'Grid Master', emoji: '🎨', description: 'Finish a game with no empty blocks.' },
+            pureSkill: { name: 'Pure Skill', emoji: '🎀', description: 'Win a game without using any superpowers.' },
+            fineNine: { name: 'Fine Nine', emoji: '🖼️', description: 'Create a 3x3 Grid Bonus of the same Alloha.' },
+            fineSquare: { name: 'Fine Square', emoji: '🏁', description: 'Create a 4x4 Grid Bonus of the same Alloha.' },
+            heroWorship: { name: 'Hero Worship', emoji: '🦸', description: 'Score all 14 Hero Bonus points in a single game.' },
+            explorer: { name: 'Explorer', emoji: '🗺️', description: 'Play a game in 5 different Game Editions.' },
+            collector: { name: 'Collector', emoji: '👑', description: 'Play a game in every available Game Edition.' },
+            allRounder: { name: 'All-Rounder', emoji: '⚖️', description: 'Win a game in both Classic and Time Burst modes.' },
+        };
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function getPlayerStats() {
+            const stats = localStorage.getItem('allohaPlayerStats');
+            return stats ? JSON.parse(stats) : {
+                gamesPlayed: 0,
+                timeBurstGamesPlayed: 0,
+                timeBurstWins: 0,
+                classicWins: 0,
+                playedEditions: {},
+                unlockedEditions: {},
+                unlockedBadges: {}
+            };
+        }
+
+        function savePlayerStats(stats) {
+            localStorage.setItem('allohaPlayerStats', JSON.stringify(stats));
+        }
+
+        function unlockBadge(badgeId, statsObj = null) {
+            let stats = statsObj || getPlayerStats();
+            if (!stats.unlockedBadges[badgeId]) {
+                const badge = badgeConfigs[badgeId];
+                stats.unlockedBadges[badgeId] = { unlockedAt: new Date().toISOString() };
+                if (!statsObj) { // Only save if we had to fetch the stats ourselves
+                    savePlayerStats(stats);
+                }
+                showToast(`<span>${badge.emoji}</span> Badge Unlocked: ${badge.name}`);
+            }
+        }
+
+        function renderBadgesGrid() {
+            const grid = document.getElementById('badges-grid');
+            const infoText = document.getElementById('badge-info-text');
+            if (!grid || !infoText) return;
+
+            grid.innerHTML = '';
+            infoText.textContent = 'Click a badge to see how to unlock it.';
+
+            const stats = getPlayerStats();
+
+            for (const badgeId in badgeConfigs) {
+                const badge = badgeConfigs[badgeId];
+                const isUnlocked = !!stats.unlockedBadges[badgeId];
+
+                const item = document.createElement('div');
+                item.className = 'badge-item';
+                if (!isUnlocked) {
+                    item.classList.add('locked');
+                }
+
+                item.innerHTML = `
+                    <div class="badge-emoji">${badge.emoji}</div>
+                    <div class="badge-name">${badge.name}</div>
+                `;
+
+                item.addEventListener('click', () => {
+                    infoText.textContent = `${badge.name}: ${badge.description}`;
+                });
+
+                grid.appendChild(item);
+            }
+        }
+
         function createSparkles(element) {
             const rect = element.getBoundingClientRect();
             const container = document.body;
@@ -599,7 +774,58 @@
             container.textContent = valueStr;
         }
         
-        // --- THEME CONFIGURATIONS ---
+        async function handleShareBadges() {
+            const shareBtn = document.getElementById('share-badges-btn');
+            if (!shareBtn) return;
+    
+            const originalBtnText = shareBtn.textContent;
+            const modalContent = document.querySelector('#badges-modal .modal-content');
+    
+            try {
+                shareBtn.textContent = 'Generating...';
+                shareBtn.disabled = true;
+    
+                await new Promise(resolve => setTimeout(resolve, 50));
+    
+                const canvas = await html2canvas(modalContent, {
+                    allowTaint: true,
+                    useCORS: true,
+                    backgroundColor: null,
+                    ignoreElements: (element) => element.classList.contains('no-screenshot')
+                });
+    
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                if (!blob) throw new Error("Canvas to Blob conversion failed.");
+                
+                const file = new File([blob], 'alloha-badges.png', { type: 'image/png' });
+                const shareText = `🏆 Check out my badge collection in Alloha! 🏆\n\nPlay now: https://abhimanyulodha.github.io/alloha/`;
+    
+                if (navigator.share && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        title: 'My Alloha Badges!',
+                        text: shareText,
+                        files: [file]
+                    });
+                } else {
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = 'Alloha-Badges.png';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                }
+            } catch (error) {
+                console.error('Badge sharing failed:', error);
+                shareBtn.textContent = 'Error!';
+            } finally {
+                setTimeout(() => {
+                    shareBtn.textContent = originalBtnText;
+                    shareBtn.disabled = false;
+                }, 2000);
+            }
+        }
+
         const themeConfigs = {
             pastel_pals: { name: "Pastel Pals", symbols: ['🐰', '🐶', '🐯', '🐼', '🦄', '🐸'], palette: { bg: 'linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%)', card: 'rgba(255, 255, 255, 0.88)', text: '#4A148C', text_secondary: '#7B1FA2', accent: '#8E24AA', accent_gradient: 'linear-gradient(135deg, #8E24AA 0%, #AB47BC 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #BA68C8 0%, #CE93D8 100%)', highlighted_bg: 'rgba(142, 36, 170, 0.15)', highlighted_border: 'rgba(142, 36, 170, 0.3)', grid_cell_bg: '#F9F6FB', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🐰':'text-pink-400', '🐶':'text-amber-600', '🐯':'text-orange-500', '🐼':'text-gray-700', '🦄':'text-purple-500', '🐸':'text-green-500' } },
             green_grocer: { name: "Green Grocer", symbols: ['🥑', '🥦', '🧄', '🌽', '🫑', '🌶️'], palette: { bg: 'linear-gradient(135deg, #F1F8E9 0%, #DCEDC8 100%)', card: 'rgba(255, 255, 255, 0.9)', text: '#33691E', text_secondary: '#689F38', accent: '#8BC34A', accent_gradient: 'linear-gradient(135deg, #8BC34A 0%, #9CCC65 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #AED581 0%, #C5E1A5 100%)', highlighted_bg: 'rgba(139, 195, 74, 0.15)', highlighted_border: 'rgba(139, 195, 74, 0.3)', grid_cell_bg: '#FCFFF5', toggle_bg_inactive: '#E0E0E0', }, symbolColors: { '🥑':'text-green-800', '🥦':'text-green-600', '🧄':'text-gray-500', '🌽':'text-yellow-500', '🫑':'text-green-700', '🌶️':'text-red-600' } },
@@ -623,58 +849,88 @@
             monster_mash: { name: "Monster Mash", symbols: ['👹', '🐲', '👻', '👽', '🎃', '😈'], palette: { bg: 'linear-gradient(135deg, #432874 0%, #18142a 100%)', card: 'rgba(40, 30, 60, 0.8)', text: '#E0D6FF', text_secondary: '#BCA9F0', accent: '#FF7900', accent_gradient: 'linear-gradient(135deg, #FF7900 0%, #FF983D 100%)', accent_gradient_shaded: 'linear-gradient(135deg, #FFB47A 0%, #FFD0B1 100%)', highlighted_bg: 'rgba(255, 121, 0, 0.15)', highlighted_border: 'rgba(255, 121, 0, 0.3)', grid_cell_bg: '#4A3F71', toggle_bg_inactive: 'rgba(255,255,255,0.2)', }, symbolColors: { '👹':'text-red-400', '🐲':'text-green-400', '👻':'text-gray-200', '👽':'text-lime-300', '🎃':'text-orange-400', '😈':'text-purple-400' } }
         };
 
-        function applyTheme(themeId) {
-            const theme = themeConfigs[themeId];
-            if (!theme) {
-                console.warn(`Theme "${themeId}" not found.`);
-                return;
-            }
-            const root = document.documentElement;
-            const palette = theme.palette;
-            for (const key in palette) {
-                root.style.setProperty(`--${key.replace(/_/g, '-')}`, palette[key]);
-            }
-        }
+        const unlockProgression = {
+          // Each key is the ID of the game that must be PLAYED,
+          // and its value is the game it UNLOCKS and the SCORE required.
+          'plain_jean':      { unlocks: 'one_won',           score: 50 },
+          'one_won':         { unlocks: 'plus_minus',        score: 50 },
+          'plus_minus':      { unlocks: 'hat_trick',         score: 55 },
+          'hat_trick':       { unlocks: 'sugar_cube',        score: 55 },
+          'sugar_cube':      { unlocks: 'spoil_sport',       score: 60 },
+          'spoil_sport':     { unlocks: 'marry_harry',       score: 60 },
+          'marry_harry':     { unlocks: 'cosy_emoji',        score: 65 },
+          'cosy_emoji':      { unlocks: 'wonder_wander',     score: 65 },
+          'wonder_wander':   { unlocks: 'road_block',        score: 70 },
+          'road_block':      { unlocks: 'box_vox',           score: 70 },
+          'box_vox':         { unlocks: 'hash_hush',         score: 75 },
+          'hash_hush':       { unlocks: 'zedi_zodi',         score: 75 },
+          'zedi_zodi':       { unlocks: 'core',              score: 80 }, // 'core' is Cacti Facti
+          'core':            { unlocks: 'eight_and_watch',   score: 80 },
+          'eight_and_watch': { unlocks: 'fake_snake',        score: 85 },
+          'fake_snake':      { unlocks: 'rune_dune',         score: 85 },
+          'rune_dune':       { unlocks: 'space_race',        score: 90 },
+          'space_race':      { unlocks: 'flower_power',      score: 90 },
+          'flower_power':    { unlocks: 'monster',           score: 95 },
+          'monster':         null // The last game, unlocks nothing
+        };
 
-        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-        const generateCrossScoreSegments = (isTwinningCell) => {
+        function generateCrossScoreSegments(isTwinningCell) {
             const segments = [];
             const GRID_SIZE = 7;
+            const MIN_SEQUENCE_LENGTH = 3;
 
-            const processLine = (lineType, index) => {
-                let currentSegment = null;
-                for (let i = 0; i < GRID_SIZE; i++) {
-                    const isTwinning = (lineType === 'row') ? isTwinningCell(index, i) : isTwinningCell(i, index);
-                    if (isTwinning) {
-                        if (currentSegment === null) {
-                            currentSegment = { type: lineType, index: index, start: i, end: i };
-                        } else {
-                            currentSegment.end = i;
-                        }
+            // Helper to find contiguous segments in an array of indices
+            function findContiguousSegments(indices) {
+                if (indices.length === 0) return [];
+                indices.sort((a, b) => a - b);
+                const result = [];
+                let currentSegment = [indices[0]];
+                for (let i = 1; i < indices.length; i++) {
+                    if (indices[i] === indices[i - 1] + 1) {
+                        currentSegment.push(indices[i]);
                     } else {
-                        if (currentSegment !== null) {
-                            segments.push(currentSegment);
-                            currentSegment = null;
-                        }
+                        result.push(currentSegment);
+                        currentSegment = [indices[i]];
                     }
                 }
-                if (currentSegment !== null) {
-                    segments.push(currentSegment);
-                }
-            };
+                result.push(currentSegment);
+                return result;
+            }
 
+            // Check rows
             for (let r = 0; r < GRID_SIZE; r++) {
-                processLine('row', r);
+                const highlightedCols = [];
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    if (isTwinningCell(r, c)) {
+                        highlightedCols.push(c);
+                    }
+                }
+                const colSegments = findContiguousSegments(highlightedCols);
+                colSegments.forEach(seg => {
+                    if (seg.length >= MIN_SEQUENCE_LENGTH) {
+                        segments.push({ type: 'row', index: r, start: seg[0], end: seg[seg.length - 1] });
+                    }
+                });
             }
+
+            // Check columns
             for (let c = 0; c < GRID_SIZE; c++) {
-                processLine('col', c);
+                const highlightedRows = [];
+                for (let r = 0; r < GRID_SIZE; r++) {
+                    if (isTwinningCell(r, c)) {
+                        highlightedRows.push(r);
+                    }
+                }
+                const rowSegments = findContiguousSegments(highlightedRows);
+                rowSegments.forEach(seg => {
+                    if (seg.length >= MIN_SEQUENCE_LENGTH) {
+                        segments.push({ type: 'col', index: c, start: seg[0], end: seg[seg.length - 1] });
+                    }
+                });
             }
-            
             return segments;
-        };
-        
-        // --- VARIANT CONFIGURATIONS ---
+        }
+
         const variantConfigs = {
             'plain_jean': { id: 'plain_jean', name: 'Plain Jean', themeId: 'pastel_pals', timeLimit: 100, isTwinningCell: (r, c) => false, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
             'one_won': { id: 'one_won', name: 'One Won', themeId: 'green_grocer', timeLimit: 100, isTwinningCell: (r, c) => c === 3, getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } },
@@ -698,6 +954,15 @@
             'monster': { id: 'monster', name: 'Monster Monster', themeId: 'monster_mash', timeLimit: 180, isTwinningCell: (r, c) => (r === 0 && c <= 2) || (r === 2 && c <= 4) || (r === 3 && c >= 4) || (r === 4 && c >= 2 && c <= 4) || (r === 6 && c <= 3) || (c === 0 && r <= 2) || (c === 2 && r <= 4) || (c === 3 && r >= 4) || (c === 4 && r >= 2 && r <= 4), getCrossScoreSegments: function() { return generateCrossScoreSegments(this.isTwinningCell); } }
         };
 
+        function applyTheme(themeId) {
+            const root = document.documentElement;
+            const theme = themeConfigs[themeId] || themeConfigs.pastel_pals;
+            Object.keys(theme.palette).forEach(key => {
+                const cssVar = `--${key.replace(/_/g, '-')}`;
+                root.style.setProperty(cssVar, theme.palette[key]);
+            });
+        }
+        
         class GameState {
             constructor() {
                 this.states = {
@@ -727,10 +992,11 @@
         }
 
         class Game {
-            constructor(variantConfig, themeConfig, isTimeBurst, savedState = null) {
+            constructor(variantConfig, themeConfig, isTimeBurst, allVariantConfigs, savedState = null) {
                 this.config = variantConfig;
                 this.theme = themeConfig;
                 this.isTimeBurst = isTimeBurst;
+                this.allVariantConfigs = allVariantConfigs;
                 
                 this.SYMBOLS = this.theme.symbols;
                 this.SYMBOL_COLORS = this.theme.symbolColors;
@@ -825,10 +1091,8 @@
                             }
                         }
                     },
-                    // --- CHANGE: Updated Bomb Bae superpower logic ---
                     bombBae: (r, c, cell) => {
                         const targetSymbol = this.gridData[r][c];
-                        // Validate: a filled block that is not a wild card (cursed is handled already)
                         if (!targetSymbol || targetSymbol === this.SPECIAL_SYMBOLS.WILD) {
                             this.audioPlay('invalid');
                             cell.classList.add('shake-animation');
@@ -840,10 +1104,8 @@
                         for (let i = r; i > 0; i--) {
                             this.gridData[i][c] = this.gridData[i - 1][c];
                         }
-                        // Top-most cell in the column becomes empty
                         this.gridData[0][c] = null;
 
-                        // Finalize the move
                         this.consumeSuperpower('bombBae');
                         this.gameStateManager.setState('AWAITING_ROLL');
                         this.renderControls();
@@ -860,7 +1122,10 @@
 
             _setupUI() {
                 animateScoreUpdate('high-score', this.highScore, 3);
-                ['game-over-modal', 'exchange-modal', 'rules-modal', 'tutorial-modal', 'warning-modal'].forEach(id => document.getElementById(id)?.classList.remove('is-open'));
+                ['game-over-modal', 'exchange-modal', 'rules-modal', 'tutorial-modal', 'warning-modal', 'unlock-modal', 'badges-modal'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.remove('is-open');
+                });
                 
                 this.renderGrid().then(() => {
                     if (!this.lastGameState && this.turnCount === 0) {
@@ -890,9 +1155,10 @@
                     new_game_btn: 'new-game-btn', game_board_container: 'game-board-container', scoring_panel: 'scoring-panel',
                     effects_container: 'effects-container', rules_title: 'rules-title', 
                     in_game_content: 'in-game-content', pre_game_content: 'pre-game-content',
-                    'in_game_content_wrapper': 'in_game_content_wrapper',
+                    'in_game_content_wrapper': 'in-game-content-wrapper',
                     tutorial_modal: 'tutorial-modal', tutorial_content: 'tutorial-content', tutorial_next_btn: 'tutorial-next-btn', close_tutorial_btn: 'close-tutorial-btn',
-                    warning_modal: 'warning-modal', close_warning_btn: 'close-warning-btn'
+                    warning_modal: 'warning-modal', close_warning_btn: 'close-warning-btn',
+                    unlock_modal: 'unlock-modal', unlocked_edition_name: 'unlocked-edition-name', close_unlock_btn: 'close-unlock-btn'
                 };
                 
                 for (const key in idMap) {
@@ -1009,6 +1275,16 @@
 
             startTimer() {
                 if (this.timerId || this.gameStateManager.is('GAME_OVER')) return;
+                
+                if (this.isTimeBurst) {
+                    let stats = getPlayerStats();
+                    if (!stats.timeBurstGamesPlayed || stats.timeBurstGamesPlayed === 0) {
+                        unlockBadge('timeTraveller', stats);
+                    }
+                    stats.timeBurstGamesPlayed = (stats.timeBurstGamesPlayed || 0) + 1;
+                    savePlayerStats(stats);
+                }
+
                 this.updateTimerDisplay();
                 this.timerId = setInterval(() => {
                     if (this.gameStateManager.is('GAME_OVER')) {
@@ -1044,6 +1320,11 @@
                         if ([...Array(len).keys()].some(k => usedIndices.has(i + k))) continue;
                         const slice = line.slice(i, i + len);
                         if (this.isValidSequence(slice)) {
+
+                            if (len === 7) {
+                                unlockBadge('perfectionist');
+                            }
+
                             const score = this.SCORING_RULES[len];
                             totalScore += score;
                             const cells = [];
@@ -1079,6 +1360,41 @@
                 }
                 return true;
             }
+
+            checkGridBadges(stats) {
+                let found3x3 = false;
+                let found4x4 = false;
+
+                for (let size = 4; size >= 3; size--) {
+                    if ((size === 4 && found4x4) || (size === 3 && found3x3)) continue;
+
+                    for (let r = 0; r <= this.GRID_SIZE - size; r++) {
+                        for (let c = 0; c <= this.GRID_SIZE - size; c++) {
+                            const first = this.gridData[r][c];
+                            if (!first || first === this.SPECIAL_SYMBOLS.CURSED || first === this.SPECIAL_SYMBOLS.WILD) continue;
+                            
+                            let isSolidSquare = true;
+                            for (let i = 0; i < size; i++) {
+                                for (let j = 0; j < size; j++) {
+                                    if (this.gridData[r + i][c + j] !== first) {
+                                        isSolidSquare = false;
+                                        break;
+                                    }
+                                }
+                                if (!isSolidSquare) break;
+                            }
+
+                            if (isSolidSquare) {
+                                if (size === 4) found4x4 = true;
+                                if (size === 3) found3x3 = true;
+                            }
+                        }
+                    }
+                }
+                if (found4x4) unlockBadge('fineSquare', stats);
+                if (found3x3) unlockBadge('fineNine', stats);
+            }
+
             calculateBonusGrids() {
                 let points = 0;
                 for (let size = this.GRID_SIZE; size >= 2; size--) {
@@ -1551,6 +1867,32 @@
                 this.endGame("The grid is complete!");
             }
             
+            checkEndGameBadges() {
+                let stats = getPlayerStats();
+                
+                stats.gamesPlayed++;
+                if (this.isTimeBurst && this.currentTotalScore > 0) stats.timeBurstWins++;
+                if (!this.isTimeBurst && this.currentTotalScore > 0) stats.classicWins++;
+                stats.playedEditions[this.config.id] = true;
+
+                if (stats.gamesPlayed >= 1) unlockBadge('baby', stats);
+                if (stats.gamesPlayed >= 10) unlockBadge('enthusiast', stats);
+                if (stats.gamesPlayed >= 50) unlockBadge('veteran', stats);
+                if (stats.timeBurstWins >= 10) unlockBadge('masterOfTime', stats);
+
+                if (this.currentTotalScore > 100) unlockBadge('centuryClub', stats);
+                if (this.gridData.flat().every(cell => cell !== null)) unlockBadge('gridMaster', stats);
+                if (this.usedSuperpowers.size === 0 && this.currentTotalScore > 0) unlockBadge('pureSkill', stats);
+                if (this.scores.hero === 14) unlockBadge('heroWorship', stats);
+
+                if (Object.keys(stats.playedEditions).length >= 5) unlockBadge('explorer', stats);
+                if (Object.keys(stats.playedEditions).length === Object.keys(this.allVariantConfigs).length) unlockBadge('collector', stats);
+                if (stats.classicWins > 0 && stats.timeBurstWins > 0) unlockBadge('allRounder', stats);
+                
+                this.checkGridBadges(stats);
+                savePlayerStats(stats);
+            }
+
             endGame(reason = "") {
                 if (this.gameStateManager.is('GAME_OVER')) return;
                 this.stopTimer();
@@ -1558,12 +1900,21 @@
                 this.lastMoveCoords = null;
                 this.updateAllScores();
 
+                this.checkEndGameBadges();
+
                 if (reason === "Time's up!") {
                     this.DOMElements.game_board_container.classList.add('shake-animation');
                     setTimeout(() => this.DOMElements.game_board_container.classList.remove('shake-animation'), 500);
                 }
                 
                 let finalScore = this.currentTotalScore;
+                
+                const currentEditionId = this.config.id;
+                const unlockRule = unlockProgression[currentEditionId];
+
+                if (unlockRule && finalScore >= unlockRule.score) {
+                    gameManager.unlockEdition(unlockRule.unlocks);
+                }
                 
                 const isGridIncomplete = this.gridData.flat().includes(null);
                 if (reason === "Time's up!" && isGridIncomplete) {
@@ -1777,7 +2128,7 @@
                     return 0;
                 };
 
-                this.config.getCrossScoreSegments().forEach(seg => {
+                (this.config.getCrossScoreSegments() || []).forEach(seg => {
                     const segmentSymbols = [];
                     for (let i = seg.start; i <= seg.end; i++) {
                         segmentSymbols.push(seg.type === 'row' ? this.gridData[seg.index][i] : this.gridData[i][seg.index]);
@@ -1840,7 +2191,6 @@
                 const btns = { pastLives: document.getElementById('past-lives-btn'), bombBae: document.getElementById('bomb-bae-btn'), noReturn: document.getElementById('no-return-btn'), swapThem: document.getElementById('swap-them-btn') };
                 
                 if (btns.pastLives) btns.pastLives.disabled = totalUsed >= 2 || this.usedSuperpowers.has('pastLives') || !this.lastGameState || isMidMove || isPowerActive || !isAwaitingRoll;
-                // Bomb Bae can now be used as long as a block is filled.
                 if (btns.bombBae) btns.bombBae.disabled = totalUsed >= 2 || this.usedSuperpowers.has('bombBae') || this.gridData.flat().every(s => s === null) || isMidMove || isPowerActive;
                 if (btns.noReturn) btns.noReturn.disabled = this.turnCount < 1 || totalUsed >= 2 || this.usedSuperpowers.has('noReturn') || isMidMove || isPowerActive;
                 if (btns.swapThem) btns.swapThem.disabled = this.turnCount < 1 || totalUsed >= 2 || this.usedSuperpowers.has('swapThem') || !isAwaitingRoll || isMidMove || isPowerActive;
@@ -1949,6 +2299,7 @@
                 this.DOMElements.close_game_over_btn.addEventListener('click', () => { this.DOMElements.game_over_modal.classList.remove('is-open'); document.body.classList.remove('modal-open'); });
                 this.DOMElements.play_again_btn.addEventListener('click', () => { this.DOMElements.game_over_modal.classList.remove('is-open'); document.body.classList.remove('modal-open'); gameManager.resetCurrentVariant(); });
                 this.DOMElements.close_warning_btn.addEventListener('click', () => { this.DOMElements.warning_modal.classList.remove('is-open'); document.body.classList.remove('modal-open'); });
+                this.DOMElements.close_unlock_btn.addEventListener('click', () => { this.DOMElements.unlock_modal.classList.remove('is-open'); document.body.classList.remove('modal-open'); });
                 this.DOMElements.close_tutorial_btn.addEventListener('click', () => this.completeTutorial());
                 this.DOMElements.tutorial_next_btn.addEventListener('click', () => {
                     this.tutorialStep++;
@@ -1975,28 +2326,58 @@
 
             populateEditionModal() {
                 const container = document.getElementById('edition-options');
+                if (!container) return;
                 container.innerHTML = '';
+
+                // Get player stats to see what's unlocked
+                const stats = getPlayerStats();
+                const unlockedEditions = stats.unlockedEditions || {};
+
+                // The first edition is always unlocked
+                const isEditionUnlocked = (id) => id === 'plain_jean' || unlockedEditions[id] || DEV_UNLOCK_ALL;
+
                 Object.values(variantConfigs).forEach(config => {
                     const button = document.createElement('button');
-                    button.className = 'w-full text-left p-3 rounded-lg hover:bg-gray-200/50 font-semibold transition-colors';
-                    button.textContent = config.name;
-                    button.dataset.editionId = config.id;
-                    button.addEventListener('click', () => {
-                        const game = this.currentGameInstance;
-                        const isGameInProgress = game && game.turnCount > 0 && !game.gameStateManager.is('GAME_OVER');
-                        
-                        document.getElementById('edition-select-modal').classList.remove('is-open');
-                        document.body.classList.remove('modal-open');
-                        const isTimeBurst = this.activeMode === 'timeburst';
+                    const unlocked = isEditionUnlocked(config.id);
 
-                        if (isGameInProgress) {
-                            this.pendingAction = () => this.switchVariant(config.id, isTimeBurst, true);
-                            document.getElementById('confirm-restart-modal').classList.add('is-open');
-                            document.body.classList.add('modal-open');
-                        } else {
-                            this.switchVariant(config.id, isTimeBurst);
-                        }
-                    });
+                    button.className = 'w-full text-left p-3 rounded-lg font-semibold flex justify-between items-center transition-colors';
+                    button.dataset.editionId = config.id;
+                    
+                    if (unlocked) {
+                        button.innerHTML = `<span>${config.name}</span>`;
+                        button.classList.add('hover:bg-gray-200/50');
+                        button.onclick = () => {
+                            const game = this.currentGameInstance;
+                            const isGameInProgress = game && game.turnCount > 0 && !game.gameStateManager.is('GAME_OVER');
+                            
+                            document.getElementById('edition-select-modal').classList.remove('is-open');
+                            document.body.classList.remove('modal-open');
+                            const isTimeBurst = this.activeMode === 'timeburst';
+
+                            if (isGameInProgress && config.id !== this.activeVariantId) {
+                                this.pendingAction = () => this.switchVariant(config.id, isTimeBurst, true);
+                                document.getElementById('confirm-restart-modal').classList.add('is-open');
+                                document.body.classList.add('modal-open');
+                            } else {
+                                this.switchVariant(config.id, isTimeBurst);
+                            }
+                        };
+                    } else {
+                        // This is a locked edition
+                        const unlockRule = Object.values(unlockProgression).find(rule => rule && rule.unlocks === config.id);
+                        const scoreNeeded = unlockRule ? unlockRule.score : '';
+                        const gameToPlay = Object.keys(unlockProgression).find(key => unlockProgression[key] && unlockProgression[key].unlocks === config.id);
+                        const gameNameToPlay = variantConfigs[gameToPlay]?.name || '';
+
+                        button.innerHTML = `
+                            <div class="flex flex-col">
+                                <span>${config.name}</span>
+                                <span class="text-xs font-normal opacity-70">Score ${scoreNeeded} in ${gameNameToPlay} to unlock</span>
+                            </div>
+                            <span class="text-xl">🔒</span>`;
+                        button.disabled = true;
+                        button.classList.add('opacity-50', 'cursor-not-allowed');
+                    }
                     container.appendChild(button);
                 });
             },
@@ -2026,7 +2407,7 @@
                         delete this.gameStates[gameStateKey];
                     }
 
-                    this.currentGameInstance = new Game(variantConfig, themeConfig, isTimeBurst, savedState);
+                    this.currentGameInstance = new Game(variantConfig, themeConfig, isTimeBurst, variantConfigs, savedState);
                                         
                     gameContainer.style.opacity = '1';
                 }, 250);
@@ -2039,6 +2420,34 @@
                 this.switchVariant(this.activeVariantId, this.currentGameInstance.isTimeBurst, true);
             },
             
+            unlockEdition(editionId) {
+                let stats = getPlayerStats();
+                if (!stats.unlockedEditions) {
+                    stats.unlockedEditions = {};
+                }
+                if (stats.unlockedEditions[editionId]) {
+                    return; // Already unlocked
+                }
+
+                stats.unlockedEditions[editionId] = true;
+                savePlayerStats(stats);
+
+                const unlockedEditionName = variantConfigs[editionId]?.name || 'a new edition';
+                const unlockModal = document.getElementById('unlock-modal');
+                const unlockedEditionNameEl = document.getElementById('unlocked-edition-name');
+                
+                if (unlockedEditionNameEl) {
+                    unlockedEditionNameEl.textContent = unlockedEditionName;
+                }
+                if (unlockModal) {
+                    unlockModal.classList.add('is-open');
+                    document.body.classList.add('modal-open');
+                }
+                
+                // Refresh the modal content to show the newly unlocked game
+                this.populateEditionModal();
+            },
+
             setupGlobalEventListeners() {
                 const editionModal = document.getElementById('edition-select-modal');
                 const confirmModal = document.getElementById('confirm-restart-modal');
@@ -2072,6 +2481,19 @@
                     editionModal.classList.add('is-open');
                     document.body.classList.add('modal-open');
                 });
+
+                document.getElementById('badges-btn').addEventListener('click', () => {
+                    renderBadgesGrid();
+                    document.getElementById('badges-modal').classList.add('is-open');
+                    document.body.classList.add('modal-open');
+                });
+
+                document.getElementById('close-badges-btn').addEventListener('click', () => {
+                    document.getElementById('badges-modal').classList.remove('is-open');
+                    document.body.classList.remove('modal-open');
+                });
+
+                document.getElementById('share-badges-btn').addEventListener('click', handleShareBadges);
 
                 toggleSwitch.addEventListener('click', () => {
                     toggleSwitch.classList.toggle('time-burst-active');
@@ -2135,7 +2557,7 @@
                             game.updateSuperpowerButtonsUI();
                             game.gameStateManager.setState(game.firstPlacementCell ? 'AWAITING_PLACEMENT' : 'AWAITING_ROLL');
                         } else {
-                           ['rules-modal', 'game-over-modal', 'exchange-modal', 'edition-select-modal', 'confirm-restart-modal', 'tutorial-modal', 'warning-modal'].forEach(id => {
+                           ['rules-modal', 'game-over-modal', 'exchange-modal', 'edition-select-modal', 'confirm-restart-modal', 'tutorial-modal', 'warning-modal', 'unlock-modal'].forEach(id => {
                                 const modal = document.getElementById(id);
                                 if (modal?.classList.contains('is-open')) {
                                    modal.classList.remove('is-open');
