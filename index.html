@@ -1367,6 +1367,8 @@
                     <div id="dice-1" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card enhanced-shadow flex items-center justify-center text-3xl lg:text-4xl shimmer-text">?</div>
                     <div id="dice-2" class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl glass-card enhanced-shadow flex items-center justify-center text-3xl lg:text-4xl shimmer-text">?</div>
                     ${timerHTML}
+                    <!-- STREAK BADGE -->
+                    <div id="streak-badge" class="absolute -top-2 -right-2 text-xs bg-orange-500 text-white rounded-full px-2 py-0.5 hidden">🔥<span>0</span>
                 </div>
                 <div class="glass-card enhanced-shadow rounded-xl px-3 py-2 text-center"><h2 class="text-sm font-semibold uppercase tracking-wider mb-3 flex items-center justify-center gap-2" style="color: var(--text-secondary);">Alloha Superpowers <span id="sp-charges" class="text-base">✨✨</span></h2><div class="grid grid-cols-4 gap-1 text-center">
                     <button id="past-lives-btn" class="superpower-btn"><div>Past</div><div>Lives</div><div class="superpower-used-overlay hidden absolute inset-0 text-red-500 text-4xl font-extrabold flex items-center justify-center" style="text-shadow: 0 1px 2px rgba(0,0,0,0.4);">X</div></button>
@@ -1408,6 +1410,11 @@
                     dice1.classList.add('shimmer-text');
                     dice2.classList.add('shimmer-text');
                 }
+                const sb = document.getElementById('streak-badge');
+                if (sb) {
+                    sb.querySelector('span').textContent = this.streakCount;
+                    sb.classList.toggle('hidden', this.streakCount === 0);
+                }                       
             }
 
             updateScoreDisplays(r, c, cross, b, h, p) { 
@@ -1803,7 +1810,7 @@
                     return;
                 }
                 if (!this.game.gameStateManager.is('AWAITING_ROLL')) return;
-                
+
                 this.game.triggerVibration(50);
 
                 if (this.game.turnCount >= this.game.MAX_TURNS || !this.game.hasValidMoves()) {
@@ -1819,18 +1826,40 @@
                 d1.classList.add('dice-tumble');
                 d2.classList.add('dice-tumble');
 
-                const nextTurn = this.game.turnCount + 1; let tempRoll;
-                if (nextTurn === this.game.cursedBlockTurn) { this.game.audioManager.play('thud'); tempRoll = [this.game.SYMBOLS[Math.floor(Math.random() * this.game.SYMBOLS.length)], this.game.SPECIAL_SYMBOLS.CURSED]; }
-                else if (nextTurn === this.game.wildcardTurn) { this.game.audioManager.play('chime'); tempRoll = [this.game.SYMBOLS[Math.floor(Math.random() * this.game.SYMBOLS.length)], this.game.SPECIAL_SYMBOLS.WILD]; }
-                else { this.game.audioManager.play('roll'); tempRoll = [this.game.SYMBOLS[Math.floor(Math.random() * this.game.SYMBOLS.length)], this.game.SYMBOLS[Math.floor(Math.random() * this.game.SYMBOLS.length)]]; }
-                
-                this.game.currentRoll = tempRoll.sort(() => Math.random() - 0.5);
-                
+                const nextTurn = this.game.turnCount + 1;
+                let tempRoll;
+
+                // >>> 1.  pick the RNG stream (seeded for Classic, normal for Time-Burst) <<<
+                const rand = this.game._dailyRng || Math.random;
+
+                if (nextTurn === this.game.cursedBlockTurn) {
+                    this.game.audioManager.play('thud');
+                    tempRoll = [
+                        this.game.SYMBOLS[Math.floor(rand() * this.game.SYMBOLS.length)],
+                        this.game.SPECIAL_SYMBOLS.CURSED
+                    ];
+                } else if (nextTurn === this.game.wildcardTurn) {
+                    this.game.audioManager.play('chime');
+                    tempRoll = [
+                        this.game.SYMBOLS[Math.floor(rand() * this.game.SYMBOLS.length)],
+                        this.game.SPECIAL_SYMBOLS.WILD
+                    ];
+                } else {
+                    this.game.audioManager.play('roll');
+                    tempRoll = [
+                        this.game.SYMBOLS[Math.floor(rand() * this.game.SYMBOLS.length)],
+                        this.game.SYMBOLS[Math.floor(rand() * this.game.SYMBOLS.length)]
+                    ];
+                }
+
+                // shuffle the pair with the *same* stream
+                this.game.currentRoll = tempRoll.sort(() => rand() - 0.5);
+
                 await delay(CONSTANTS.DICE_TUMBLE_DURATION);
-                                
+
                 this.game.gameStateManager.setState('AWAITING_PLACEMENT');
-                this.game.saveStateForUndo(); 
-                this.game.renderer.updateControlsState(); 
+                this.game.saveStateForUndo();
+                this.game.renderer.updateControlsState();
                 this.game.renderer.updateSuperpowerButtonsUI();
             }
 
@@ -1921,6 +1950,17 @@
                     if (this.wildcardTurn === this.cursedBlockTurn) this.wildcardTurn++;
                     this._initializeHeroFeature();
                     this._initTutorial();
+                }
+
+                // streak logic
+                const today = new Date().toDateString();
+                const streakData = JSON.parse(localStorage.getItem('allohaStreak')||'{"day":"","count":0}');
+                if (streakData.day !== today) {
+                    this.streakCount = streakData.count;
+                    this.streakToday = false;
+                } else {
+                    this.streakCount = streakData.count;
+                    this.streakToday = true;
                 }
 
                 const highScoreKey = `cactiFactiHighScore_${this.config.id}_${this.isTimeBurst ? 'timeburst' : 'classic'}`;
@@ -2041,6 +2081,27 @@
                     const c = Math.floor(Math.random() * this.GRID_SIZE);
                     this.heroBlocks.add(`${r},${c}`);
                 }
+            }
+
+            // ---------- Daily Challenge ----------
+            // Daily-seed for **ALL** Classic editions
+            if (!this.isTimeBurst) {
+            const seed = new Date().toISOString().slice(0,10);   // YYYY-MM-DD
+            if (!window.Math.seedrandom) {
+                const s = document.createElement('script');
+                s.src = 'https://cdn.jsdelivr.net/npm/seedrandom@3.0.5/seedrandom.min.js';
+                s.onload = () => this._applyDailySeed(seed);
+                document.head.appendChild(s);
+            } else { this._applyDailySeed(seed); }
+            }
+
+            _applyDailySeed(seed) {
+            const rng = new Math.seedrandom(seed);
+            // override rollDice RNG
+            this._dailyRng = () => rng();
+            // leaderboard stub
+            this._dailyKey = `allohaDaily_${seed}`;
+            this._dailyBoard = JSON.parse(localStorage.getItem(this._dailyKey)||'[]');
             }
 
             _initTutorial() {
@@ -2447,6 +2508,19 @@
                     localStorage.setItem(highScoreKey, finalScore);
                     this.highScore = finalScore;
                     this.renderer.triggerConfetti();
+                }
+
+                if (this._dailyKey) {                                       // Classic only
+                this._dailyBoard.push({ name: 'You', score: finalScore });
+                this._dailyBoard.sort((a, b) => b.score - a.score);
+                localStorage.setItem(this._dailyKey, JSON.stringify(this._dailyBoard.slice(0, 10)));
+                }
+
+                if (!this.streakToday && this.currentTotalScore>0) {
+                this.streakCount++;
+                this.streakToday = true;
+                localStorage.setItem('allohaStreak', JSON.stringify({day:new Date().toDateString(), count:this.streakCount}));
+                showToast(`🔥 Streak x${this.streakCount}`);
                 }
 
                 this.DOMElements.game_over_reason.textContent = reason;
