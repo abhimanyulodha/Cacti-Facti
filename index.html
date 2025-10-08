@@ -1562,18 +1562,31 @@
         class InputHandler {
             constructor(game) {
                 this.game = game;
+                // Bind 'this' and store the function references to be able to remove them later
+                this.handleContentClick = this._handleContentClick.bind(this);
+                this.handleBoardClick = this._handleBoardClick.bind(this);
+                this.handleResize = this.game.renderer.syncPanelHeights.bind(this.game.renderer);
+            }
+        
+            _handleContentClick(e) {
+                if (e.target.closest('#roll-dice-btn')) this.handleRollDice();
+            }
+        
+            _handleBoardClick(e) {
+                const cell = e.target.closest('[data-row]');
+                if (cell) this.handleCellClick(cell);
             }
 
             attachAllListeners() {
-                // Event delegation for dynamically created elements
-                document.getElementById('in-game-content-wrapper').addEventListener('click', (e) => {
-                    if (e.target.closest('#roll-dice-btn')) this.handleRollDice();
-                });
-                document.getElementById('game-board').addEventListener('click', (e) => {
-                    const cell = e.target.closest('[data-row]');
-                    if (cell) this.handleCellClick(cell);
-                });
-                window.addEventListener('resize', this.game.renderer.syncPanelHeights.bind(this.game.renderer));
+                document.getElementById('in-game-content-wrapper').addEventListener('click', this.handleContentClick);
+                document.getElementById('game-board').addEventListener('click', this.handleBoardClick);
+                window.addEventListener('resize', this.handleResize);
+            }
+
+            detachAllListeners() {
+                document.getElementById('in-game-content-wrapper').removeEventListener('click', this.handleContentClick);
+                document.getElementById('game-board').removeEventListener('click', this.handleBoardClick);
+                window.removeEventListener('resize', this.handleResize);
             }
             
             addCellEventListeners(cell) { 
@@ -2563,6 +2576,7 @@
             switchVariant(variantId, isTimeBurst, isNewGame = false) {
                 if (this.currentGameInstance) {
                     this.currentGameInstance.stopTimer();
+                    this.currentGameInstance.inputHandler.detachAllListeners();
                 }
                 const gameContainer = document.getElementById('game-container');
                 gameContainer.style.transition = 'opacity 0.25s ease-in-out';
