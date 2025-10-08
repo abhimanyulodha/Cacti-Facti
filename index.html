@@ -1462,7 +1462,7 @@
 
             renderEndGamePanel(score) {
                 const container = this.DOMElements.in_game_content;
-                container.className = 'w-full flex flex-col items-center justify-start pt-8 h-full text-center p-4';
+                container.className = 'w-full flex flex-col items-center justify-center h-full text-center p-4';
                 container.innerHTML = '';
 
                 const title = document.createElement('h2');
@@ -1488,7 +1488,7 @@
 
                 return new Promise(resolve => {
                     const wrapper = document.createElement('div');
-                    wrapper.className = 'w-full flex flex-col items-center justify-center h-full gap-4 pt-2 pb-8';
+                    wrapper.className = 'w-full flex flex-col items-center justify-center h-full gap-4 pt-2';
                     
                     const title = document.createElement('h2');
                     title.className = 'text-base lg:text-lg font-semibold text-center uppercase tracking-wider';
@@ -1500,16 +1500,15 @@
 
                     this.game.SYMBOLS.forEach(symbol => {
                         const btn = document.createElement('button');
-                        btn.className = `w-14 h-14 lg:w-16 lg:h-16 rounded-xl text-4xl flex items-center justify-center transition-transform hover:scale-110 active:scale-95`;
+                        btn.className = `w-12 h-12 lg:w-14 lg:h-14 rounded-xl text-3xl flex items-center justify-center transition-transform hover:scale-110 active:scale-95`;
                         const symbolSpan = document.createElement('span');
-                        symbolSpan.className = `${this.game.SYMBOL_COLORS[symbol] || ''} flex items-center`;
+                        // CORRECTED: Added h-full to the span
+                        symbolSpan.className = `${this.game.SYMBOL_COLORS[symbol] || ''} h-full flex items-center`;
                         symbolSpan.textContent = symbol;
 
-                        // --- THESE ARE THE 3 CRITICAL LINES THAT WERE MISSING ---
                         btn.appendChild(symbolSpan);
                         btn.addEventListener('click', () => resolve(symbol));
                         selector.appendChild(btn);
-                        // ---------------------------------------------------------
                     });
 
                     wrapper.appendChild(title);
