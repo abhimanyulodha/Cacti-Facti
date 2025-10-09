@@ -256,9 +256,22 @@
             align-items: center;
             justify-content: center;
             font-size: 1.5em;
-            color: var(--text);
-            opacity: 0.1;
+            color: var(--accent);
+            opacity: 0.12;
             z-index: 0;
+            text-shadow: 0 0 6px var(--accent);
+            animation: hero-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes hero-pulse {
+            0%, 100% { 
+                opacity: 0.12;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.22;
+                transform: scale(1.02);
+            }
         }
         
         .curse-overlay {
@@ -1140,9 +1153,16 @@
 
             unlock(unlockerEl) {
                 if (this.unlocked) return;
-                unlockerEl.play().finally(() => {
-                    this.unlocked = true;
-                });
+                unlockerEl.play()
+                    .catch(err => {
+                        // Ignore AbortError - it's expected for very short audio
+                        if (err.name !== 'AbortError') {
+                            console.error("Audio unlock failed:", err);
+                        }
+                    })
+                    .finally(() => {
+                        this.unlocked = true;
+                    });
             }
 
             play(soundName) {
@@ -1443,48 +1463,56 @@
 
             renderGoldenAllohaPlacementPrompt(symbol) {
                 const container = this.DOMElements.in_game_content;
-                container.className = 'w-full flex flex-col items-center justify-center text-center p-4';
+                container.className = 'flex items-center justify-center h-full';
                 container.innerHTML = '';
 
+                const wrapper = document.createElement('div');
+                wrapper.className = 'text-center';
+
                 const line1 = document.createElement('h2');
-                line1.className = 'text-xl lg:text-2xl font-semibold';
+                line1.className = 'text-xl lg:text-2xl font-semibold text-center';
                 line1.style.color = 'var(--accent)';
                 line1.innerHTML = `You chose <span class="text-5xl align-middle ${this.game.SYMBOL_COLORS[symbol] || 'text-gray-700'}">${symbol}</span>`;
 
                 const line2 = document.createElement('p');
-                line2.className = 'text-base lg:text-lg font-medium mt-2';
+                line2.className = 'text-base lg:text-lg font-medium mt-2 text-center';
                 line2.style.color = 'var(--text-secondary)';
                 line2.textContent = 'Place it on any highlighted Allohome!';
 
-                container.appendChild(line1);
-                container.appendChild(line2);
+                wrapper.appendChild(line1);
+                wrapper.appendChild(line2);
+                container.appendChild(wrapper);
             }
 
             renderEndGamePanel(score) {
                 const container = this.DOMElements.in_game_content;
-                // CORRECTED: Removed h-full class
-                container.className = 'w-full flex flex-col items-center justify-center text-center p-4';
+                container.className = 'flex items-center justify-center h-full';
                 container.innerHTML = '';
 
+                const wrapper = document.createElement('div');
+                wrapper.className = 'text-center';
+
                 const title = document.createElement('h2');
-                title.className = 'text-3xl font-bold';
+                title.className = 'text-3xl font-bold text-center';
                 title.style.fontFamily = "'Pacifico', cursive";
                 title.style.color = 'var(--accent)';
                 title.textContent = 'Game Over Alloha!';
 
                 const scoreDisplay = document.createElement('div');
                 scoreDisplay.id = 'end-game-score-display';
-                scoreDisplay.className = 'text-7xl font-bold my-2';
+                scoreDisplay.className = 'text-7xl font-bold my-2 text-center';
                 scoreDisplay.style.color = 'var(--accent)';
                 
-                container.appendChild(title);
-                container.appendChild(scoreDisplay);
+                wrapper.appendChild(title);
+                wrapper.appendChild(scoreDisplay);
+                container.appendChild(wrapper);
+                
                 animateScoreUpdate('end-game-score-display', score, 3);
             }
 
             async renderGoldenAllohaSelector() {
                 const container = this.DOMElements.in_game_content;
-                container.className = '';
+                container.className = 'flex items-center justify-center h-full';
                 container.innerHTML = '';
 
                 return new Promise(resolve => {
