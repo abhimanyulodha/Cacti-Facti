@@ -44,9 +44,9 @@
             --stuck-block: linear-gradient(135deg, #757575 0%, #616161 100%);
             --glass-border: rgba(255, 255, 255, 0.2);
             --faint-border: rgba(0, 0, 0, 0.08);
-            --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.05);
-            --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.07);
-            --shadow-strong: 0 15px 50px rgba(0, 0, 0, 0.09);
+            --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.05); /* Simplified */
+            --shadow-medium: 0 4px 15px rgba(0, 0, 0, 0.07); /* Simplified */
+            --shadow-strong: 0 8px 25px rgba(0, 0, 0, 0.09); /* Simplified */
             --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
             --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
             --ease-quick: cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -64,25 +64,6 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             transition: background 0.3s ease-in-out;
-            background-size: 400% 400%;
-        }
-
-        /* Add these CSS rules for the starfield */
-        #background-stars {
-            position: fixed;
-            inset: 0;
-            z-index: -1; /* Place it behind all content */
-            pointer-events: none;
-            opacity: 0.8;
-        }
-
-        .star-particle {
-            fill: var(--star-color);
-        }
-
-        @keyframes spaceDrift {
-            from { background-position: 0 0; }
-            to { background-position: -1000px 500px; }
         }
 
         body.modal-open {
@@ -97,7 +78,6 @@
         
         .glass-card {
             background: var(--card);
-            backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
             box-shadow: var(--shadow-soft), 0 0 0 1px var(--glass-border), inset 0 1px 0 rgba(255, 255, 255, 0.3); border: none !important; transition: all 0.3s var(--ease-smooth); position: relative; overflow: hidden;
         }
         .enhanced-shadow {
@@ -188,14 +168,6 @@
             0% { background-position: -200% center; }
             100% { background-position: 200% center; }
         }
-        .shimmer-text {
-            background: linear-gradient(90deg, var(--toggle-bg-inactive), white, var(--toggle-bg-inactive));
-            background-size: 200% auto;
-            color: transparent;
-            background-clip: text;
-            -webkit-background-clip: text;
-            animation: shimmer-text-anim 2.5s linear infinite;
-        }
 
         .confetti-piece {
             position: absolute; width: 8px; height: 16px; background: var(--accent); top: -20px;
@@ -213,7 +185,7 @@
         #select-edition-btn { animation: pulse-faint 3s infinite ease-in-out; }
         @keyframes pulse-logo {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            50% { transform: scale(1.02); }
         }
         .stuck-cell {
             background-image: var(--stuck-block) !important;
@@ -224,11 +196,6 @@
             cursor: pointer; box-shadow: 0 0 0 4px gold, inset 0 0 10px gold;
             background-color: rgba(255, 215, 0, 0.2); animation: pulse-faint 1.5s infinite;
         }
-        @keyframes bob-animation {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-4px); }
-        }
-        .bob-animation { animation: bob-animation 2s ease-in-out infinite; }
         
         @keyframes twinning-flash {
             0%, 100% { background-color: var(--highlighted-bg); }
@@ -390,18 +357,6 @@
 </head>
 <body class="p-2 lg:p-4">
 
-    <div id="background-stars">
-        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-            <defs>
-                <pattern id="stars" width="100" height="100" patternUnits="userSpaceOnUse">
-                    <circle cx="50" cy="50" r="1" class="star-particle"></circle>
-                </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#stars)"></rect>
-        </svg>
-    </div>    
-
-    <audio id="audio-unlocker" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=" preload="auto"></audio>
     <main id="game-container" class="w-full max-w-5xl mx-auto flex flex-col lg:flex-row gap-4 lg:gap-6 items-center lg:items-stretch pt-8 lg:pt-16">
         <div class="w-full lg:w-2/3 relative">
             <div id="effects-container" class="absolute inset-0 pointer-events-none z-10 overflow-hidden"></div>
@@ -1171,80 +1126,6 @@
         }
 
         // --- HELPER CLASSES DEFINED FIRST ---
-        class AudioManager {
-            constructor() {
-                this.unlocked = false;
-                this.context = null;
-                this.sounds = new Map();
-            }
-
-            init() {
-                this._createContext();
-                this._createSounds();
-            }
-
-            _createContext() {
-                try {
-                    if (!this.context) {
-                        this.context = new (window.AudioContext || window.webkitAudioContext)();
-                    }
-                } catch (e) {
-                    console.error("AudioContext not supported.", e);
-                }
-            }
-
-            _createSounds() {
-                if (!this.context || this.sounds.size > 0) return;
-                const soundConfigs = {
-                    'pop': [1200, 0.1, 0.05], 'roll': [220, 0.2, 0.2], 'hover': [660, 0.05, 0.1],
-                    'invalid': [150, 0.3, 0.2], 'power-activate': [880, 0.15, 0.2],
-                    'power-use': [1047, 0.2, 0.3], 'chime': [1047, 0.15, 0.2], 'thud': [100, 0.3, 0.1]
-                };
-                for (const key in soundConfigs) {
-                    this.sounds.set(key, () => this._playTone(...soundConfigs[key]));
-                }
-            }
-
-            _playTone(freq, vol, dur) {
-                if (!this.unlocked || !this.context) return;
-                try {
-                    const o = this.context.createOscillator();
-                    const g = this.context.createGain();
-                    o.connect(g);
-                    g.connect(this.context.destination);
-                    o.frequency.value = freq;
-                    g.gain.setValueAtTime(0, this.context.currentTime);
-                    g.gain.linearRampToValueAtTime(vol * 0.1, this.context.currentTime + 0.01);
-                    g.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + dur);
-                    o.start();
-                    o.stop(this.context.currentTime + dur);
-                } catch (e) {
-                    console.error("Error playing tone.", e);
-                }
-            }
-
-            unlock(unlockerEl) {
-                if (this.unlocked) return;
-                unlockerEl.play()
-                    .catch(err => {
-                        // Ignore AbortError - it's expected for very short audio
-                        if (err.name !== 'AbortError') {
-                            console.error("Audio unlock failed:", err);
-                        }
-                    })
-                    .finally(() => {
-                        this.unlocked = true;
-                    });
-            }
-
-            play(soundName) {
-                const soundAction = this.sounds.get(soundName);
-                if (soundAction) {
-                    soundAction();
-                }
-            }
-        }
-
         class Renderer {
             constructor(game, DOMElements) {
                 this.game = game;
@@ -1826,7 +1707,6 @@
                     handleModalOpen(this.game.DOMElements.post_game_modal);
                     return;
                 }
-                gameManager.unlockAudioContext();
                 if (this.game.gameStateManager.is('AWAITING_PLACEMENT')) {
                     handleModalOpen(this.game.DOMElements.warning_modal);
                     return;
@@ -1849,9 +1729,9 @@
                 d2.classList.add('dice-tumble');
 
                 const nextTurn = this.game.turnCount + 1; let tempRoll;
-                if (nextTurn === this.game.cursedBlockTurn) { this.game.audioManager.play('thud'); tempRoll = [this.game.SYMBOLS[Math.floor(Math.random() * this.game.SYMBOLS.length)], this.game.SPECIAL_SYMBOLS.CURSED]; }
-                else if (nextTurn === this.game.wildcardTurn) { this.game.audioManager.play('chime'); tempRoll = [this.game.SYMBOLS[Math.floor(Math.random() * this.game.SYMBOLS.length)], this.game.SPECIAL_SYMBOLS.WILD]; }
-                else { this.game.audioManager.play('roll'); tempRoll = [this.game.SYMBOLS[Math.floor(Math.random() * this.game.SYMBOLS.length)], this.game.SYMBOLS[Math.floor(Math.random() * this.game.SYMBOLS.length)]]; }
+                if (nextTurn === this.game.cursedBlockTurn) { tempRoll = [this.game.SYMBOLS[Math.floor(Math.random() * this.game.SYMBOLS.length)], this.game.SPECIAL_SYMBOLS.CURSED]; }
+                else if (nextTurn === this.game.wildcardTurn) { tempRoll = [this.game.SYMBOLS[Math.floor(Math.random() * this.game.SYMBOLS.length)], this.game.SPECIAL_SYMBOLS.WILD]; }
+                else { tempRoll = [this.game.SYMBOLS[Math.floor(Math.random() * this.game.SYMBOLS.length)], this.game.SYMBOLS[Math.floor(Math.random() * this.game.SYMBOLS.length)]]; }
                 
                 this.game.currentRoll = tempRoll.sort(() => Math.random() - 0.5);
                 
@@ -1865,7 +1745,6 @@
 
             handleSuperpowerCellClick(r, c, cell) {
                 if (this.game.gridData[r][c] === this.game.SPECIAL_SYMBOLS.CURSED || this.game.gridData[r][c] === this.game.SPECIAL_SYMBOLS.STUCK) {
-                    this.game.audioManager.play('invalid');
                     cell.classList.add('shake-animation');
                     setTimeout(() => cell.classList.remove('shake-animation'), CONSTANTS.SHAKE_ANIMATION_DURATION);
                     return;
@@ -1875,7 +1754,6 @@
                 if (strategy) {
                     strategy(r, c, cell);
                 } else {
-                    this.game.audioManager.play('invalid');
                 }
             }
         }
@@ -1895,7 +1773,6 @@
                 this.GRID_SIZE = 7; this.MAX_TURNS = 24; this.CROSS_MULTIPLIER = 2; this.LINE_DEATH_PENALTY = -5; this.CROSS_DEATH_PENALTY = -5; this.MIN_SEQUENCE_LENGTH = 3;
 
                 this.DOMElements = this._getDOMElements();
-                this.audioManager = new AudioManager();
                 this.renderer = new Renderer(this, this.DOMElements);
                 this.inputHandler = new InputHandler(this, this.DOMElements);
                 
@@ -1954,13 +1831,10 @@
 
                 const highScoreKey = `cactiFactiHighScore_${this.config.id}_${this.isTimeBurst ? 'timeburst' : 'classic'}`;
                 this.highScore = parseInt(localStorage.getItem(highScoreKey)) || 0;
-                
-                this.audioManager.init();
-
 
                 this._superpowerStrategies = {
                     [SUPERPOWERS.SWAP_THEM]: (r, c, cell) => {
-                        if (!this.gridData[r][c] || this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) { this.audioManager.play('invalid'); return; }
+                        if (!this.gridData[r][c] || this.gridData[r][c] === this.SPECIAL_SYMBOLS.CURSED) { return; }
                         if (!this.swapFirstCell) {
                             this.swapFirstCell = { r, c };
                             cell.classList.add('pulse-animation');
@@ -1975,7 +1849,6 @@
                                 this.gameStateManager.setState('AWAITING_ROLL');
                                 this.renderer.renderControls();
                             } else {
-                                this.audioManager.play('invalid');
                                 cell.classList.add('shake-animation');
                                 setTimeout(() => cell.classList.remove('shake-animation'), CONSTANTS.SHAKE_ANIMATION_DURATION);
                                 this.renderer.gridCells[r1][c1].classList.remove('pulse-animation');
@@ -1986,7 +1859,7 @@
                     [SUPERPOWERS.BOMB_BAE]: (r, c, cell) => {
                         const targetSymbol = this.gridData[r][c];
                         if (!targetSymbol || targetSymbol === this.SPECIAL_SYMBOLS.WILD) {
-                            this.audioManager.play('invalid');
+                            
                             cell.classList.add('shake-animation');
                             setTimeout(() => cell.classList.remove('shake-animation'), CONSTANTS.SHAKE_ANIMATION_DURATION);
                             return;
@@ -2006,7 +1879,7 @@
                         if (this.gridData[r][c]) {
                             this.renderer.showSymbolSelectorForExchange(r, c);
                         } else {
-                            this.audioManager.play('invalid');
+                            
                         }
                     }
                 };
@@ -2052,7 +1925,6 @@
                     in_game_content: 'in-game-content',
                     pre_game_content: 'pre_game-content',
                     in_game_content_wrapper: 'in-game-content-wrapper',
-                    audio_unlocker: 'audio-unlocker',
                     post_game_modal: 'post-game-modal',
                     close_post_game_modal_btn: 'close-post-game-modal-btn',
                     post_game_play_again_btn: 'post-game-play-again-btn',
@@ -2384,7 +2256,6 @@
                 this.turnCount++;
                 this.renderer.updateProgressBar();
                 this.renderer.updateGridCell(r, c);
-                this.audioManager.play('pop');
                 this.triggerVibration(20);
 
                 this.vibratedForScoreThisTurn = false;
@@ -2475,7 +2346,6 @@
                 this.gridData[targetCell.r][targetCell.c] = chosenSymbol;
                 this.renderer.updateGridCell(targetCell.r, targetCell.c);
                 createSparkles(this.renderer.gridCells[targetCell.r][targetCell.c]);
-                this.audioManager.play('chime');
                 this.triggerVibration(50);
 
                 emptyCells.forEach(({ r, c }) => {
@@ -2486,7 +2356,7 @@
                     }
                 });
 
-                if (emptyCells.length > 1) this.audioManager.play('thud');
+                if (emptyCells.length > 1) ;
 
                 await delay(CONSTANTS.GOLDEN_ALLOHA_DELAY); 
 
@@ -2772,7 +2642,7 @@
             }
             consumeSuperpower(powerName) {
                 this.triggerVibration(30);
-                this.audioManager.play('power-use'); this.usedSuperpowers.add(powerName); this.activeSuperpower = null;
+                this.usedSuperpowers.add(powerName); this.activeSuperpower = null;
                 this.renderer.updateFullGrid(); this.updateAllScores(); this.renderer.updateSuperpowerButtonsUI();
             }
         }
@@ -2784,14 +2654,7 @@
             currentGameInstance: null,
             pendingAction: null,
             activeMode: 'classic',
-            isAudioUnlocked: false,
             globalListenersAttached: false,
-
-            unlockAudioContext() {
-                if (this.isAudioUnlocked || !this.currentGameInstance) return;
-                this.currentGameInstance.audioManager.unlock(this.currentGameInstance.DOMElements.audio_unlocker);
-                this.isAudioUnlocked = true;
-            },
 
             init() {
                 this.switchVariant('plain_jean', false);
@@ -2971,7 +2834,6 @@
                 elements.select_edition_btn.addEventListener('click', () => {
                     const isTimeBurst = this.currentGameInstance.isTimeBurst;
                     this.activeMode = isTimeBurst ? 'timeburst' : 'classic';
-                    this.unlockAudioContext();
                     
                     if(isTimeBurst) {
                         elements.mode_toggle_switch.classList.add('time-burst-active');
